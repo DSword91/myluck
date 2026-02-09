@@ -73,6 +73,7 @@
         'nav.mbti': 'MBTI测试',
         'nav.color': '幸运色彩',
         'nav.personality': '趣味性格',
+        'nav.liferestart': '人生重开',
         'nav.guestbook': '许愿墙',
         'lang.switch': 'EN',
         'footer.desc': '趣味互动娱乐平台 · 仅供娱乐参考',
@@ -101,6 +102,7 @@
         'nav.mbti': 'MBTI Test',
         'nav.color': 'Lucky Color',
         'nav.personality': 'Personality',
+        'nav.liferestart': 'Life Restart',
         'nav.guestbook': 'Wish Wall',
         'lang.switch': '中文',
         'footer.desc': 'Fun & Interactive Entertainment · For Amusement Only',
@@ -222,8 +224,7 @@
                     <a href="index.html" class="nav-link ${isActive('index.html')}" data-i18n="nav.fortune">每日运气</a>
                     <a href="mbti.html" class="nav-link ${isActive('mbti.html')}" data-i18n="nav.mbti">MBTI测试</a>
                     <a href="color.html" class="nav-link ${isActive('color.html')}" data-i18n="nav.color">幸运色彩</a>
-                    <a href="personality.html" class="nav-link ${isActive('personality.html')}" data-i18n="nav.personality">趣味性格</a>
-                    <a href="guestbook.html" class="nav-link ${isActive('guestbook.html')}" data-i18n="nav.guestbook">留言板</a>
+                    <a href="personality.html" class="nav-link ${isActive('personality.html')}" data-i18n="nav.personality">趣味性格</a>                    <a href="liferestart.html" class="nav-link ${isActive('liferestart.html')}" data-i18n="nav.liferestart">人生重开</a>                    <a href="guestbook.html" class="nav-link ${isActive('guestbook.html')}" data-i18n="nav.guestbook">留言板</a>
                     <button class="lang-btn" id="lang-toggle" data-i18n="lang.switch">EN</button>
                 </div>
                 <button class="menu-toggle" aria-label="Menu">☰</button>
@@ -266,6 +267,7 @@
                         <a href="mbti.html" data-i18n="nav.mbti">MBTI测试</a>
                         <a href="color.html" data-i18n="nav.color">幸运色彩</a>
                         <a href="personality.html" data-i18n="nav.personality">趣味性格</a>
+                        <a href="liferestart.html" data-i18n="nav.liferestart">人生重开</a>
                     </div>
                     <div class="footer-links">
                         <h4 data-i18n="footer.legal">法律信息</h4>
