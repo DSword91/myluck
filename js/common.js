@@ -195,7 +195,7 @@
     function injectCSP() {
         const meta = document.createElement('meta');
         meta.httpEquiv = 'Content-Security-Policy';
-        meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://gc.zgo.at https://zz.bdstatic.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https:; connect-src 'self' https://v1.hitokoto.cn https://www.clarity.ms https://*.goatcounter.com https:; frame-src 'self';";
+        meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://gc.zgo.at https://zz.bdstatic.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https:; connect-src 'self' https://v1.hitokoto.cn https://www.clarity.ms https://*.goatcounter.com https://api.indexnow.org https://www.bing.com https://yandex.com https:; frame-src 'self';";
         document.head.prepend(meta);
 
         // 防止 referrer 泄露（隐藏来源）
@@ -365,6 +365,39 @@
             bp.async = true;
             var s = document.getElementsByTagName("script")[0];
             s.parentNode.insertBefore(bp, s);
+        })();
+
+        // IndexNow — 自动向 Bing/Yandex/Seznam/Naver 等提交页面
+        (function(){
+            var INDEXNOW_KEY = 'e17055fdcb6e00b8';
+            var cacheKey = 'myluck-indexnow-' + new Date().toISOString().slice(0,10);
+            if (localStorage.getItem(cacheKey)) return; // 每天只提交一次
+            localStorage.setItem(cacheKey, '1');
+            var urls = [
+                'https://myluck.top/',
+                'https://myluck.top/mbti.html',
+                'https://myluck.top/color.html',
+                'https://myluck.top/personality.html',
+                'https://myluck.top/guestbook.html'
+            ];
+            // 同时向多个搜索引擎提交
+            ['api.indexnow.org', 'www.bing.com', 'yandex.com'].forEach(function(engine){
+                fetch('https://' + engine + '/indexnow', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        host: 'myluck.top',
+                        key: INDEXNOW_KEY,
+                        keyLocation: 'https://myluck.top/' + INDEXNOW_KEY + '.txt',
+                        urlList: urls
+                    })
+                }).catch(function(){});
+            });
+
+            // Google Sitemap Ping
+            new Image().src = 'https://www.google.com/ping?sitemap=https://myluck.top/sitemap.xml';
+            // Bing Sitemap Ping
+            new Image().src = 'https://www.bing.com/ping?sitemap=https://myluck.top/sitemap.xml';
         })();
     }
 
