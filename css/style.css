@@ -395,7 +395,14 @@ a{text-decoration:none;color:inherit;}
 .lr-summary-card{text-align:center;padding:24px;background:var(--bg-alt);border-radius:var(--radius);margin-bottom:16px;}
 .lr-ending-name{font-size:1.6rem;font-weight:800;color:var(--primary-dark);margin-bottom:8px;}
 .lr-ending-desc{font-size:.95rem;color:var(--text-light);margin-bottom:12px;}
-.lr-final-age{font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:18px;}
+.lr-final-age{font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:8px;}
+.lr-death-cause{margin-top:8px;padding:6px 10px;background:rgba(231,76,60,.1);border-radius:6px;color:#c0392b;font-weight:600;font-size:.9rem;}
+.lr-death-cause-summary{font-size:.95rem;color:#c0392b;font-weight:600;margin-bottom:16px;}
+.lr-highlights{margin-bottom:16px;}
+.lr-highlights-title{font-size:.9rem;font-weight:700;color:var(--text-light);margin-bottom:8px;}
+.lr-highlights-list{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
+.lr-highlight-tag{display:inline-block;padding:4px 10px;background:#fff;border:1.5px solid var(--primary-light);border-radius:20px;font-size:.82rem;color:var(--primary-dark);}
+.lr-talents-review{margin-bottom:16px;}
 .lr-summary-stats{max-width:400px;margin:0 auto 18px;display:flex;flex-direction:column;gap:10px;}
 .lr-summary-stat{display:flex;align-items:center;gap:8px;}
 .lr-summary-stat-label{width:50px;font-size:.85rem;font-weight:600;text-align:right;}

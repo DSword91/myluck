@@ -35,6 +35,10 @@
         'lr.summary.mny': '财富',
         'lr.summary.spr': '快乐',
         'lr.summary.share': '分享人生',
+        'lr.summary.death': '死因',
+        'lr.summary.highlights': '人生大事',
+        'lr.summary.talents': '天赋',
+        'lr.summary.review': '人生回顾',
         'lr.grade.0': '地狱',
         'lr.grade.1': '折磨',
         'lr.grade.2': '不幸',
@@ -42,6 +46,17 @@
         'lr.grade.4': '幸福',
         'lr.grade.5': '极乐',
         'lr.grade.6': '传说',
+        // 死因
+        'lr.death.old': '寿终正寝，安详离世',
+        'lr.death.disease_old': '年老体衰，疾病缠身',
+        'lr.death.disease_mid': '不幸患上重病，英年早逝',
+        'lr.death.accident': '意外事故',
+        'lr.death.weak': '体弱多病，不幸离世',
+        'lr.death.heartbreak': '郁郁寡欢，心灰意冷',
+        'lr.death.overwork': '长期过度劳累',
+        'lr.death.poverty': '穷困潦倒',
+        'lr.death.adventure': '一次冒险中出了意外',
+        'lr.death.infant': '先天体质不佳',
     };
     const en = {
         'lr.title': '🔄 Life Restart Simulator',
@@ -74,6 +89,10 @@
         'lr.summary.mny': 'Wealth',
         'lr.summary.spr': 'Happiness',
         'lr.summary.share': 'Share Life',
+        'lr.summary.death': 'Cause of Death',
+        'lr.summary.highlights': 'Life Milestones',
+        'lr.summary.talents': 'Talents',
+        'lr.summary.review': 'Life Review',
         'lr.grade.0': 'Hell',
         'lr.grade.1': 'Miserable',
         'lr.grade.2': 'Unlucky',
@@ -81,6 +100,17 @@
         'lr.grade.4': 'Happy',
         'lr.grade.5': 'Blissful',
         'lr.grade.6': 'Legendary',
+        // Death causes
+        'lr.death.old': 'Died peacefully of old age',
+        'lr.death.disease_old': 'Succumbed to age-related illness',
+        'lr.death.disease_mid': 'Lost battle with serious illness',
+        'lr.death.accident': 'Died in an accident',
+        'lr.death.weak': 'Frail health, passed away young',
+        'lr.death.heartbreak': 'Died of a broken heart',
+        'lr.death.overwork': 'Died from chronic overwork',
+        'lr.death.poverty': 'Died in poverty',
+        'lr.death.adventure': 'Died during an adventure',
+        'lr.death.infant': 'Born with a weak constitution',
     };
     I18n.add('zh', zh);
     I18n.add('en', en);
@@ -514,6 +544,69 @@
         { text: { zh: '你成功帮客户打赢了一场官司，名声大振。', en: 'You won a big case for your client, your reputation soared.' }, cond: { minAge: 28, maxAge: 50, hasTag: 'lawyer', minInt: 8, chance: 0.3 }, effects: { mny: 3, chr: 2 } },
         { text: { zh: '你教的学生考上了名牌大学，给你发了感谢短信。', en: 'A student you taught got into a top university and sent you a thank-you text.' }, cond: { minAge: 28, maxAge: 55, hasTag: 'teacher', chance: 0.2 }, effects: { spr: 3 } },
         { text: { zh: '你带的班级获得了全校第一名。', en: 'The class you led ranked #1 in the school.' }, cond: { minAge: 25, maxAge: 50, hasTag: 'teacher', minInt: 7, chance: 0.15 }, effects: { spr: 2, chr: 1 } },
+
+        // ===== 中国文化特色事件（仅中文用户可见）=====
+        { text: { zh: '你被七大姑八大姨催婚了，春节饭桌上压力山大。', en: '' }, cond: { minAge: 24, maxAge: 35, noTag: 'married', lang: 'zh', chance: 0.2 }, effects: { spr: -2 } },
+        { text: { zh: '你在春节抢红包，手速全家第一！', en: '' }, cond: { minAge: 12, maxAge: 50, lang: 'zh', chance: 0.1 }, effects: { spr: 1, mny: 1 } },
+        { text: { zh: '双十一你剁手了5000块，第二天后悔了。', en: '' }, cond: { minAge: 18, maxAge: 45, lang: 'zh', chance: 0.1 }, effects: { mny: -1, spr: -1 } },
+        { text: { zh: '你每天996加班，身体开始吃不消了。', en: '' }, cond: { minAge: 22, maxAge: 40, lang: 'zh', chance: 0.1 }, effects: { str: -2, mny: 2, spr: -2, tag: '996' } },
+        { text: { zh: '你决定躺平了，不再内卷。', en: '' }, cond: { minAge: 22, maxAge: 35, hasTag: '996', lang: 'zh', chance: 0.3 }, effects: { spr: 3, mny: -1 } },
+        { text: { zh: '你在B站发了一个视频，播放量突破百万！', en: '' }, cond: { minAge: 15, maxAge: 35, lang: 'zh', minChr: 5, chance: 0.05 }, effects: { chr: 2, mny: 2, spr: 3 } },
+        { text: { zh: '你在小红书上成了美妆博主，粉丝暴涨。', en: '' }, cond: { minAge: 18, maxAge: 35, lang: 'zh', minChr: 7, chance: 0.05 }, effects: { chr: 2, mny: 2 } },
+        { text: { zh: '你考上了公务员，爸妈终于放心了。', en: '' }, cond: { minAge: 22, maxAge: 30, lang: 'zh', minInt: 6, chance: 0.08 }, effects: { mny: 2, spr: 1, tag: 'civil_servant' } },
+        { text: { zh: '你成了体制内卷王，年年优秀公务员。', en: '' }, cond: { minAge: 25, maxAge: 45, lang: 'zh', hasTag: 'civil_servant', chance: 0.2 }, effects: { mny: 1, chr: 1 } },
+        { text: { zh: '你在茶颜悦色排了两小时的队。', en: '' }, cond: { minAge: 15, maxAge: 35, lang: 'zh', chance: 0.05 }, effects: { spr: 1 } },
+        { text: { zh: '你报名了考研，每天图书馆从早坐到晚。', en: '' }, cond: { minAge: 21, maxAge: 24, lang: 'zh', minInt: 5, chance: 0.15 }, effects: { int: 2, spr: -1, tag: 'postgrad' } },
+        { text: { zh: '你考研上岸了！', en: '' }, cond: { minAge: 22, maxAge: 25, lang: 'zh', hasTag: 'postgrad', minInt: 7, chance: 0.5 }, effects: { int: 2, spr: 3 } },
+        { text: { zh: '你在高铁上吃了一桶泡面，整个车厢都是味道。', en: '' }, cond: { minAge: 18, maxAge: 50, lang: 'zh', chance: 0.05 }, effects: {} },
+        { text: { zh: '你学会了做螺蛳粉，室友差点要报警。', en: '' }, cond: { minAge: 18, maxAge: 30, lang: 'zh', chance: 0.05 }, effects: { spr: 1 } },
+        { text: { zh: '你在相亲角被父母挂了牌子，社死现场。', en: '' }, cond: { minAge: 26, maxAge: 35, noTag: 'married', lang: 'zh', chance: 0.08 }, effects: { spr: -2, chr: -1 } },
+        { text: { zh: '你在老家盖了一栋新房，全村都来参观。', en: '' }, cond: { minAge: 30, maxAge: 50, lang: 'zh', minMny: 7, chance: 0.08 }, effects: { chr: 1, spr: 2 } },
+        { text: { zh: '你在广场舞大赛中获得了冠军！', en: '' }, cond: { minAge: 50, maxAge: 70, lang: 'zh', chance: 0.08 }, effects: { str: 1, spr: 2, chr: 1 } },
+        { text: { zh: '你的微信步数今天排第一，走了两万步。', en: '' }, cond: { minAge: 20, maxAge: 60, lang: 'zh', chance: 0.05 }, effects: { str: 1 } },
+        { text: { zh: '你在拼多多砍价成功，省了一大笔钱！', en: '' }, cond: { minAge: 18, maxAge: 55, lang: 'zh', chance: 0.05 }, effects: { mny: 1, spr: 1 } },
+        { text: { zh: '你回老家过清明节，跪在祖坟前想了很多。', en: '' }, cond: { minAge: 20, maxAge: 60, lang: 'zh', chance: 0.06 }, effects: { spr: 1 } },
+        { text: { zh: '你熬夜看了一晚上世界杯/奥运会，第二天上班差点迟到。', en: '' }, cond: { minAge: 18, maxAge: 50, lang: 'zh', chance: 0.06 }, effects: { spr: 1, str: -1 } },
+
+        // ===== 西方文化特色事件（仅英文用户可见）=====
+        { text: { zh: '', en: 'You went to your first prom — unforgettable night!' }, cond: { minAge: 16, maxAge: 18, lang: 'en', chance: 0.3 }, effects: { spr: 2, chr: 1 } },
+        { text: { zh: '', en: 'You took a cross-country road trip with friends.' }, cond: { minAge: 18, maxAge: 30, lang: 'en', chance: 0.1 }, effects: { spr: 3 } },
+        { text: { zh: '', en: 'Thanksgiving dinner with the whole family — chaotic but heartwarming.' }, cond: { minAge: 10, maxAge: 70, lang: 'en', chance: 0.1 }, effects: { spr: 2 } },
+        { text: { zh: '', en: 'You maxed out your credit card on Black Friday deals.' }, cond: { minAge: 18, maxAge: 50, lang: 'en', chance: 0.08 }, effects: { mny: -1, spr: -1 } },
+        { text: { zh: '', en: 'You started a podcast — it actually got popular!' }, cond: { minAge: 20, maxAge: 40, lang: 'en', minChr: 5, chance: 0.05 }, effects: { chr: 2, mny: 1, spr: 2 } },
+        { text: { zh: '', en: 'You got your first apartment — freedom at last!' }, cond: { minAge: 18, maxAge: 25, lang: 'en', chance: 0.15 }, effects: { spr: 2, mny: -1 } },
+        { text: { zh: '', en: 'You went to Burning Man and had a spiritual awakening.' }, cond: { minAge: 20, maxAge: 40, lang: 'en', chance: 0.03 }, effects: { spr: 3 } },
+        { text: { zh: '', en: 'You binge-watched an entire Netflix series in one weekend.' }, cond: { minAge: 15, maxAge: 40, lang: 'en', chance: 0.08 }, effects: {} },
+        { text: { zh: '', en: 'Student loan debt is crushing you. When will it end?' }, cond: { minAge: 22, maxAge: 35, lang: 'en', chance: 0.1 }, effects: { mny: -2, spr: -2 } },
+        { text: { zh: '', en: 'You paid off your student loans! Finally free!' }, cond: { minAge: 28, maxAge: 40, lang: 'en', minMny: 6, chance: 0.1 }, effects: { spr: 3, mny: 1 } },
+        { text: { zh: '', en: 'You went trick-or-treating with the kids — best Halloween ever.' }, cond: { minAge: 30, maxAge: 45, lang: 'en', hasTag: 'parent', chance: 0.2 }, effects: { spr: 2 } },
+        { text: { zh: '', en: 'You threw a legendary Super Bowl party.' }, cond: { minAge: 22, maxAge: 50, lang: 'en', chance: 0.06 }, effects: { spr: 1, chr: 1 } },
+        { text: { zh: '', en: 'You went to a music festival and danced all night.' }, cond: { minAge: 18, maxAge: 35, lang: 'en', chance: 0.08 }, effects: { spr: 2 } },
+        { text: { zh: '', en: 'Your TikTok went viral — 10 million views!' }, cond: { minAge: 15, maxAge: 30, lang: 'en', minChr: 5, chance: 0.03 }, effects: { chr: 2, mny: 2, spr: 3 } },
+        { text: { zh: '', en: 'You got into a heated argument at a family BBQ. Classic.' }, cond: { minAge: 18, maxAge: 60, lang: 'en', chance: 0.06 }, effects: { spr: -1 } },
+        { text: { zh: '', en: 'You adopted a rescue dog — best decision ever.' }, cond: { minAge: 20, maxAge: 50, lang: 'en', chance: 0.06 }, effects: { spr: 2, tag: 'pet' } },
+        { text: { zh: '', en: 'You went camping and survived without Wi-Fi for 3 days.' }, cond: { minAge: 15, maxAge: 50, lang: 'en', chance: 0.05 }, effects: { spr: 2, str: 1 } },
+        { text: { zh: '', en: 'You tipped a barista and they spelled your name right for once.' }, cond: { minAge: 16, maxAge: 40, lang: 'en', chance: 0.05 }, effects: { spr: 1 } },
+        { text: { zh: '', en: 'You drove across Route 66 — American dream vibes.' }, cond: { minAge: 20, maxAge: 50, lang: 'en', chance: 0.03 }, effects: { spr: 3 } },
+
+        // ===== 更多剧情弧线事件 =====
+        { text: { zh: '你开始写一本小说，每天坚持写1000字。', en: 'You started writing a novel, 1000 words every day.' }, cond: { minAge: 18, maxAge: 50, minInt: 5, chance: 0.05 }, effects: { int: 1, tag: 'novelist' } },
+        { text: { zh: '你的小说出版了！虽然销量一般，但你很满足。', en: 'Your novel was published! Sales were modest, but you felt fulfilled.' }, cond: { minAge: 20, maxAge: 55, hasTag: 'novelist', chance: 0.4 }, effects: { spr: 3, chr: 1 } },
+        { text: { zh: '你的小说被翻拍成了电影！', en: 'Your novel was adapted into a movie!' }, cond: { minAge: 25, maxAge: 60, hasTag: 'novelist', minInt: 8, chance: 0.1 }, effects: { mny: 5, chr: 3, spr: 4 } },
+        { text: { zh: '你开始学习投资理财。', en: 'You started learning about investing.' }, cond: { minAge: 22, maxAge: 40, minInt: 5, chance: 0.1 }, effects: { int: 1, tag: 'investor' } },
+        { text: { zh: '你的投资翻倍了！', en: 'Your investments doubled!' }, cond: { minAge: 25, maxAge: 60, hasTag: 'investor', chance: 0.15 }, effects: { mny: 4, spr: 2 } },
+        { text: { zh: '你的投资血本无归……', en: 'You lost everything in investments...' }, cond: { minAge: 25, maxAge: 60, hasTag: 'investor', chance: 0.1 }, effects: { mny: -4, spr: -3 } },
+        { text: { zh: '你学会了一门外语，感觉世界大了一倍。', en: 'You learned a foreign language — the world feels twice as big.' }, cond: { minAge: 15, maxAge: 45, minInt: 6, chance: 0.06 }, effects: { int: 2, chr: 1, spr: 1 } },
+        { text: { zh: '你收养了一只流浪狗，它成了你最忠实的伙伴。', en: 'You adopted a stray dog — it became your most loyal companion.' }, cond: { minAge: 18, maxAge: 55, chance: 0.04 }, effects: { spr: 3, tag: 'pet' } },
+        { text: { zh: '你的宠物去世了，你哭了好几天。', en: 'Your pet passed away. You cried for days.' }, cond: { minAge: 15, maxAge: 70, hasTag: 'pet', chance: 0.08 }, effects: { spr: -4 } },
+        { text: { zh: '你经历了一次严重的车祸，但奇迹般地活了下来。', en: 'You survived a serious car accident — a miracle.' }, cond: { minAge: 18, maxAge: 60, chance: 0.02 }, effects: { str: -3, spr: -2, tag: 'accident_survivor' } },
+        { text: { zh: '车祸后你开始珍惜每一天，活出了不一样的人生。', en: 'After the accident, you cherished every day and lived differently.' }, cond: { minAge: 18, maxAge: 60, hasTag: 'accident_survivor', chance: 0.6 }, effects: { spr: 4 } },
+        { text: { zh: '你参加了马拉松，虽然是最后一名，但你跑完了全程！', en: 'You ran a marathon — finished last, but you FINISHED!' }, cond: { minAge: 20, maxAge: 50, minStr: 4, chance: 0.05 }, effects: { str: 2, spr: 3 } },
+        { text: { zh: '你在陌生城市迷路了，但意外认识了一群很好的人。', en: 'You got lost in a strange city but met amazing people.' }, cond: { minAge: 18, maxAge: 45, chance: 0.04 }, effects: { spr: 2, chr: 1 } },
+        { text: { zh: '你被网贷骗了，欠了一大笔钱。', en: 'You were scammed by a predatory loan — deep in debt.' }, cond: { minAge: 20, maxAge: 40, maxMny: 4, maxInt: 5, chance: 0.04 }, effects: { mny: -4, spr: -3, tag: 'debt' } },
+        { text: { zh: '你花了三年还清了所有债务，终于自由了。', en: 'After 3 years, you paid off all debts — finally free.' }, cond: { minAge: 23, maxAge: 50, hasTag: 'debt', chance: 0.4 }, effects: { mny: 1, spr: 3 } },
+        { text: { zh: '你在老年大学里学会了画画，每天都很开心。', en: 'You learned painting at senior school — happy every day.' }, cond: { minAge: 60, maxAge: 80, chance: 0.1 }, effects: { spr: 2, chr: 1 } },
+        { text: { zh: '你终于学会了坦然面对衰老。', en: 'You finally learned to face aging gracefully.' }, cond: { minAge: 60, maxAge: 80, minSpr: 5, chance: 0.15 }, effects: { spr: 2 } },
     ];
 
     // ========== 事件模板（生成更多变体）==========
@@ -688,6 +781,8 @@
             if (cond.noTag && this.tags.has(cond.noTag)) return false;
             if (cond.noTag2 && this.tags.has(cond.noTag2)) return false;
             if (cond.chance !== undefined && Math.random() > cond.chance) return false;
+            // 语言/文化条件 - 让不同语言用户看到不同的文化事件
+            if (cond.lang && cond.lang !== I18n.lang) return false;
             return true;
         }
 
@@ -864,6 +959,79 @@
             if (val <= 10) return 4;
             if (val <= 14) return 5;
             return 6;
+        }
+
+        // 获取死因
+        getDeathCause() {
+            const age = this.age;
+            const s = this.stats;
+            if (age < 5) return 'lr.death.infant';
+            if (age >= 85) return 'lr.death.old';
+            if (age >= 70) return Math.random() < 0.6 ? 'lr.death.old' : 'lr.death.disease_old';
+            if (age >= 50) {
+                if (s.str <= 2) return 'lr.death.disease_mid';
+                if (s.spr <= 1) return 'lr.death.heartbreak';
+                return 'lr.death.disease_old';
+            }
+            if (age >= 30) {
+                if (s.spr <= 1) return 'lr.death.heartbreak';
+                if (s.str <= 1) return 'lr.death.weak';
+                if (s.mny <= 1) return 'lr.death.poverty';
+                if (this.tags.has('overwork') || this.tags.has('996')) return 'lr.death.overwork';
+                return Math.random() < 0.5 ? 'lr.death.accident' : 'lr.death.disease_mid';
+            }
+            if (s.str <= 1) return 'lr.death.weak';
+            if (this.tags.has('adventure') || this.tags.has('skydive')) return 'lr.death.adventure';
+            return 'lr.death.accident';
+        }
+
+        // 获取人生高光时刻
+        getHighlights() {
+            const highlights = [];
+            const importantTags = {
+                'college': { zh: '📚 考上了大学', en: '📚 Went to college' },
+                'top_uni': { zh: '🎓 考入名牌大学', en: '🎓 Got into a top university' },
+                'phd': { zh: '🎓 攻读博士学位', en: '🎓 Pursued a PhD' },
+                'first_love': { zh: '💕 经历了初恋', en: '💕 Had first love' },
+                'married': { zh: '💍 步入了婚姻', en: '💍 Got married' },
+                'parent': { zh: '👶 有了孩子', en: '👶 Had a child' },
+                'grandparent': { zh: '👴 当上了祖父母', en: '👴 Became a grandparent' },
+                'startup': { zh: '🚀 创办了公司', en: '🚀 Started a company' },
+                'ipo': { zh: '📈 公司上市了', en: '📈 Company went IPO' },
+                'betrayed': { zh: '💔 被人背叛', en: '💔 Was betrayed' },
+                'comeback': { zh: '🔥 东山再起', en: '🔥 Made a comeback' },
+                'hero': { zh: '🦸 成了英雄', en: '🦸 Became a hero' },
+                'dream_job': { zh: '✨ 得到了梦想工作', en: '✨ Got dream job' },
+                'therapy': { zh: '🧠 直面心理问题并康复', en: '🧠 Faced mental health & recovered' },
+                'cat_owner': { zh: '🐱 收养了流浪猫', en: '🐱 Adopted a stray cat' },
+                'pet': { zh: '🐕 养了宠物', en: '🐕 Had a pet' },
+                'programmer': { zh: '💻 成为了程序员', en: '💻 Became a programmer' },
+                'doctor': { zh: '🏥 成为了医生', en: '🏥 Became a doctor' },
+                'teacher': { zh: '📖 成为了老师', en: '📖 Became a teacher' },
+                'lawyer': { zh: '⚖️ 成为了律师', en: '⚖️ Became a lawyer' },
+                'artist': { zh: '🎨 成为了艺术家', en: '🎨 Became an artist' },
+                'rural': { zh: '🏡 搬去了乡下', en: '🏡 Moved to the countryside' },
+                'rich': { zh: '💰 实现了财务自由', en: '💰 Achieved financial freedom' },
+                'friend_died': { zh: '😢 失去了挚友', en: '😢 Lost a best friend' },
+                'parent_sick': { zh: '🏥 父母生病住院', en: '🏥 Parent was hospitalized' },
+                'rejected': { zh: '💔 告白被拒', en: '💔 Confession rejected' },
+                'gamer': { zh: '🎮 成为了资深玩家', en: '🎮 Became a gamer' },
+            };
+            for (const [tag, text] of Object.entries(importantTags)) {
+                if (this.tags.has(tag)) {
+                    highlights.push(text[I18n.lang] || text.zh);
+                }
+            }
+            // 年龄成就
+            if (this.age >= 90) highlights.push(I18n.lang === 'en' ? '🎂 Lived past 90' : '🎂 活过了90岁');
+            else if (this.age >= 80) highlights.push(I18n.lang === 'en' ? '🎂 Lived past 80' : '🎂 活过了80岁');
+            // 属性成就
+            const s = this.stats;
+            if (s.chr >= 15) highlights.push(I18n.lang === 'en' ? '👑 Stunning beauty' : '👑 倾国倾城');
+            if (s.int >= 15) highlights.push(I18n.lang === 'en' ? '🧠 Genius intellect' : '🧠 天才级智力');
+            if (s.mny >= 15) highlights.push(I18n.lang === 'en' ? '💎 Extremely wealthy' : '💎 富可敌国');
+            if (s.spr >= 15) highlights.push(I18n.lang === 'en' ? '😇 Ultimate happiness' : '😇 极致幸福');
+            return highlights;
         }
     }
 
@@ -1116,9 +1284,15 @@
         const div = document.createElement('div');
         div.className = 'lr-year-item fade-in';
         const evtTexts = result.events.map(e => tObj(e.text)).join('<br>');
+        let deathHtml = '';
+        if (!result.alive) {
+            const causeKey = game.getDeathCause();
+            const causeText = t(causeKey);
+            deathHtml = `<div class="lr-death-cause">💀 ${t('lr.summary.death')}: ${causeText}</div>`;
+        }
         div.innerHTML = `
             <div class="lr-year-age">${t('lr.life.age', { n: result.age })}</div>
-            <div class="lr-year-events">${evtTexts}</div>
+            <div class="lr-year-events">${evtTexts}${deathHtml}</div>
         `;
         if (!result.alive) {
             div.classList.add('lr-year-death');
@@ -1139,12 +1313,36 @@
             spr: 'lr.summary.spr'
         };
 
+        // 死因
+        const deathCauseKey = game.getDeathCause();
+        const deathCauseText = t(deathCauseKey);
+
+        // 人生高光
+        const highlights = game.getHighlights();
+        const highlightsHtml = highlights.length > 0
+            ? `<div class="lr-highlights">
+                <div class="lr-highlights-title">${t('lr.summary.highlights')}</div>
+                <div class="lr-highlights-list">${highlights.map(h => `<span class="lr-highlight-tag">${h}</span>`).join('')}</div>
+              </div>`
+            : '';
+
+        // 天赋回顾
+        const talentsHtml = game.talents.length > 0
+            ? `<div class="lr-talents-review">
+                <div class="lr-highlights-title">${t('lr.summary.talents')}</div>
+                <div class="lr-highlights-list">${game.talents.map(tl => `<span class="lr-highlight-tag" style="border-color:${gradeColor(tl.grade)};color:${gradeColor(tl.grade)}">${tObj(tl.name)}</span>`).join('')}</div>
+              </div>`
+            : '';
+
         container.innerHTML = `
             <h3 class="lr-phase-title">${t('lr.summary.title')}</h3>
             <div class="lr-summary-card">
                 <div class="lr-ending-name">${tObj(ending.name)}</div>
                 <div class="lr-ending-desc">${tObj(ending.desc)}</div>
                 <div class="lr-final-age">${t('lr.summary.final', { n: game.age })}</div>
+                <div class="lr-death-cause-summary">💀 ${t('lr.summary.death')}: ${deathCauseText}</div>
+                ${highlightsHtml}
+                ${talentsHtml}
                 <div class="lr-summary-stats">
                     ${gradeKeys.map(k => {
                         const g = game.gradeFor(s[k]);
