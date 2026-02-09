@@ -2,6 +2,12 @@
 (function () {
     'use strict';
 
+    // ========== 刷新时回到顶部 ==========
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+
     // ========== i18n 国际化系统 ==========
     const I18n = {
         lang: 'zh',
@@ -64,7 +70,7 @@
         'nav.mbti': 'MBTI测试',
         'nav.color': '幸运色彩',
         'nav.personality': '趣味性格',
-        'nav.guestbook': '留言板',
+        'nav.guestbook': '许愿墙',
         'lang.switch': 'EN',
         'footer.desc': '趣味互动娱乐平台 · 仅供娱乐参考',
         'footer.tests': '趣味测试',
@@ -92,7 +98,7 @@
         'nav.mbti': 'MBTI Test',
         'nav.color': 'Lucky Color',
         'nav.personality': 'Personality',
-        'nav.guestbook': 'Guestbook',
+        'nav.guestbook': 'Wish Wall',
         'lang.switch': '中文',
         'footer.desc': 'Fun & Interactive Entertainment · For Amusement Only',
         'footer.tests': 'Fun Tests',
@@ -185,12 +191,18 @@
         }
     };
 
-    // ========== CSP Meta Tag 注入 ==========
+    // ========== CSP + 安全 Meta Tag 注入 ==========
     function injectCSP() {
         const meta = document.createElement('meta');
         meta.httpEquiv = 'Content-Security-Policy';
-        meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' https://giscus.app; style-src 'self' 'unsafe-inline'; frame-src https://giscus.app; img-src 'self' data: https:; connect-src 'self' https:;";
+        meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https:;";
         document.head.prepend(meta);
+
+        // 防止 referrer 泄露（隐藏来源）
+        const ref = document.createElement('meta');
+        ref.name = 'referrer';
+        ref.content = 'no-referrer';
+        document.head.appendChild(ref);
     }
 
     // ========== 导航栏注入 ==========
@@ -308,11 +320,42 @@
         injectNav();
         injectFooter();
         Security.initProtection();
+        injectSEO();
 
         // 延迟应用 i18n（等页面脚本加载翻译）
         requestAnimationFrame(() => {
             I18n.apply();
         });
+
+        // 确保刷新回到顶部
+        window.scrollTo(0, 0);
+    }
+
+    // ========== SEO 结构化数据 ==========
+    function injectSEO() {
+        // JSON-LD 结构化数据
+        const ld = document.createElement('script');
+        ld.type = 'application/ld+json';
+        ld.textContent = JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "MyLuck",
+            "url": "https://myluck.top",
+            "description": I18n.lang === 'zh' ? "MyLuck 趣味互动娱乐平台 - 每日运气测试、MBTI性格测试、幸运色彩测试" : "MyLuck Fun Interactive Entertainment - Daily Luck Test, MBTI Personality Test, Lucky Color Test",
+            "inLanguage": ["zh-CN", "en"],
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://myluck.top"
+            }
+        });
+        document.head.appendChild(ld);
+
+        // Canonical URL
+        const canonical = document.createElement('link');
+        canonical.rel = 'canonical';
+        const page = location.pathname.split('/').pop() || 'index.html';
+        canonical.href = 'https://myluck.top/' + (page === 'index.html' ? '' : page);
+        document.head.appendChild(canonical);
     }
 
     if (document.readyState === 'loading') {

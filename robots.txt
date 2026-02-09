@@ -4,9 +4,6 @@ Allow: /
 Disallow: /js/
 Disallow: /css/
 
-# 限制爬虫频率
-Crawl-delay: 10
-
 # 常见爬虫限制
 User-agent: AhrefsBot
 Disallow: /
@@ -44,14 +41,11 @@ Disallow: /
 # 允许主流搜索引擎
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 5
 
 User-agent: Bingbot
 Allow: /
-Crawl-delay: 5
 
 User-agent: Baiduspider
 Allow: /
-Crawl-delay: 5
 
 Sitemap: https://myluck.top/sitemap.xml

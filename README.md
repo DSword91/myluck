@@ -1,22 +1,11 @@
-# MyLuck - 每日好运测试
+# MyLuck
 
-🍀 一个趣味互动娱乐网站，托管于 GitHub Pages。
+A fun interactive entertainment project.
 
-## 功能
+## Disclaimer
 
-- 每日好运测试（基于出生月份）
-- 幸运色彩测试
-- 趣味性格小测试
-- 每日正能量语录
+All test results are randomly generated for entertainment purposes only.
 
-## 声明
+## License
 
-所有测试结果均由算法随机生成，仅供娱乐参考，不具有任何预测或指导意义。
-
-## 部署
-
-本站使用 GitHub Pages 部署，自定义域名为 `myluck.top`。
-
-## 许可
-
-© 2026 MyLuck.top 保留所有权利。
+© 2026 All rights reserved.
