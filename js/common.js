@@ -198,7 +198,7 @@
     function injectCSP() {
         const meta = document.createElement('meta');
         meta.httpEquiv = 'Content-Security-Policy';
-        meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://gc.zgo.at https://zz.bdstatic.com https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https:; connect-src 'self' https://v1.hitokoto.cn https://www.clarity.ms https://*.goatcounter.com https://api.indexnow.org https://www.bing.com https://yandex.com https://*.supabase.co https:; frame-src 'self';";
+        meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://scripts.clarity.ms https://gc.zgo.at https://zz.bdstatic.com https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https:; connect-src 'self' https://v1.hitokoto.cn https://www.clarity.ms https://*.clarity.ms https://*.goatcounter.com https://api.indexnow.org https://www.bing.com https://yandex.com https://*.supabase.co https:; frame-src 'self';";
         document.head.prepend(meta);
 
         // 防止 referrer 泄露（隐藏来源）

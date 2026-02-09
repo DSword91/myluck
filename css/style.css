@@ -24,6 +24,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(253,203,110,0.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(225,112,85,0.04) 0%,transparent 50%);pointer-events:none;z-index:-1;}
 .container{max-width:1060px;margin:0 auto;padding:0 24px;}
 a{text-decoration:none;color:inherit;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 
 /* ===== 导航栏 ===== */
 .navbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,251,245,0.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(225,112,85,0.06);transition:var(--ease);}

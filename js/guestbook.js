@@ -180,20 +180,23 @@
                 <div class="comment-form">
                     <div class="comment-row">
                         <input type="text" id="comment-nick" maxlength="20" required
-                            placeholder="${I18n.t('gb.c_name')}" class="comment-nick-input">
+                            placeholder="${I18n.t('gb.c_name')}" class="comment-nick-input"
+                            aria-label="${I18n.lang === 'zh' ? '昵称' : 'Nickname'}">
                         <input type="email" id="comment-email" maxlength="100" required
-                            placeholder="${I18n.t('gb.c_email')}" class="comment-nick-input">
+                            placeholder="${I18n.t('gb.c_email')}" class="comment-nick-input"
+                            aria-label="${I18n.lang === 'zh' ? '邮箱' : 'Email'}">
                     </div>
                     <textarea id="comment-text" maxlength="500" rows="3" required
-                        placeholder="${I18n.t('gb.c_placeholder')}" class="comment-textarea"></textarea>
+                        placeholder="${I18n.t('gb.c_placeholder')}" class="comment-textarea"
+                        aria-label="${I18n.lang === 'zh' ? '评论内容' : 'Comment'}"></textarea>
                     <div class="comment-row">
                         <div class="captcha-box">
-                            <span class="captcha-label">${I18n.t('gb.c_captcha_q')}：${captchaA} + ${captchaB} = </span>
+                            <label for="comment-captcha" class="captcha-label">${I18n.t('gb.c_captcha_q')}：${captchaA} + ${captchaB} = </label>
                             <input type="number" id="comment-captcha" class="captcha-input" autocomplete="off">
                         </div>
                         <button id="comment-submit" class="cta-btn">${I18n.t('gb.c_submit')}</button>
                     </div>
-                    <input type="text" id="comment-hp" style="position:absolute;left:-9999px;opacity:0;height:0;" tabindex="-1" autocomplete="off">
+                    <input type="text" id="comment-hp" style="position:absolute;left:-9999px;opacity:0;height:0;" tabindex="-1" autocomplete="off" aria-hidden="true">
                 </div>
                 <div id="comment-list" class="comment-list">
                     <p style="text-align:center;color:var(--text-light);">${I18n.t('gb.c_loading')}</p>
