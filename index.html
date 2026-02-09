@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MyLuck 每日好运测试 - 趣味互动娱乐，测测你今天的幸运指数！">
+    <meta name="keywords" content="运势测试,幸运测试,MBTI,趣味测试,luck test">
+    <title>MyLuck - 每日好运测试 | Daily Luck Test</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍀</text></svg>">
+    <meta property="og:title" content="MyLuck - 每日好运测试">
+    <meta property="og:description" content="测测你今天的幸运指数！趣味互动娱乐。">
+    <meta property="og:url" content="https://myluck.top">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Hero -->
+    <header class="hero" id="home">
+        <div class="hero-bg"></div>
+        <div class="container hero-content">
+            <h1 class="hero-title">
+                <span class="emoji-float">🍀</span>
+                <span data-i18n="home.title">测测今天的好运指数</span>
+                <span class="emoji-float">✨</span>
+            </h1>
+            <p class="hero-subtitle" data-i18n="home.subtitle">每天一次趣味测试，开启快乐好心情！</p>
+            <a href="#fortune" class="cta-btn" data-i18n="home.cta">开始测试 →</a>
+        </div>
+    </header>
+
+    <!-- 广告位 -->
+    <div class="ad-slot"><div class="container"><div class="ad-placeholder"><span class="ad-label">AD</span></div></div></div>
+
+    <!-- 每日运气测试 -->
+    <section class="section" id="fortune">
+        <div class="container">
+            <h2 class="section-title" data-i18n="fortune.title">🎯 每日运气测试</h2>
+            <p class="section-desc" data-i18n="fortune.desc">输入你的信息，获取今日专属趣味运势（仅供娱乐）</p>
+            <div class="card" id="fortune-card">
+                <div class="fortune-inputs">
+                    <div>
+                        <label data-i18n="fortune.name">你的昵称</label>
+                        <input type="text" id="fortune-name" maxlength="20" data-i18n="fortune.name_ph" placeholder="输入昵称（可选）">
+                    </div>
+                    <div>
+                        <label data-i18n="fortune.month">出生月份</label>
+                        <select id="fortune-month">
+                            <option value="0" data-i18n="fortune.select_month">请选择月份</option>
+                            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                            <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                            <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+                            <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label data-i18n="fortune.mood">今天的心情</label>
+                        <select id="fortune-mood">
+                            <option value="happy" data-i18n="fortune.mood_happy">😊 开心</option>
+                            <option value="calm" data-i18n="fortune.mood_calm">😌 平静</option>
+                            <option value="excited" data-i18n="fortune.mood_excited">🤩 兴奋</option>
+                            <option value="tired" data-i18n="fortune.mood_tired">😴 疲惫</option>
+                            <option value="anxious" data-i18n="fortune.mood_anxious">😰 焦虑</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="fortune-submit" id="fortune-submit" data-i18n="fortune.submit">✨ 查看今日运势</button>
+
+                <div class="fortune-result" id="fortune-result" style="display:none;">
+                    <div class="result-header">
+                        <span class="result-emoji" id="result-emoji">🌟</span>
+                        <h3 id="result-title"></h3>
+                    </div>
+                    <div class="luck-meter">
+                        <div class="luck-bar" id="luck-bar"></div>
+                        <span class="luck-value" id="luck-value">0%</span>
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-item"><span class="icon">💼</span><span class="label" data-i18n="fortune.r_work">工作学习</span><span class="stars" id="r-work"></span></div>
+                        <div class="result-item"><span class="icon">💕</span><span class="label" data-i18n="fortune.r_social">人际关系</span><span class="stars" id="r-social"></span></div>
+                        <div class="result-item"><span class="icon">🎨</span><span class="label" data-i18n="fortune.r_creative">创造灵感</span><span class="stars" id="r-creative"></span></div>
+                        <div class="result-item"><span class="icon">🏃</span><span class="label" data-i18n="fortune.r_energy">活力指数</span><span class="stars" id="r-energy"></span></div>
+                        <div class="result-item"><span class="icon">🍀</span><span class="label" data-i18n="fortune.r_luck">偶遇好运</span><span class="stars" id="r-luck"></span></div>
+                        <div class="result-item"><span class="icon">🧠</span><span class="label" data-i18n="fortune.r_wisdom">灵光一闪</span><span class="stars" id="r-wisdom"></span></div>
+                    </div>
+                    <div class="lucky-tip" id="lucky-tip"></div>
+                    <div class="lucky-extras">
+                        <span id="lucky-color"></span>
+                        <span id="lucky-number"></span>
+                        <span id="lucky-direction"></span>
+                    </div>
+                    <button class="share-result-btn" id="share-btn" data-i18n="fortune.share">📤 分享给朋友</button>
+                    <div class="disclaimer-badge" data-i18n="disclaimer.tag">仅供娱乐 · 算法随机生成</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 更多测试导航 -->
+    <section class="section section-alt" id="more-tests">
+        <div class="container">
+            <h2 class="section-title" data-i18n="home.more">🎮 更多趣味测试</h2>
+            <p class="section-desc" data-i18n="home.more_desc">感兴趣的话，来试试这些好玩的测试吧</p>
+            <div class="test-cards">
+                <a href="mbti.html" class="test-card">
+                    <span class="test-card-icon">🧠</span>
+                    <h3 data-i18n="card.mbti_title">MBTI 性格测试</h3>
+                    <p data-i18n="card.mbti_desc">完整60道题目，深度了解你的性格类型，发现真实的自己</p>
+                    <span class="card-tag" data-i18n="card.mbti_tag">60题 · 约10分钟</span>
+                </a>
+                <a href="color.html" class="test-card">
+                    <span class="test-card-icon">🎨</span>
+                    <h3 data-i18n="card.color_title">幸运色彩测试</h3>
+                    <p data-i18n="card.color_desc">你最喜欢的颜色隐藏着什么趣味性格密码？点击揭晓</p>
+                    <span class="card-tag" data-i18n="card.color_tag">8种色彩 · 秒出结果</span>
+                </a>
+                <a href="personality.html" class="test-card">
+                    <span class="test-card-icon">🧩</span>
+                    <h3 data-i18n="card.personality_title">趣味性格标签</h3>
+                    <p data-i18n="card.personality_desc">8个生活场景问题，测出你的隐藏性格标签，准到你笑</p>
+                    <span class="card-tag" data-i18n="card.personality_tag">8题 · 约2分钟</span>
+                </a>
+                <a href="guestbook.html" class="test-card">
+                    <span class="test-card-icon">💬</span>
+                    <h3 data-i18n="card.guestbook_title">留言讨论区</h3>
+                    <p data-i18n="card.guestbook_desc">分享你的测试感受，和大家一起聊聊趣味话题</p>
+                    <span class="card-tag" data-i18n="card.guestbook_tag">自由讨论</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 每日正能量 -->
+    <section class="section" id="daily-quote">
+        <div class="container">
+            <h2 class="section-title" data-i18n="quote.title">💬 每日正能量</h2>
+            <div class="quote-card">
+                <blockquote id="quote-text"></blockquote>
+                <cite id="quote-author"></cite>
+            </div>
+        </div>
+    </section>
+
+    <!-- 广告位 -->
+    <div class="ad-slot"><div class="container"><div class="ad-placeholder"><span class="ad-label">AD</span></div></div></div>
+
+    <script src="js/common.js"></script>
+    <script src="js/share.js"></script>
+    <script src="js/fortune.js"></script>
+</body>
+</html>

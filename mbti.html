@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MBTI 性格测试 - 完整60题，深度了解你的性格类型">
+    <title>MBTI 性格测试 - MyLuck</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title" data-i18n="mbti.title">🧠 MBTI 性格测试</h2>
+                <p class="section-desc" data-i18n="mbti.desc">完整60道题目，探索你的性格类型（仅供娱乐参考）</p>
+
+                <div class="card" id="mbti-quiz">
+                    <div class="mbti-progress"><div class="mbti-progress-bar" id="mbti-bar"></div></div>
+                    <p class="mbti-progress-text" id="mbti-progress-text"></p>
+                    <div class="mbti-question" id="mbti-q"></div>
+                    <div class="mbti-options" id="mbti-opts"></div>
+                </div>
+
+                <div class="card" id="mbti-result" style="display:none;">
+                    <div class="mbti-result">
+                        <span class="result-emoji" id="mbti-emoji">🧠</span>
+                        <div class="mbti-type" id="mbti-type"></div>
+                        <div class="mbti-type-name" id="mbti-type-name"></div>
+                        <div class="mbti-dims" id="mbti-dims"></div>
+                        <div class="mbti-desc" id="mbti-desc"></div>
+                        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px;">
+                            <button class="btn-primary" id="mbti-share" data-i18n="fortune.share">📤 分享结果</button>
+                            <button class="btn-outline" id="mbti-retry" data-i18n="mbti.retry">🔄 重新测试</button>
+                        </div>
+                        <div class="disclaimer-badge" data-i18n="disclaimer.tag">仅供娱乐 · 算法随机生成</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="ad-slot"><div class="container"><div class="ad-placeholder"><span class="ad-label">AD</span></div></div></div>
+
+    <script src="js/common.js"></script>
+    <script src="js/share.js"></script>
+    <script src="js/mbti.js"></script>
+</body>
+</html>

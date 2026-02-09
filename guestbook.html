@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MyLuck 留言讨论区 - 分享你的测试感受">
+    <title>留言板 - MyLuck</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title" data-i18n="gb.title">💬 留言讨论区</h2>
+                <p class="section-desc" data-i18n="gb.desc">分享你的测试感受，和大家聊聊趣味话题</p>
+
+                <div class="card">
+                    <p class="guestbook-info" data-i18n="gb.info">留言区由 GitHub Discussions 提供支持，需要 GitHub 账号登录后即可留言。<br>请文明发言，禁止广告和不友善内容。</p>
+
+                    <!-- Giscus 评论区 -->
+                    <div id="giscus-container">
+                        <script src="https://giscus.app/client.js"
+                            data-repo=""
+                            data-repo-id=""
+                            data-category=""
+                            data-category-id=""
+                            data-mapping="pathname"
+                            data-strict="0"
+                            data-reactions-enabled="1"
+                            data-emit-metadata="0"
+                            data-input-position="top"
+                            data-theme="light"
+                            data-lang="zh-CN"
+                            data-loading="lazy"
+                            crossorigin="anonymous"
+                            async>
+                        </script>
+                    </div>
+
+                    <!-- 配置说明（上线前删除） -->
+                    <div id="giscus-setup-guide" style="margin-top:24px;padding:24px;background:#fff8e1;border-radius:10px;border:1px solid #ffe082;">
+                        <h3 style="margin-bottom:12px;color:#f57f17;">⚠️ Giscus 配置指南（上线前请完成）</h3>
+                        <ol style="color:#666;line-height:2;font-size:.9rem;padding-left:20px;">
+                            <li>前往 <a href="https://github.com" target="_blank" style="color:#6c5ce7;">GitHub</a> 创建你的仓库（如果还没有）</li>
+                            <li>在仓库 Settings → Features 中启用 <strong>Discussions</strong></li>
+                            <li>前往 <a href="https://giscus.app" target="_blank" style="color:#6c5ce7;">giscus.app</a> 配置你的仓库</li>
+                            <li>将生成的配置填入上方 script 标签的 <code>data-repo</code>、<code>data-repo-id</code>、<code>data-category</code>、<code>data-category-id</code> 属性</li>
+                            <li>上线前删除此说明区域</li>
+                        </ol>
+                        <p style="margin-top:12px;font-size:.85rem;color:#888;">
+                            Giscus 优势：基于 GitHub Discussions，自带用户认证（防止匿名刷屏），支持 Markdown 和表情回复，完全免费。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/guestbook.js"></script>
+</body>
+</html>

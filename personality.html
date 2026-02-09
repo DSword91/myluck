@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="趣味性格标签测试 - 8个场景问题测出你的隐藏性格">
+    <title>趣味性格测试 - MyLuck</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧩</text></svg>">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title" data-i18n="ptest.title">🧩 趣味性格标签</h2>
+                <p class="section-desc" data-i18n="ptest.desc">8个生活场景问题，测出你的隐藏性格标签</p>
+
+                <div class="card" id="ptest-quiz">
+                    <div class="quiz-progress"><div class="quiz-progress-bar" id="pt-bar"></div></div>
+                    <div class="quiz-question" id="pt-q"></div>
+                    <div class="quiz-options" id="pt-opts"></div>
+                </div>
+
+                <div class="card" id="ptest-result" style="display:none;">
+                    <div class="personality-card">
+                        <span class="personality-emoji" id="pt-emoji"></span>
+                        <h3 id="pt-title"></h3>
+                        <p id="pt-desc"></p>
+                        <div class="personality-tags" id="pt-tags"></div>
+                        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
+                            <button class="btn-primary" id="pt-share" data-i18n="fortune.share">📤 分享结果</button>
+                            <button class="retry-btn" id="pt-retry" data-i18n="mbti.retry">🔄 重新测试</button>
+                        </div>
+                        <div class="disclaimer-badge" data-i18n="disclaimer.tag">仅供娱乐 · 算法随机生成</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="ad-slot"><div class="container"><div class="ad-placeholder"><span class="ad-label">AD</span></div></div></div>
+    <script src="js/common.js"></script>
+    <script src="js/share.js"></script>
+    <script src="js/personality.js"></script>
+</body>
+</html>

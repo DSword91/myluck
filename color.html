@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="幸运色彩测试 - 你选的颜色隐藏着什么性格密码？">
+    <title>幸运色彩测试 - MyLuck</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title" data-i18n="color.title">🎨 幸运色彩测试</h2>
+                <p class="section-desc" data-i18n="color.desc">选一个你最喜欢的颜色，看看它代表什么趣味含义</p>
+                <div class="card card-sm">
+                    <div class="color-grid" id="color-grid">
+                        <button class="color-btn" data-color="red" style="background:linear-gradient(135deg,#ff6b6b,#ee5a24)" title="Red"></button>
+                        <button class="color-btn" data-color="orange" style="background:linear-gradient(135deg,#ffa502,#ff6348)" title="Orange"></button>
+                        <button class="color-btn" data-color="yellow" style="background:linear-gradient(135deg,#ffd32a,#f9ca24)" title="Yellow"></button>
+                        <button class="color-btn" data-color="green" style="background:linear-gradient(135deg,#2ed573,#05c46b)" title="Green"></button>
+                        <button class="color-btn" data-color="blue" style="background:linear-gradient(135deg,#54a0ff,#2e86de)" title="Blue"></button>
+                        <button class="color-btn" data-color="purple" style="background:linear-gradient(135deg,#a55eea,#8854d0)" title="Purple"></button>
+                        <button class="color-btn" data-color="pink" style="background:linear-gradient(135deg,#ff9ff3,#f368e0)" title="Pink"></button>
+                        <button class="color-btn" data-color="black" style="background:linear-gradient(135deg,#576574,#222f3e)" title="Black"></button>
+                    </div>
+                    <div id="color-result" style="display:none;">
+                        <div class="color-result-card" style="margin-top:30px;padding-top:30px;border-top:2px solid #f0f0f5;">
+                            <h3 id="cr-title"></h3>
+                            <p id="cr-meaning"></p>
+                            <div class="color-traits" id="cr-traits"></div>
+                            <div style="margin-top:20px;">
+                                <button class="btn-primary" id="color-share" data-i18n="fortune.share">📤 分享结果</button>
+                            </div>
+                            <div class="disclaimer-badge" data-i18n="disclaimer.tag">仅供娱乐 · 算法随机生成</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="ad-slot"><div class="container"><div class="ad-placeholder"><span class="ad-label">AD</span></div></div></div>
+    <script src="js/common.js"></script>
+    <script src="js/share.js"></script>
+    <script src="js/color.js"></script>
+</body>
+</html>
