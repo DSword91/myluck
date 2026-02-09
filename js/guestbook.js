@@ -254,6 +254,24 @@
         }
     }
 
+    // 语言切换时更新评论区表单文字
+    document.addEventListener('langchange', () => {
+        const nickEl = document.getElementById('comment-nick');
+        if (nickEl) nickEl.placeholder = I18n.t('gb.c_name');
+        const emailEl = document.getElementById('comment-email');
+        if (emailEl) emailEl.placeholder = I18n.t('gb.c_email');
+        const textEl = document.getElementById('comment-text');
+        if (textEl) textEl.placeholder = I18n.t('gb.c_placeholder');
+        const submitEl = document.getElementById('comment-submit');
+        if (submitEl && !submitEl.disabled) submitEl.textContent = I18n.t('gb.c_submit');
+        const captchaLabel = document.querySelector('.captcha-label');
+        if (captchaLabel) {
+            const labelText = captchaLabel.textContent;
+            const mathPart = labelText.replace(/^[^：:]*[：:]/, '');
+            captchaLabel.textContent = I18n.t('gb.c_captcha_q') + '：' + mathPart;
+        }
+    });
+
     async function loadComments(supabase) {
         const list = document.getElementById('comment-list');
         if (!list) return;
