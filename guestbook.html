@@ -8,7 +8,6 @@
     <title>许愿墙 - MyLuck</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌟</text></svg>">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
 </head>
 <body>
     <div class="page-wrapper">
@@ -29,16 +28,13 @@
             </div>
         </section>
 
-        <!-- 评论区（Waline） -->
+        <!-- 评论区 -->
         <section class="section section-alt">
             <div class="container">
                 <h2 class="section-title" data-i18n="gb.comment_title">💬 评论区</h2>
                 <p class="section-desc" data-i18n="gb.comment_desc">和大家一起交流讨论，分享你的测试心得</p>
                 <div class="card">
-                    <div id="waline"></div>
-                    <div id="waline-placeholder" class="waline-setup-notice" style="text-align:center;padding:30px;color:var(--text-light);font-size:.9rem;">
-                        <p>💬 评论系统加载中...</p>
-                    </div>
+                    <div id="comment-area"></div>
                 </div>
             </div>
         </section>

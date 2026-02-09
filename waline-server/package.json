@@ -1,9 +1,0 @@
-{
-  "name": "myluck-waline",
-  "version": "1.0.0",
-  "description": "MyLuck Waline 评论系统服务端",
-  "private": true,
-  "dependencies": {
-    "@waline/vercel": "^3"
-  }
-}

@@ -15,6 +15,12 @@
         'gb.bad': '请文明发言哦~',
         'gb.comment_title': '💬 评论区',
         'gb.comment_desc': '和大家一起交流讨论，分享你的测试心得',
+        'gb.c_placeholder': '说点什么吧~',
+        'gb.c_name': '昵称（可选）',
+        'gb.c_submit': '发表评论',
+        'gb.c_empty': '还没有评论，快来抢沙发~',
+        'gb.c_loading': '加载评论中...',
+        'gb.c_error': '评论加载失败，请稍后再试',
     });
     I18n.add('en', {
         'gb.title': '🌟 Wishing Wall',
@@ -28,6 +34,12 @@
         'gb.bad': 'Please keep it friendly~',
         'gb.comment_title': '💬 Comments',
         'gb.comment_desc': 'Discuss and share your test experiences with everyone',
+        'gb.c_placeholder': 'Say something~',
+        'gb.c_name': 'Nickname (optional)',
+        'gb.c_submit': 'Submit',
+        'gb.c_empty': 'No comments yet. Be the first!',
+        'gb.c_loading': 'Loading comments...',
+        'gb.c_error': 'Failed to load comments, try later',
     });
     I18n.apply();
 
@@ -58,7 +70,6 @@
     }
 
     function saveWishes(list) {
-        // 最多保留50条
         localStorage.setItem('myluck-wishes', JSON.stringify(list.slice(0, 50)));
     }
 
@@ -72,8 +83,6 @@
         const userWishes = getWishes();
         const lang = I18n.lang;
         const presets = presetWishes[lang] || presetWishes.zh;
-
-        // 合并：用户心愿在前，预设在后
         const all = [...userWishes, ...presets];
 
         if (all.length === 0) {
@@ -89,25 +98,13 @@
         `).join('');
     }
 
-    // 提交心愿
     document.getElementById('wish-submit').addEventListener('click', () => {
         const input = document.getElementById('wish-input');
         const text = input.value.trim();
 
-        if (text.length < 2) {
-            alert(I18n.t('gb.tooshort'));
-            return;
-        }
-
-        if (!Security.rateLimit('wish', 5)) {
-            alert(I18n.t('gb.toomany'));
-            return;
-        }
-
-        if (Security.containsBadWords(text)) {
-            alert(I18n.t('gb.bad'));
-            return;
-        }
+        if (text.length < 2) { alert(I18n.t('gb.tooshort')); return; }
+        if (!Security.rateLimit('wish', 5)) { alert(I18n.t('gb.toomany')); return; }
+        if (Security.containsBadWords(text)) { alert(I18n.t('gb.bad')); return; }
 
         const wishes = getWishes();
         wishes.unshift({ text: Security.escapeHtml(text), time: new Date().toISOString() });
@@ -116,62 +113,140 @@
         renderWishes();
     });
 
-    // 回车提交
     document.getElementById('wish-input').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') document.getElementById('wish-submit').click();
     });
 
-    // 语言切换时重新渲染
     document.addEventListener('langchange', renderWishes);
-
     renderWishes();
 
-    // ========== Waline 评论系统 ==========
-    // 服务端地址：部署 Waline 到 Vercel 后替换这里
-    const WALINE_SERVER = 'https://waline.myluck.top';
+    // ========== Supabase 评论系统（免费、无需部署服务器） ==========
+    // 配置说明：
+    // 1. 注册 https://supabase.com （免费）
+    // 2. 创建项目，运行以下 SQL：
+    //    CREATE TABLE comments (
+    //      id BIGSERIAL PRIMARY KEY,
+    //      nickname TEXT DEFAULT '匿名',
+    //      content TEXT NOT NULL,
+    //      page TEXT DEFAULT 'guestbook',
+    //      created_at TIMESTAMPTZ DEFAULT NOW()
+    //    );
+    //    ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
+    //    CREATE POLICY "Anyone can read" ON comments FOR SELECT USING (true);
+    //    CREATE POLICY "Anyone can insert" ON comments FOR INSERT WITH CHECK (
+    //      length(content) > 0 AND length(content) < 500
+    //    );
+    // 3. 将下面的 URL 和 KEY 替换为你的项目值
+    //    （Settings → API → Project URL 和 anon/public key）
 
-    async function initWaline() {
+    const SUPABASE_URL = '';   // 填入你的 Supabase 项目 URL
+    const SUPABASE_KEY = '';   // 填入你的 anon (public) key
+
+    async function initComments() {
+        const container = document.getElementById('comment-area');
+        if (!container) return;
+
+        // 未配置 Supabase 时显示提示
+        if (!SUPABASE_URL || !SUPABASE_KEY) {
+            container.innerHTML = I18n.lang === 'zh'
+                ? '<p style="text-align:center;color:var(--text-light);padding:20px;">💬 评论区即将开放，敬请期待~</p>'
+                : '<p style="text-align:center;color:var(--text-light);padding:20px;">💬 Comments coming soon~</p>';
+            return;
+        }
+
+        // 动态加载 Supabase JS SDK
         try {
-            const { init } = await import('https://unpkg.com/@waline/client@v3/dist/waline.js');
-            const placeholder = document.getElementById('waline-placeholder');
-            if (placeholder) placeholder.style.display = 'none';
-            init({
-                el: '#waline',
-                serverURL: WALINE_SERVER,
-                lang: I18n.lang === 'zh' ? 'zh-CN' : 'en',
-                dark: false,
-                meta: ['nick'],
-                requiredMeta: [],
-                login: 'disable',
-                pageSize: 20,
-                wordLimit: 200,
-                emoji: ['//unpkg.com/@waline/emojis@1.2.0/weibo', '//unpkg.com/@waline/emojis@1.2.0/bilibili'],
-                locale: I18n.lang === 'zh' ? {
-                    placeholder: '说点什么吧~（无需登录）',
-                    sofa: '还没有评论，快来抢沙发吧~',
-                    nick: '昵称（可选）',
-                    submit: '发表评论',
-                } : {
-                    placeholder: 'Say something~ (no login required)',
-                    sofa: 'No comments yet. Be the first!',
-                    nick: 'Nickname (optional)',
-                    submit: 'Submit',
-                },
+            const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+            const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+            window._supabase = supabase;
+
+            // 渲染评论输入框
+            container.innerHTML = `
+                <div class="comment-form">
+                    <input type="text" id="comment-nick" maxlength="20"
+                        placeholder="${I18n.t('gb.c_name')}" class="comment-nick-input">
+                    <textarea id="comment-text" maxlength="500" rows="3"
+                        placeholder="${I18n.t('gb.c_placeholder')}" class="comment-textarea"></textarea>
+                    <button id="comment-submit" class="cta-btn">${I18n.t('gb.c_submit')}</button>
+                </div>
+                <div id="comment-list" class="comment-list">
+                    <p style="text-align:center;color:var(--text-light);">${I18n.t('gb.c_loading')}</p>
+                </div>`;
+
+            // 加载评论
+            await loadComments(supabase);
+
+            // 提交评论
+            document.getElementById('comment-submit').addEventListener('click', async () => {
+                const nick = document.getElementById('comment-nick').value.trim() || (I18n.lang === 'zh' ? '匿名' : 'Anonymous');
+                const text = document.getElementById('comment-text').value.trim();
+
+                if (text.length < 2) { alert(I18n.t('gb.tooshort')); return; }
+                if (!Security.rateLimit('comment', 10)) { alert(I18n.t('gb.toomany')); return; }
+                if (Security.containsBadWords(text)) { alert(I18n.t('gb.bad')); return; }
+
+                const btn = document.getElementById('comment-submit');
+                btn.disabled = true;
+                btn.textContent = '...';
+
+                const { error } = await supabase.from('comments').insert({
+                    nickname: Security.escapeHtml(nick),
+                    content: Security.escapeHtml(text),
+                    page: 'guestbook'
+                });
+
+                if (error) {
+                    alert(I18n.t('gb.c_error'));
+                    btn.disabled = false;
+                    btn.textContent = I18n.t('gb.c_submit');
+                    return;
+                }
+
+                document.getElementById('comment-nick').value = '';
+                document.getElementById('comment-text').value = '';
+                btn.disabled = false;
+                btn.textContent = I18n.t('gb.c_submit');
+                await loadComments(supabase);
             });
+
         } catch (e) {
-            // Waline 加载失败（可能是服务端未部署），显示提示
-            const placeholder = document.getElementById('waline-placeholder');
-            if (placeholder) {
-                const lang = I18n.lang;
-                placeholder.innerHTML = lang === 'zh'
-                    ? '<p style="color:var(--text-light);font-size:.88rem;">💬 评论区即将开放，敬请期待~</p>'
-                    : '<p style="color:var(--text-light);font-size:.88rem;">💬 Comments coming soon, stay tuned~</p>';
-            }
+            container.innerHTML = `<p style="text-align:center;color:var(--text-light);padding:20px;">${I18n.t('gb.c_error')}</p>`;
         }
     }
 
-    // 延迟加载 Waline（不阻塞页面）
-    if (document.getElementById('waline')) {
-        setTimeout(initWaline, 500);
+    async function loadComments(supabase) {
+        const list = document.getElementById('comment-list');
+        if (!list) return;
+
+        const { data, error } = await supabase
+            .from('comments')
+            .select('*')
+            .eq('page', 'guestbook')
+            .order('created_at', { ascending: false })
+            .limit(50);
+
+        if (error || !data) {
+            list.innerHTML = `<p style="text-align:center;color:var(--text-light);">${I18n.t('gb.c_error')}</p>`;
+            return;
+        }
+
+        if (data.length === 0) {
+            list.innerHTML = `<p style="text-align:center;color:var(--text-light);">${I18n.t('gb.c_empty')}</p>`;
+            return;
+        }
+
+        list.innerHTML = data.map(c => `
+            <div class="comment-item">
+                <div class="comment-header">
+                    <span class="comment-author">${Security.escapeHtml(c.nickname || '匿名')}</span>
+                    <span class="comment-time">${formatDate(c.created_at)}</span>
+                </div>
+                <div class="comment-body">${Security.escapeHtml(c.content)}</div>
+            </div>
+        `).join('');
+    }
+
+    if (document.getElementById('comment-area')) {
+        setTimeout(initComments, 300);
     }
 })();
