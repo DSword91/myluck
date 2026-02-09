@@ -235,11 +235,12 @@
             const pct = total > 0 ? (count / total * 100).toFixed(1) : 0;
             const barWidth = maxCount > 0 ? (count / maxCount * 100) : 0;
             const isMe = type === myType;
-            return `<div class="mbti-stat-item ${isMe ? 'my-type' : ''}">
+            const youLabel = lang === 'zh' ? '← 你' : '← YOU';
+            return `<div class="mbti-stat-item ${isMe ? 'my-type' : ''}" ${isMe ? `data-you="${youLabel}"` : ''}>
                 <div class="mbti-stat-type">${type}</div>
                 <div class="mbti-stat-bar"><div class="mbti-stat-fill" style="width:0%;" data-w="${barWidth}"></div></div>
                 <div class="mbti-stat-pct">${pct}%</div>
-                <div class="mbti-stat-count">${count} ${lang === 'zh' ? '人' : ''}</div>
+                <div class="mbti-stat-count">${count} ${lang === 'zh' ? '人' : 'ppl'}</div>
             </div>`;
         }).join('');
 

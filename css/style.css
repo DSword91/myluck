@@ -216,7 +216,7 @@ a{text-decoration:none;color:inherit;}
 .mbti-stat-item{padding:10px 6px;border-radius:var(--radius-sm);text-align:center;background:rgba(253,203,110,0.06);border:1px solid rgba(225,112,85,0.06);transition:var(--ease);position:relative;overflow:hidden;}
 .mbti-stat-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.06);}
 .mbti-stat-item.my-type{border-color:var(--primary);background:rgba(225,112,85,0.08);}
-.mbti-stat-item.my-type::after{content:'← YOU';position:absolute;top:2px;right:4px;font-size:.55rem;color:var(--primary);font-weight:700;}
+.mbti-stat-item.my-type::after{content:attr(data-you);position:absolute;top:2px;right:4px;font-size:.55rem;color:var(--primary);font-weight:700;}
 .mbti-stat-type{font-size:.85rem;font-weight:800;color:var(--primary);letter-spacing:1px;}
 .mbti-stat-bar{height:4px;background:#f0f0f5;border-radius:2px;margin:4px 0;overflow:hidden;}
 .mbti-stat-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--primary),var(--secondary));transition:width 1s ease;}
