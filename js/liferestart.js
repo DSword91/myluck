@@ -375,6 +375,145 @@
         { text: { zh: '你找到了生活的意义。', en: 'You found the meaning of life.' }, cond: { minAge: 30, maxAge: 60, minSpr: 7, minInt: 7, chance: 0.1 }, effects: { spr: 3 } },
         { text: { zh: '你搬到了乡下，过上了田园生活。', en: 'You moved to the countryside for rural life.' }, cond: { minAge: 40, maxAge: 60, minMny: 6, chance: 0.1 }, effects: { spr: 2, str: 1, tag: 'rural' } },
         { text: { zh: '你参加了同学会，感慨时光飞逝。', en: 'You attended a reunion, marveling at how time flies.' }, cond: { minAge: 30, maxAge: 50, chance: 0.15 }, effects: { spr: 1 } },
+
+        // ===== 更多戏剧性/搞笑/共情事件 =====
+
+        // -- 童年趣事 --
+        { text: { zh: '你把牙膏当成了奶油挤着吃……味道很酸爽。', en: 'You ate toothpaste thinking it was cream... interesting taste.' }, cond: { minAge: 2, maxAge: 4, chance: 0.15 }, effects: {} },
+        { text: { zh: '你在超市走丢了，哭了半小时才被找到。', en: 'You got lost in the supermarket and cried for 30 minutes.' }, cond: { minAge: 3, maxAge: 6, chance: 0.15 }, effects: { spr: -1 } },
+        { text: { zh: '你把爸爸的手机扔进了鱼缸。', en: 'You threw dad\'s phone into the fish tank.' }, cond: { minAge: 2, maxAge: 4, chance: 0.1 }, effects: { mny: -1 } },
+        { text: { zh: '你在墙上画了一幅"巨作"，被妈妈追着打。', en: 'You painted a "masterpiece" on the wall, mom chased you.' }, cond: { minAge: 3, maxAge: 5, chance: 0.15 }, effects: {} },
+        { text: { zh: '你把盐当成了糖加进了果汁里。', en: 'You put salt in the juice instead of sugar.' }, cond: { minAge: 4, maxAge: 7, chance: 0.1 }, effects: {} },
+        { text: { zh: '你骑自行车摔了一跤，膝盖留下了英勇的伤疤。', en: 'You fell off your bike and got a heroic knee scar.' }, cond: { minAge: 6, maxAge: 10 }, effects: {} },
+        { text: { zh: '你拔了邻居家的菜，被追着跑了三条街。', en: 'You pulled vegetables from the neighbor\'s garden and got chased.' }, cond: { minAge: 5, maxAge: 9, chance: 0.1 }, effects: { str: 1 } },
+        { text: { zh: '六一儿童节你表演了节目，全场最佳！', en: 'You were the star of the Children\'s Day show!' }, cond: { minAge: 5, maxAge: 11, minChr: 6, chance: 0.2 }, effects: { chr: 1, spr: 2 } },
+
+        // -- 校园梗 --
+        { text: { zh: '你上课偷吃零食被老师发现了，要求"分享给全班"。', en: 'Teacher caught you eating snacks and demanded you "share with everyone".' }, cond: { minAge: 8, maxAge: 15, chance: 0.1 }, effects: { spr: -1 } },
+        { text: { zh: '你在同学面前放了一个响屁，社交性死亡。', en: 'You let out a loud fart in class — social death.' }, cond: { minAge: 8, maxAge: 17, chance: 0.05 }, effects: { chr: -1, spr: -2 } },
+        { text: { zh: '你被选中参加升旗仪式，紧张到腿发抖。', en: 'You were chosen for the flag ceremony and your legs shook.' }, cond: { minAge: 7, maxAge: 14, chance: 0.1 }, effects: { chr: 1 } },
+        { text: { zh: '考试时你的笔没水了，全程用借来的红笔答题。', en: 'Your pen died during exam, you used a borrowed red pen.' }, cond: { minAge: 10, maxAge: 17, chance: 0.05 }, effects: {} },
+        { text: { zh: '你给暗恋的人写了情书，但没有寄出去。', en: 'You wrote a love letter but never sent it.' }, cond: { minAge: 13, maxAge: 17, chance: 0.15 }, effects: { spr: -1 } },
+        { text: { zh: '你给暗恋的人告白了！然而被拒绝了……', en: 'You confessed to your crush! ...and got rejected.' }, cond: { minAge: 14, maxAge: 18, minChr: 4, chance: 0.1 }, effects: { spr: -3, tag: 'rejected' } },
+        { text: { zh: '你告白被拒后，化悲愤为力量，成绩突飞猛进！', en: 'After rejection, you channeled heartbreak into studying — grades soared!' }, cond: { minAge: 14, maxAge: 18, hasTag: 'rejected', chance: 0.5 }, effects: { int: 2, spr: 1 } },
+        { text: { zh: '你的作业被狗吃了，老师居然信了。', en: 'Your homework was eaten by a dog, and the teacher believed it.' }, cond: { minAge: 7, maxAge: 14, hasTag: 'pet', chance: 0.2 }, effects: { spr: 1 } },
+        { text: { zh: '你和同桌成了最好的朋友，约定以后要一直联系。', en: 'You and your deskmate became best friends, promising to stay in touch.' }, cond: { minAge: 8, maxAge: 17, minChr: 4, chance: 0.2 }, effects: { spr: 2, tag: 'bestie' } },
+        { text: { zh: '毕业那天，你哭得最凶。', en: 'On graduation day, you cried the hardest.' }, cond: { minAge: 11, maxAge: 17, minSpr: 5, chance: 0.3 }, effects: { spr: 1 } },
+
+        // -- 网络时代/搞笑 --
+        { text: { zh: '你的QQ空间被人挂了黑照。', en: 'Someone posted embarrassing photos of you online.' }, cond: { minAge: 12, maxAge: 20, chance: 0.08 }, effects: { chr: -1, spr: -1 } },
+        { text: { zh: '你在网上写的文章火了，收到了很多好评。', en: 'An article you wrote online went viral with great reviews.' }, cond: { minAge: 15, maxAge: 35, minInt: 6, chance: 0.08 }, effects: { chr: 1, spr: 2, int: 1 } },
+        { text: { zh: '你玩游戏抽到了SSR！开心了一整天。', en: 'You pulled an SSR in a gacha game! Happy all day.' }, cond: { minAge: 12, maxAge: 35, hasTag: 'gamer', chance: 0.15 }, effects: { spr: 2, mny: -1 } },
+        { text: { zh: '你在网上跟人吵架到凌晨三点。', en: 'You argued with someone online until 3 AM.' }, cond: { minAge: 15, maxAge: 40, chance: 0.08 }, effects: { spr: -1, str: -1 } },
+        { text: { zh: '你沉迷短视频，不知不觉刷了3小时。', en: 'You got addicted to short videos, 3 hours flew by.' }, cond: { minAge: 15, maxAge: 50, chance: 0.1 }, effects: {} },
+        { text: { zh: '你被外卖小哥提前点亮了"好评"技能。', en: 'The delivery guy accidentally marked your meal as delivered.' }, cond: { minAge: 18, maxAge: 40, chance: 0.05 }, effects: {} },
+
+        // -- 职场/生活戏剧 --
+        { text: { zh: '你加班到凌晨，但老板第二天才发现你的报告里有个错别字。', en: 'You worked until midnight, but the boss only noticed a typo.' }, cond: { minAge: 22, maxAge: 40, chance: 0.1 }, effects: { spr: -2 } },
+        { text: { zh: '你的同事在公司说你坏话，你全听到了。', en: 'A colleague badmouthed you — you heard everything.' }, cond: { minAge: 22, maxAge: 45, chance: 0.1 }, effects: { spr: -2, tag: 'office_drama' } },
+        { text: { zh: '你深夜加班回家，路上看到了一只流浪猫跟你回了家。', en: 'Walking home late from work, a stray cat followed you home.' }, cond: { minAge: 22, maxAge: 40, chance: 0.05 }, effects: { spr: 2, tag: 'cat_owner' } },
+        { text: { zh: '你整理旧物时发现了小时候的日记，看哭了。', en: 'You found your childhood diary while cleaning — cried reading it.' }, cond: { minAge: 25, maxAge: 50, chance: 0.08 }, effects: { spr: 1 } },
+        { text: { zh: '你在公开场合做了精彩的演讲，掌声雷动。', en: 'You gave a brilliant public speech and got a standing ovation.' }, cond: { minAge: 22, maxAge: 50, minInt: 7, minChr: 6, chance: 0.1 }, effects: { chr: 2, spr: 2 } },
+        { text: { zh: '老板说"年终奖按表现发"，但你的表现被无视了。', en: 'Boss said bonuses are performance-based, but yours was ignored.' }, cond: { minAge: 23, maxAge: 45, chance: 0.1 }, effects: { spr: -2, mny: -1 } },
+        { text: { zh: '你在地铁上给老人让座，被夸了一整路。', en: 'You offered your seat to an elderly person and got praised.' }, cond: { minAge: 18, maxAge: 50, chance: 0.08 }, effects: { spr: 1, chr: 1 } },
+        { text: { zh: '你鼓起勇气辞职了，虽然不知道下一步怎么办。', en: 'You finally quit your job, not sure what comes next.' }, cond: { minAge: 25, maxAge: 40, maxSpr: 3, chance: 0.1 }, effects: { spr: 2, mny: -1, tag: 'quit_job' } },
+        { text: { zh: '辞职后你去了一趟大理，在洱海边想通了很多事。', en: 'After quitting, you went to Dali and found peace by the lake.' }, cond: { minAge: 25, maxAge: 40, hasTag: 'quit_job', chance: 0.5 }, effects: { spr: 3 } },
+        { text: { zh: '你在面试时紧张到说错了自己的名字。', en: 'You were so nervous at the interview that you said the wrong name.' }, cond: { minAge: 22, maxAge: 35, chance: 0.05 }, effects: { spr: -1 } },
+        { text: { zh: '你收到了梦想公司的offer！', en: 'You received an offer from your dream company!' }, cond: { minAge: 22, maxAge: 35, minInt: 7, chance: 0.1 }, effects: { mny: 3, spr: 3, tag: 'dream_job' } },
+
+        // -- 感情/家庭戏剧 --
+        { text: { zh: '你深夜发了一条动态："有没有人和我一样，觉得长大好累？"收到了无数赞。', en: 'You posted at midnight: "Does anyone else feel exhausted by adulthood?" It went viral.' }, cond: { minAge: 20, maxAge: 35, maxSpr: 5, chance: 0.08 }, effects: { spr: 1 } },
+        { text: { zh: '你在雨天没有伞，一个陌生人和你一起走了一路。', en: 'On a rainy day, a stranger shared their umbrella with you.' }, cond: { minAge: 15, maxAge: 50, chance: 0.05 }, effects: { spr: 2 } },
+        { text: { zh: '你给父母打了一个电话，聊了很久，挂了之后偷偷哭了。', en: 'You called your parents, talked for hours, then cried after hanging up.' }, cond: { minAge: 20, maxAge: 40, chance: 0.1 }, effects: { spr: 2 } },
+        { text: { zh: '过年回家，爸妈做了一桌你爱吃的菜。', en: 'You went home for New Year\'s, parents cooked all your favorites.' }, cond: { minAge: 18, maxAge: 50, chance: 0.15 }, effects: { spr: 3 } },
+        { text: { zh: '你第一次给父母买了礼物，他们感动哭了。', en: 'You bought your parents a gift for the first time, they cried.' }, cond: { minAge: 18, maxAge: 30, minMny: 3, chance: 0.1 }, effects: { spr: 3, chr: 1 } },
+        { text: { zh: '你在凌晨三点接到了父母的电话，心跳漏了一拍。', en: 'You got a 3 AM call from your parents — your heart skipped a beat.' }, cond: { minAge: 25, maxAge: 50, chance: 0.05 }, effects: { spr: -2 } },
+        { text: { zh: '你的父亲/母亲住院了，你请假赶回了家。', en: 'Your parent was hospitalized, you rushed home.' }, cond: { minAge: 30, maxAge: 55, chance: 0.08 }, effects: { spr: -3, mny: -2, tag: 'parent_sick' } },
+        { text: { zh: '父亲/母亲出院了，你悬着的心终于放下。', en: 'Your parent was discharged, you finally relaxed.' }, cond: { minAge: 30, maxAge: 55, hasTag: 'parent_sick', chance: 0.7 }, effects: { spr: 2 } },
+        { text: { zh: '你的初恋结婚了，新郎/新娘不是你。百感交集。', en: 'Your first love got married — to someone else. Mixed feelings.' }, cond: { minAge: 25, maxAge: 35, hasTag: 'first_love', chance: 0.2 }, effects: { spr: -2 } },
+        { text: { zh: '你和多年不联系的老朋友重新取得了联系。', en: 'You reconnected with an old friend after years of silence.' }, cond: { minAge: 25, maxAge: 50, hasTag: 'bestie', chance: 0.15 }, effects: { spr: 2 } },
+        { text: { zh: '你看了一部电影，哭得稀里哗啦。', en: 'You watched a movie and ugly-cried.' }, cond: { minAge: 12, maxAge: 60, chance: 0.08 }, effects: { spr: 1 } },
+        { text: { zh: '你养的花终于开了，觉得生活还是有美好的。', en: 'Your plant finally bloomed — life has its beauty.' }, cond: { minAge: 20, maxAge: 60, chance: 0.05 }, effects: { spr: 2 } },
+        { text: { zh: '你收到了一封感谢信，来自你曾经帮助过的人。', en: 'You received a thank-you letter from someone you once helped.' }, cond: { minAge: 25, maxAge: 60, minChr: 5, chance: 0.05 }, effects: { spr: 3 } },
+
+        // -- 反转/惊喜 --
+        { text: { zh: '你以为被裁员了，结果是被调到了更好的部门！', en: 'You thought you were fired — turned out it was a better department transfer!' }, cond: { minAge: 25, maxAge: 45, chance: 0.03 }, effects: { mny: 2, spr: 3 } },
+        { text: { zh: '你花了一个月的工资买了个包，第二天打折了50%。', en: 'You spent a month\'s salary on a bag, it went 50% off the next day.' }, cond: { minAge: 20, maxAge: 40, chance: 0.05 }, effects: { mny: -1, spr: -2 } },
+        { text: { zh: '你随手买的基金涨了300%！', en: 'A fund you bought on a whim went up 300%!' }, cond: { minAge: 22, maxAge: 50, chance: 0.03 }, effects: { mny: 4, spr: 2 } },
+        { text: { zh: '你把比特币在100块的时候卖掉了……', en: 'You sold Bitcoin when it was $100...' }, cond: { minAge: 18, maxAge: 40, chance: 0.02 }, effects: { spr: -3 } },
+        { text: { zh: '你在旧衣服口袋里找到了200块钱！', en: 'You found $200 in an old jacket pocket!' }, cond: { minAge: 15, maxAge: 50, chance: 0.05 }, effects: { spr: 2, mny: 1 } },
+        { text: { zh: '你的论文被顶级期刊接收了！导师请你吃了大餐。', en: 'Your paper was accepted by a top journal! Advisor treated you to dinner.' }, cond: { minAge: 24, maxAge: 35, hasTag: 'phd', minInt: 9, chance: 0.3 }, effects: { int: 3, spr: 3, chr: 1 } },
+        { text: { zh: '你救了一个落水的小孩，成了小区英雄。', en: 'You saved a drowning child and became a neighborhood hero.' }, cond: { minAge: 18, maxAge: 50, minStr: 5, chance: 0.03 }, effects: { chr: 3, spr: 3, tag: 'hero' } },
+
+        // -- 生活中的小确幸 --
+        { text: { zh: '你在自动贩卖机里多掉了一瓶饮料。', en: 'The vending machine gave you an extra drink.' }, cond: { minAge: 10, maxAge: 50, chance: 0.05 }, effects: { spr: 1 } },
+        { text: { zh: '你赶上了最后一班地铁，感觉自己像超级英雄。', en: 'You caught the last subway — felt like a superhero.' }, cond: { minAge: 18, maxAge: 45, chance: 0.05 }, effects: { spr: 1 } },
+        { text: { zh: '你发现了一家超好吃的苍蝇馆子，决定列为秘密基地。', en: 'You found an amazing hole-in-the-wall restaurant — your new secret base.' }, cond: { minAge: 15, maxAge: 50, chance: 0.05 }, effects: { spr: 2 } },
+        { text: { zh: '你在图书馆遇到了一个同好，聊到忘记了时间。', en: 'You met a kindred spirit at the library and lost track of time.' }, cond: { minAge: 15, maxAge: 40, minInt: 5, chance: 0.05 }, effects: { spr: 2, tag: 'bookworm' } },
+        { text: { zh: '你坐在天台上看了一次完整的日落，觉得一切都值得。', en: 'You watched a complete sunset from the rooftop — felt everything was worth it.' }, cond: { minAge: 15, maxAge: 60, chance: 0.05 }, effects: { spr: 2 } },
+        { text: { zh: '你吃到了小时候最爱吃的零食，瞬间泪目。', en: 'You tasted the snack you loved as a kid — instant tears.' }, cond: { minAge: 20, maxAge: 50, chance: 0.05 }, effects: { spr: 2 } },
+
+        // -- 人生大事件/戏剧冲突 --
+        { text: { zh: '你在高考考场上笔掉了，捡起来发现手在抖。这一刻你明白了什么叫命运。', en: 'Your pen dropped during the exam. Picking it up, your hand trembled. This is destiny.' }, cond: { minAge: 17, maxAge: 17, chance: 0.3 }, effects: { spr: -1 } },
+        { text: { zh: '高考成绩出来了，你哭了——是喜极而泣！', en: 'Exam results are out — you cried tears of joy!' }, cond: { minAge: 17, maxAge: 18, minInt: 8, chance: 0.3 }, effects: { spr: 3, int: 1 } },
+        { text: { zh: '高考没考好，你觉得天塌了。但后来你发现，人生不止一条路。', en: 'You did poorly on the exam and felt devastated. Later, you realized life has many paths.' }, cond: { minAge: 17, maxAge: 18, maxInt: 5, chance: 0.3 }, effects: { spr: -2 } },
+        { text: { zh: '你被困在电梯里两个小时，和一个陌生人成了朋友。', en: 'Stuck in an elevator for 2 hours, you became friends with a stranger.' }, cond: { minAge: 15, maxAge: 50, chance: 0.03 }, effects: { spr: 1 } },
+        { text: { zh: '你经历了一次地震，虽然只是小震，但你开始珍惜生活。', en: 'You experienced an earthquake. Though minor, you started cherishing life.' }, cond: { minAge: 10, maxAge: 60, chance: 0.03 }, effects: { spr: 1 } },
+        { text: { zh: '你在深夜独自去了医院急诊，排队时觉得特别孤独。', en: 'You went to the ER alone at night — felt incredibly lonely waiting.' }, cond: { minAge: 18, maxAge: 50, maxSpr: 4, chance: 0.05 }, effects: { spr: -2, str: -1 } },
+        { text: { zh: '你的好朋友要移民了，送别时你们都没说话，只是拥抱了很久。', en: 'Your best friend is emigrating. At farewell, you just hugged in silence.' }, cond: { minAge: 25, maxAge: 45, chance: 0.05 }, effects: { spr: -2 } },
+        { text: { zh: '你做了一件一直害怕做的事——跳伞！落地后你觉得自己无所不能。', en: 'You did something terrifying — skydiving! Landing felt like anything is possible.' }, cond: { minAge: 18, maxAge: 45, minStr: 5, chance: 0.05 }, effects: { spr: 3, str: 1 } },
+
+        // -- 暴富/暴穷 --
+        { text: { zh: '你的创业项目拿到了风投！估值一个亿！', en: 'Your startup got VC funding! Valued at $10M!' }, cond: { minAge: 25, maxAge: 40, hasTag: 'startup', minInt: 8, chance: 0.15 }, effects: { mny: 6, spr: 3, tag: 'vc_funded' } },
+        { text: { zh: '你的公司上市了！财务自由近在眼前！', en: 'Your company went IPO! Financial freedom is within reach!' }, cond: { minAge: 30, maxAge: 50, hasTag: 'vc_funded', chance: 0.3 }, effects: { mny: 8, spr: 5, chr: 2, tag: 'ipo' } },
+        { text: { zh: '经济危机来了，你的资产缩水了一半。', en: 'Economic crisis — your assets halved.' }, cond: { minAge: 30, maxAge: 60, minMny: 8, chance: 0.05 }, effects: { mny: -5, spr: -3 } },
+        { text: { zh: '你被合伙人骗了，公司破产了。', en: 'You were betrayed by a business partner — company bankrupt.' }, cond: { minAge: 28, maxAge: 50, hasTag: 'entrepreneur', chance: 0.08 }, effects: { mny: -5, spr: -4, tag: 'betrayed' } },
+        { text: { zh: '你东山再起了！从头开始，比上次更强。', en: 'You made a comeback! Starting over, stronger than before.' }, cond: { minAge: 30, maxAge: 55, hasTag: 'betrayed', minInt: 7, chance: 0.4 }, effects: { mny: 4, spr: 3, int: 1, tag: 'comeback' } },
+
+        // -- 中年/晚年感悟 --
+        { text: { zh: '你看着镜子里的白发，突然意识到自己真的老了。', en: 'Looking at grey hair in the mirror, you realized you\'ve truly aged.' }, cond: { minAge: 40, maxAge: 55, chance: 0.15 }, effects: { spr: -1 } },
+        { text: { zh: '你的孩子第一次叫"爸爸/妈妈"，你哭了。', en: 'Your baby said "mama/dada" for the first time. You cried.' }, cond: { minAge: 28, maxAge: 38, hasTag: 'parent', chance: 0.5 }, effects: { spr: 4 } },
+        { text: { zh: '孩子画了一张你的画像，虽然不太像，但你裱起来了。', en: 'Your kid drew your portrait, not great, but you framed it.' }, cond: { minAge: 32, maxAge: 42, hasTag: 'parent', chance: 0.3 }, effects: { spr: 2 } },
+        { text: { zh: '你教孩子骑自行车，他摔倒了你比他还心疼。', en: 'Teaching your kid to ride a bike, they fell and it hurt you more.' }, cond: { minAge: 32, maxAge: 42, hasTag: 'parent', chance: 0.3 }, effects: { spr: 1 } },
+        { text: { zh: '你翻看老照片，想起了那些再也回不去的日子。', en: 'Looking at old photos, reminiscing about days that can never return.' }, cond: { minAge: 45, maxAge: 70, chance: 0.1 }, effects: { spr: 1 } },
+        { text: { zh: '你在广场上看到老人们跳舞，突然觉得老了也挺好。', en: 'Watching elderly dance in the square, you thought aging isn\'t so bad.' }, cond: { minAge: 55, maxAge: 75, chance: 0.1 }, effects: { spr: 2 } },
+        { text: { zh: '你的孙子/孙女说"爷爷/奶奶我最爱你了"，你笑出了泪花。', en: 'Your grandchild said "I love you most, grandpa/grandma" — you cried with joy.' }, cond: { minAge: 55, maxAge: 80, hasTag: 'grandparent', chance: 0.3 }, effects: { spr: 4 } },
+
+        // -- 意外/离奇 --
+        { text: { zh: '你走在路上被鸟屎砸中了头。据说这是好运的象征？', en: 'A bird pooped on your head. They say it\'s good luck?' }, cond: { minAge: 5, maxAge: 70, chance: 0.03 }, effects: { spr: -1, tag: 'bird_luck' } },
+        { text: { zh: '被鸟屎砸中那天，你居然真的中了奖。', en: 'The day you got pooped on, you actually won a prize.' }, cond: { minAge: 5, maxAge: 70, hasTag: 'bird_luck', chance: 0.3 }, effects: { mny: 2, spr: 2 } },
+        { text: { zh: '你做了一个预知未来的梦，第二天居然成真了一部分。', en: 'You had a prophetic dream that partially came true the next day.' }, cond: { minAge: 10, maxAge: 60, chance: 0.02 }, effects: { spr: 1 } },
+        { text: { zh: '你在街上偶遇了明星，激动得忘了拍照。', en: 'You bumped into a celebrity but forgot to take a photo.' }, cond: { minAge: 12, maxAge: 50, chance: 0.03 }, effects: { spr: 2 } },
+        { text: { zh: '你在跳蚤市场淘到了一件古董，价值不菲！', en: 'You found a valuable antique at a flea market!' }, cond: { minAge: 20, maxAge: 60, chance: 0.02 }, effects: { mny: 3, spr: 2 } },
+        { text: { zh: '你走错了路，却意外发现了一个绝美的景点。', en: 'You took a wrong turn but discovered a breathtaking hidden spot.' }, cond: { minAge: 15, maxAge: 60, chance: 0.04 }, effects: { spr: 2 } },
+
+        // -- 社会热点/时代感 --
+        { text: { zh: '全民健身热潮中你开始每天跑步5公里。', en: 'You started running 5K daily during the fitness trend.' }, cond: { minAge: 20, maxAge: 45, chance: 0.08 }, effects: { str: 2, spr: 1 } },
+        { text: { zh: '你在直播间买了一堆不需要的东西。', en: 'You bought a bunch of unnecessary stuff from a livestream.' }, cond: { minAge: 18, maxAge: 50, chance: 0.08 }, effects: { mny: -1, spr: -1 } },
+        { text: { zh: '你尝试了断舍离，扔掉了半个房间的旧物。感觉整个人都轻了。', en: 'You tried minimalism, threw away half your stuff. Felt lighter.' }, cond: { minAge: 25, maxAge: 50, chance: 0.05 }, effects: { spr: 2 } },
+        { text: { zh: '你开始养多肉植物，阳台变成了小花园。', en: 'You started growing succulents, your balcony became a mini garden.' }, cond: { minAge: 20, maxAge: 50, chance: 0.05 }, effects: { spr: 1 } },
+        { text: { zh: '你参加了志愿者活动，帮助了很多人。', en: 'You volunteered and helped many people.' }, cond: { minAge: 18, maxAge: 60, chance: 0.06 }, effects: { spr: 2, chr: 1 } },
+
+        // -- 悲情/催泪 --
+        { text: { zh: '你最好的朋友突然去世了，你在葬礼上哭到站不起来。', en: 'Your best friend passed away suddenly. You collapsed crying at the funeral.' }, cond: { minAge: 30, maxAge: 60, chance: 0.03 }, effects: { spr: -5, tag: 'friend_died' } },
+        { text: { zh: '你独自坐在窗前发呆了一整天，什么也没做。', en: 'You sat by the window all day, doing nothing, just staring.' }, cond: { minAge: 25, maxAge: 60, maxSpr: 3, chance: 0.1 }, effects: {} },
+        { text: { zh: '某个深夜，你突然觉得很累。不是身体累，是心累。', en: 'One night, you felt exhausted. Not physically — emotionally.' }, cond: { minAge: 22, maxAge: 50, maxSpr: 3, chance: 0.1 }, effects: { spr: -1 } },
+        { text: { zh: '你去看了心理医生，开始学会与自己和解。', en: 'You saw a therapist and started learning to be at peace with yourself.' }, cond: { minAge: 20, maxAge: 50, maxSpr: 3, chance: 0.15 }, effects: { spr: 3, tag: 'therapy' } },
+        { text: { zh: '你从低谷中爬了出来。虽然伤痕犹在，但你更强了。', en: 'You climbed out of rock bottom. Scarred but stronger.' }, cond: { minAge: 20, maxAge: 55, hasTag: 'therapy', chance: 0.6 }, effects: { spr: 3, str: 1 } },
+
+        // -- 爱情/婚姻细节 --
+        { text: { zh: '你和恋人在夕阳下牵手走了很长的路。', en: 'You held hands with your lover, walking a long path in the sunset.' }, cond: { minAge: 18, maxAge: 40, hasTag: 'partner', chance: 0.15 }, effects: { spr: 2 } },
+        { text: { zh: '你在伴侣生日时策划了一个超级惊喜！', en: 'You planned an amazing surprise for your partner\'s birthday!' }, cond: { minAge: 22, maxAge: 50, hasTag: 'married', chance: 0.1 }, effects: { spr: 2, chr: 1 } },
+        { text: { zh: '结婚纪念日，你们回到了第一次约会的地方。', en: 'On your anniversary, you returned to where your first date was.' }, cond: { minAge: 30, maxAge: 60, hasTag: 'married', chance: 0.1 }, effects: { spr: 3 } },
+        { text: { zh: '你发现伴侣偷偷为你存了一笔钱，感动哭了。', en: 'You found out your spouse secretly saved money for you — tears of gratitude.' }, cond: { minAge: 28, maxAge: 50, hasTag: 'married', chance: 0.05 }, effects: { spr: 3, mny: 1 } },
+
+        // -- 更多职业事件 --
+        { text: { zh: '你参加了一个行业大会，结识了很多大佬。', en: 'You attended an industry conference and met many leaders.' }, cond: { minAge: 25, maxAge: 50, minInt: 6, chance: 0.08 }, effects: { chr: 1, mny: 1 } },
+        { text: { zh: '你的开源项目在GitHub上获得了1000颗星。', en: 'Your open-source project got 1000 stars on GitHub.' }, cond: { minAge: 20, maxAge: 40, hasTag: 'programmer', minInt: 7, chance: 0.1 }, effects: { chr: 2, int: 1, spr: 2 } },
+        { text: { zh: '你在医院连续工作36小时，累到在值班室秒睡。', en: 'You worked 36 hours straight at the hospital, fell asleep instantly.' }, cond: { minAge: 25, maxAge: 45, hasTag: 'doctor', chance: 0.3 }, effects: { str: -2, mny: 1 } },
+        { text: { zh: '你成功帮客户打赢了一场官司，名声大振。', en: 'You won a big case for your client, your reputation soared.' }, cond: { minAge: 28, maxAge: 50, hasTag: 'lawyer', minInt: 8, chance: 0.3 }, effects: { mny: 3, chr: 2 } },
+        { text: { zh: '你教的学生考上了名牌大学，给你发了感谢短信。', en: 'A student you taught got into a top university and sent you a thank-you text.' }, cond: { minAge: 28, maxAge: 55, hasTag: 'teacher', chance: 0.2 }, effects: { spr: 3 } },
+        { text: { zh: '你带的班级获得了全校第一名。', en: 'The class you led ranked #1 in the school.' }, cond: { minAge: 25, maxAge: 50, hasTag: 'teacher', minInt: 7, chance: 0.15 }, effects: { spr: 2, chr: 1 } },
     ];
 
     // ========== 事件模板（生成更多变体）==========
@@ -523,7 +662,8 @@
             for (const k of ['chr', 'int', 'str', 'mny', 'spr']) {
                 this.stats[k] += stats[k] || 0;
             }
-            this.health = 50 + this.stats.str * 5;
+            // 更宽松的初始生命值，确保低体质也能至少活到青年
+            this.health = 80 + this.stats.str * 8;
         }
 
         getTotalPoints() {
@@ -658,25 +798,26 @@
 
         // 检查是否死亡
         checkDeath() {
-            // 基于年龄和体质计算死亡概率
             const age = this.age;
             const str = this.stats.str;
 
-            // 体质很低时生命值降低更快
-            if (str <= 0) this.health -= 20;
-            else if (str <= 2) this.health -= 8;
-            else if (str <= 4) this.health -= 3;
-            else this.health -= 1;
+            // 体质影响生命值衰减速率（更宽松）
+            if (str <= 0) this.health -= 5;
+            else if (str <= 2) this.health -= 3;
+            else if (str <= 4) this.health -= 2;
+            else if (str <= 6) this.health -= 1;
+            // str > 6 不消耗生命值（很健康）
 
-            // 年龄越大死亡概率越高
-            if (age < 10) return this.health <= 0 || (str <= 0 && Math.random() < 0.01);
-            if (age < 30) return this.health <= 0 || Math.random() < 0.002;
-            if (age < 50) return this.health <= 0 || Math.random() < 0.005;
-            if (age < 60) return this.health <= 0 || Math.random() < 0.02;
-            if (age < 70) return this.health <= 0 || Math.random() < 0.05 - str * 0.003;
-            if (age < 80) return this.health <= 0 || Math.random() < 0.1 - str * 0.005;
-            if (age < 90) return this.health <= 0 || Math.random() < 0.2 - str * 0.008;
-            if (age < 100) return this.health <= 0 || Math.random() < 0.4;
+            // 童年几乎不会死亡（除非体质极端低）
+            if (age < 10) return this.health <= 0 && str <= 0;
+            if (age < 18) return this.health <= 0;
+            if (age < 30) return this.health <= 0 || Math.random() < 0.001;
+            if (age < 50) return this.health <= 0 || Math.random() < 0.003;
+            if (age < 60) return this.health <= 0 || Math.random() < 0.01;
+            if (age < 70) return this.health <= 0 || Math.random() < 0.04 - str * 0.002;
+            if (age < 80) return this.health <= 0 || Math.random() < 0.08 - str * 0.004;
+            if (age < 90) return this.health <= 0 || Math.random() < 0.15 - str * 0.006;
+            if (age < 100) return this.health <= 0 || Math.random() < 0.35;
             return true; // 100+必死
         }
 
@@ -702,10 +843,12 @@
             return { age: this.age, events: yearLog, alive: this.alive };
         }
 
-        // 获取结局
+        // 获取结局 - 年龄大幅加权，短命不可能传奇
         getEnding() {
             const s = this.stats;
-            const sum = Math.floor((s.chr + s.int + s.str + s.mny + s.spr) / 5 * 10 + this.age / 10);
+            const statsSum = s.chr + s.int + s.str + s.mny + s.spr;
+            // 年龄占60%权重，属性占40%
+            const sum = Math.floor(this.age * 0.6 + statsSum * 0.4);
             for (const ending of ENDINGS) {
                 if (ending.cond(sum)) return { ...ending, sum };
             }
@@ -925,7 +1068,8 @@
         const skipBtn = document.getElementById('lr-skip');
 
         speedSlider.addEventListener('input', () => {
-            speed = parseInt(speedSlider.value);
+            // 滑块值越大=越快，所以反转为毫秒延迟
+            speed = 1600 - parseInt(speedSlider.value);
             if (autoTimer) {
                 clearInterval(autoTimer);
                 autoTimer = setInterval(tick, speed);
