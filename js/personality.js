@@ -187,4 +187,17 @@
             : `My personality tag is "${title}"! Try it →`;
         window.MyLuck.Share.show(text, 'https://myluck.top/personality.html');
     });
+
+    // 语言切换时重新渲染
+    document.addEventListener('langchange', () => {
+        const lang = I18n.lang;
+        const qs = questions[lang] || questions.zh;
+        if (current >= qs.length && answers.length > 0) {
+            // 结果页：重新渲染
+            showResult();
+        } else if (current < qs.length) {
+            // 答题中：重新渲染当前题目
+            render();
+        }
+    });
 })();

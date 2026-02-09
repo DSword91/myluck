@@ -73,4 +73,14 @@
             : `My lucky color personality is "${info.title}"! Try it →`;
         window.MyLuck.Share.show(text, 'https://myluck.top/color.html');
     });
+
+    // 语言切换时重新渲染已选颜色的结果
+    document.addEventListener('langchange', () => {
+        if (!selectedColor) return;
+        const lang = I18n.lang;
+        const info = data[selectedColor][lang] || data[selectedColor].zh;
+        document.getElementById('cr-title').textContent = info.title;
+        document.getElementById('cr-meaning').textContent = info.meaning;
+        document.getElementById('cr-traits').innerHTML = info.traits.map(t => `<span class="color-trait">${t}</span>`).join('');
+    });
 })();

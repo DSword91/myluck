@@ -265,6 +265,46 @@
     // 初始化
     render();
 
+    // 语言切换时重新渲染当前状态
+    document.addEventListener('langchange', () => {
+        if (current >= Q.length) {
+            // 结果页：重新渲染结果（不重置分数）
+            const type = (scores.E >= scores.I ? 'E' : 'I') +
+                         (scores.S >= scores.N ? 'S' : 'N') +
+                         (scores.T >= scores.F ? 'T' : 'F') +
+                         (scores.J >= scores.P ? 'J' : 'P');
+            const info = types[type];
+            const lang = I18n.lang;
+            const data = info[lang] || info.zh;
+            document.getElementById('mbti-type-name').textContent = data.name;
+            document.getElementById('mbti-desc').textContent = data.desc;
+
+            // 重新渲染维度标签
+            const dims = [
+                ['E', 'I', scores.E, scores.I, lang === 'zh' ? '外向 E / 内向 I' : 'Extraversion / Introversion'],
+                ['S', 'N', scores.S, scores.N, lang === 'zh' ? '感觉 S / 直觉 N' : 'Sensing / Intuition'],
+                ['T', 'F', scores.T, scores.F, lang === 'zh' ? '思考 T / 情感 F' : 'Thinking / Feeling'],
+                ['J', 'P', scores.J, scores.P, lang === 'zh' ? '判断 J / 感知 P' : 'Judging / Perceiving'],
+            ];
+            document.getElementById('mbti-dims').innerHTML = dims.map(([a, b, sa, sb, label]) => {
+                const total = sa + sb;
+                const pct = total ? Math.round((sa / total) * 100) : 50;
+                const winner = sa >= sb ? a : b;
+                return `<div class="mbti-dim">
+                    <div class="dim-label">${label}</div>
+                    <div class="dim-bar"><div class="dim-fill" style="width:${pct}%"></div></div>
+                    <div class="dim-value">${winner} (${sa >= sb ? pct : 100 - pct}%)</div>
+                </div>`;
+            }).join('');
+
+            // 重新渲染统计
+            showMBTIStats(type);
+        } else {
+            // 答题中：重新渲染当前题目
+            render();
+        }
+    });
+
     document.getElementById('mbti-retry')?.addEventListener('click', () => {
         current = 0;
         scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };

@@ -16,11 +16,16 @@
         'gb.comment_title': '💬 评论区',
         'gb.comment_desc': '和大家一起交流讨论，分享你的测试心得',
         'gb.c_placeholder': '说点什么吧~',
-        'gb.c_name': '昵称（可选）',
+        'gb.c_name': '昵称 *',
+        'gb.c_email': '邮箱 *',
         'gb.c_submit': '发表评论',
         'gb.c_empty': '还没有评论，快来抢沙发~',
         'gb.c_loading': '加载评论中...',
         'gb.c_error': '评论加载失败，请稍后再试',
+        'gb.c_need_name': '请填写昵称',
+        'gb.c_need_email': '请填写有效的邮箱地址',
+        'gb.c_captcha_fail': '验证码错误，请重试',
+        'gb.c_captcha_q': '人机验证',
     });
     I18n.add('en', {
         'gb.title': '🌟 Wishing Wall',
@@ -35,11 +40,16 @@
         'gb.comment_title': '💬 Comments',
         'gb.comment_desc': 'Discuss and share your test experiences with everyone',
         'gb.c_placeholder': 'Say something~',
-        'gb.c_name': 'Nickname (optional)',
+        'gb.c_name': 'Nickname *',
+        'gb.c_email': 'Email *',
         'gb.c_submit': 'Submit',
         'gb.c_empty': 'No comments yet. Be the first!',
         'gb.c_loading': 'Loading comments...',
         'gb.c_error': 'Failed to load comments, try later',
+        'gb.c_need_name': 'Please enter a nickname',
+        'gb.c_need_email': 'Please enter a valid email',
+        'gb.c_captcha_fail': 'Wrong answer, try again',
+        'gb.c_captcha_q': 'Verify',
     });
     I18n.apply();
 
@@ -158,17 +168,32 @@
         try {
             const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
             const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-            const loadTime = Date.now(); // 反机器人：记录页面加载时间
+            const loadTime = Date.now();
 
-            // 渲染评论输入框（含蜜罐字段防机器人）
+            // 生成数学验证码
+            const captchaA = Math.floor(Math.random() * 9) + 1;
+            const captchaB = Math.floor(Math.random() * 9) + 1;
+            const captchaAnswer = captchaA + captchaB;
+
+            // 渲染评论输入框（必填昵称 + 邮箱 + 数学验证码 + 蜜罐）
             container.innerHTML = `
                 <div class="comment-form">
-                    <input type="text" id="comment-nick" maxlength="20"
-                        placeholder="${I18n.t('gb.c_name')}" class="comment-nick-input">
-                    <textarea id="comment-text" maxlength="500" rows="3"
+                    <div class="comment-row">
+                        <input type="text" id="comment-nick" maxlength="20" required
+                            placeholder="${I18n.t('gb.c_name')}" class="comment-nick-input">
+                        <input type="email" id="comment-email" maxlength="100" required
+                            placeholder="${I18n.t('gb.c_email')}" class="comment-nick-input">
+                    </div>
+                    <textarea id="comment-text" maxlength="500" rows="3" required
                         placeholder="${I18n.t('gb.c_placeholder')}" class="comment-textarea"></textarea>
+                    <div class="comment-row">
+                        <div class="captcha-box">
+                            <span class="captcha-label">${I18n.t('gb.c_captcha_q')}：${captchaA} + ${captchaB} = </span>
+                            <input type="number" id="comment-captcha" class="captcha-input" autocomplete="off">
+                        </div>
+                        <button id="comment-submit" class="cta-btn">${I18n.t('gb.c_submit')}</button>
+                    </div>
                     <input type="text" id="comment-hp" style="position:absolute;left:-9999px;opacity:0;height:0;" tabindex="-1" autocomplete="off">
-                    <button id="comment-submit" class="cta-btn">${I18n.t('gb.c_submit')}</button>
                 </div>
                 <div id="comment-list" class="comment-list">
                     <p style="text-align:center;color:var(--text-light);">${I18n.t('gb.c_loading')}</p>
@@ -181,13 +206,19 @@
             document.getElementById('comment-submit').addEventListener('click', async () => {
                 // 反机器人检查
                 const hp = document.getElementById('comment-hp');
-                if (hp && hp.value) return; // 蜜罐被填写 = 机器人
-                if (Date.now() - loadTime < 3000) return; // 加载3秒内提交 = 机器人
+                if (hp && hp.value) return;
+                if (Date.now() - loadTime < 3000) return;
 
-                const nick = document.getElementById('comment-nick').value.trim() || (I18n.lang === 'zh' ? '匿名' : 'Anonymous');
+                const nick = document.getElementById('comment-nick').value.trim();
+                const email = document.getElementById('comment-email').value.trim();
                 const text = document.getElementById('comment-text').value.trim();
+                const captchaVal = parseInt(document.getElementById('comment-captcha').value);
 
+                // 必填验证
+                if (!nick || nick.length < 1) { alert(I18n.t('gb.c_need_name')); return; }
+                if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert(I18n.t('gb.c_need_email')); return; }
                 if (text.length < 2) { alert(I18n.t('gb.tooshort')); return; }
+                if (captchaVal !== captchaAnswer) { alert(I18n.t('gb.c_captcha_fail')); document.getElementById('comment-captcha').value = ''; return; }
                 if (!Security.rateLimit('comment', 10)) { alert(I18n.t('gb.toomany')); return; }
                 if (Security.containsBadWords(text)) { alert(I18n.t('gb.bad')); return; }
 
@@ -197,6 +228,7 @@
 
                 const { error } = await supabase.from('comments').insert({
                     nickname: Security.escapeHtml(nick),
+                    email: Security.escapeHtml(email),
                     content: Security.escapeHtml(text),
                     page: 'guestbook'
                 });
@@ -209,7 +241,9 @@
                 }
 
                 document.getElementById('comment-nick').value = '';
+                document.getElementById('comment-email').value = '';
                 document.getElementById('comment-text').value = '';
+                document.getElementById('comment-captcha').value = '';
                 btn.disabled = false;
                 btn.textContent = I18n.t('gb.c_submit');
                 await loadComments(supabase);
