@@ -139,8 +139,8 @@
     // 3. 将下面的 URL 和 KEY 替换为你的项目值
     //    （Settings → API → Project URL 和 anon/public key）
 
-    const SUPABASE_URL = '';   // 填入你的 Supabase 项目 URL
-    const SUPABASE_KEY = '';   // 填入你的 anon (public) key
+    const SUPABASE_URL = 'https://qerajxnmtwyjtokhaonq.supabase.co';   // 填入你的 Supabase 项目 URL
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlcmFqeG5tdHd5anRva2hhb25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MTA1MjksImV4cCI6MjA4NjE4NjUyOX0.sUMZ_RIu9zLjMOB3nnruJezlQL0i-GrunDIkahWcF5E';   // 填入你的 anon (public) key
 
     async function initComments() {
         const container = document.getElementById('comment-area');
@@ -158,15 +158,16 @@
         try {
             const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
             const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-            window._supabase = supabase;
+            const loadTime = Date.now(); // 反机器人：记录页面加载时间
 
-            // 渲染评论输入框
+            // 渲染评论输入框（含蜜罐字段防机器人）
             container.innerHTML = `
                 <div class="comment-form">
                     <input type="text" id="comment-nick" maxlength="20"
                         placeholder="${I18n.t('gb.c_name')}" class="comment-nick-input">
                     <textarea id="comment-text" maxlength="500" rows="3"
                         placeholder="${I18n.t('gb.c_placeholder')}" class="comment-textarea"></textarea>
+                    <input type="text" id="comment-hp" style="position:absolute;left:-9999px;opacity:0;height:0;" tabindex="-1" autocomplete="off">
                     <button id="comment-submit" class="cta-btn">${I18n.t('gb.c_submit')}</button>
                 </div>
                 <div id="comment-list" class="comment-list">
@@ -178,6 +179,11 @@
 
             // 提交评论
             document.getElementById('comment-submit').addEventListener('click', async () => {
+                // 反机器人检查
+                const hp = document.getElementById('comment-hp');
+                if (hp && hp.value) return; // 蜜罐被填写 = 机器人
+                if (Date.now() - loadTime < 3000) return; // 加载3秒内提交 = 机器人
+
                 const nick = document.getElementById('comment-nick').value.trim() || (I18n.lang === 'zh' ? '匿名' : 'Anonymous');
                 const text = document.getElementById('comment-text').value.trim();
 
