@@ -200,8 +200,25 @@
     function injectCSP() {
         const meta = document.createElement('meta');
         meta.httpEquiv = 'Content-Security-Policy';
-        meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://scripts.clarity.ms https://gc.zgo.at https://zz.bdstatic.com https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https:; connect-src 'self' https://v1.hitokoto.cn https://www.clarity.ms https://*.clarity.ms https://*.goatcounter.com https://api.indexnow.org https://www.bing.com https://yandex.com https://*.supabase.co https:; frame-src 'self';";
+        meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://scripts.clarity.ms https://gc.zgo.at https://zz.bdstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://v1.hitokoto.cn https://www.clarity.ms https://*.clarity.ms https://*.goatcounter.com https://api.indexnow.org https://www.bing.com https://yandex.com https://*.supabase.co https:; frame-src 'self';";
         document.head.prepend(meta);
+
+        // 资源提示 - 加速第三方脚本连接
+        const preconnects = ['https://www.clarity.ms', 'https://gc.zgo.at'];
+        const dnsPrefetch = ['https://zz.bdstatic.com', 'https://v1.hitokoto.cn'];
+        for (const url of preconnects) {
+            const link = document.createElement('link');
+            link.rel = 'preconnect';
+            link.href = url;
+            link.crossOrigin = 'anonymous';
+            document.head.appendChild(link);
+        }
+        for (const url of dnsPrefetch) {
+            const link = document.createElement('link');
+            link.rel = 'dns-prefetch';
+            link.href = url;
+            document.head.appendChild(link);
+        }
 
         // 防止 referrer 泄露（隐藏来源）
         const ref = document.createElement('meta');

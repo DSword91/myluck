@@ -57,6 +57,8 @@
         'lr.death.poverty': '穷困潦倒',
         'lr.death.adventure': '一次冒险中出了意外',
         'lr.death.infant': '先天体质不佳',
+        'lr.death.short_lived': '短命体质的宿命已至',
+        'lr.death.isekai': '在异世界完成了使命，灵魂归于安宁',
     };
     const en = {
         'lr.title': '🔄 Life Restart Simulator',
@@ -111,6 +113,8 @@
         'lr.death.poverty': 'Died in poverty',
         'lr.death.adventure': 'Died during an adventure',
         'lr.death.infant': 'Born with a weak constitution',
+        'lr.death.short_lived': 'Short-lived constitution reached its limit',
+        'lr.death.isekai': 'Fulfilled the mission in another world, soul at peace',
     };
     I18n.add('zh', zh);
     I18n.add('en', en);
@@ -166,6 +170,18 @@
         { id: 43, grade: 1, name: { zh: '啃老一族', en: 'NEET' }, desc: { zh: '家境+2, 快乐+2, 体质-2', en: 'MNY+2, SPR+2, STR-2' }, effects: { mny: 2, spr: 2, str: -2 } },
         { id: 44, grade: 0, name: { zh: '玻璃心', en: 'Fragile Heart' }, desc: { zh: '快乐-1', en: 'SPR-1' }, effects: { spr: -1 } },
         { id: 45, grade: 1, name: { zh: '语言天赋', en: 'Linguist' }, desc: { zh: '智力+2, 颜值+1', en: 'INT+2, CHR+1' }, effects: { int: 2, chr: 1 } },
+
+        // ===== 戏剧性/特殊天赋 =====
+        { id: 46, grade: 3, name: { zh: '异世界转生', en: 'Isekai Reborn' }, desc: { zh: '18岁穿越异世界！', en: 'Transported to another world at 18!' }, effects: { _tag: 'isekai', int: 2, spr: 2 } },
+        { id: 47, grade: 2, name: { zh: '女装大佬', en: 'Crossdress Master' }, desc: { zh: '15岁觉醒，颜值暴涨', en: 'Awakens at 15, charm skyrockets' }, effects: { _tag: 'crossdress', chr: 1 } },
+        { id: 48, grade: 2, name: { zh: '短命体质', en: 'Fragile Life' }, desc: { zh: '最多活到40岁', en: 'Max lifespan: 40' }, effects: { _tag: 'short_lived', _maxAge: 40, spr: 3, int: 3 } },
+        { id: 49, grade: 3, name: { zh: '系统加持', en: 'System Cheat' }, desc: { zh: '每10年获得随机属性+2', en: 'Random stat +2 every 10 years' }, effects: { _tag: 'system_cheat' } },
+        { id: 50, grade: 2, name: { zh: '反派体质', en: 'Villain Fate' }, desc: { zh: '前半生倒霉，后半生逆袭', en: 'Unlucky first half, comeback later' }, effects: { _tag: 'villain', spr: -2 } },
+        { id: 51, grade: 1, name: { zh: '锦鲤附体', en: 'Lucky Koi' }, desc: { zh: '偶尔会有意外惊喜', en: 'Occasional surprise bonuses' }, effects: { _tag: 'koi_luck' } },
+        { id: 52, grade: 2, name: { zh: '时间回溯', en: 'Time Loop' }, desc: { zh: '30岁重活一次（属性保留）', en: 'Reset to 0 at age 30 (keep stats)' }, effects: { _tag: 'time_loop' } },
+        { id: 53, grade: 1, name: { zh: '社恐', en: 'Social Anxiety' }, desc: { zh: '颜值-2，智力+2', en: 'CHR-2, INT+2' }, effects: { chr: -2, int: 2, _tag: 'social_anxiety' } },
+        { id: 54, grade: 1, name: { zh: '氪金大佬', en: 'Whale' }, desc: { zh: '家境+3，快乐-1', en: 'MNY+3, SPR-1' }, effects: { mny: 3, spr: -1, _tag: 'whale' } },
+        { id: 55, grade: 3, name: { zh: '穿越者', en: 'Time Traveler' }, desc: { zh: '你知道未来！智力+6', en: 'You know the future! INT+6' }, effects: { int: 6, _tag: 'time_traveler' } },
     ];
 
     // ========== 事件数据 ==========
@@ -589,6 +605,43 @@
         { text: { zh: '', en: 'You tipped a barista and they spelled your name right for once.' }, cond: { minAge: 16, maxAge: 40, lang: 'en', chance: 0.05 }, effects: { spr: 1 } },
         { text: { zh: '', en: 'You drove across Route 66 — American dream vibes.' }, cond: { minAge: 20, maxAge: 50, lang: 'en', chance: 0.03 }, effects: { spr: 3 } },
 
+        // ===== 特殊天赋专属事件 =====
+
+        // -- 异世界转生 --
+        { text: { zh: '⚡ 你在18岁生日那天被神秘光芒笼罩，穿越到了异世界！', en: '⚡ On your 18th birthday, a mysterious light transported you to another world!' }, cond: { minAge: 18, maxAge: 18, hasTag: 'isekai' }, effects: { spr: 5, tag: 'in_isekai' } },
+        { text: { zh: '🗡️ 你在异世界觉醒了强大的力量，被封为勇者！', en: '🗡️ You awakened great power in the other world, hailed as a Hero!' }, cond: { minAge: 19, maxAge: 22, hasTag: 'in_isekai', minStr: 5, chance: 0.5 }, effects: { str: 3, chr: 3, tag: 'hero' } },
+        { text: { zh: '🏰 你在异世界建立了自己的领地，成为一方领主。', en: '🏰 You built your own territory, becoming a Lord.' }, cond: { minAge: 22, maxAge: 35, hasTag: 'in_isekai', chance: 0.3 }, effects: { mny: 5, chr: 2 } },
+        { text: { zh: '👑 你击败了魔王，拯救了异世界！名扬万世！', en: '👑 You defeated the Demon King and saved the world! Legendary!' }, cond: { minAge: 25, maxAge: 40, hasTag: 'in_isekai', minStr: 7, minInt: 6, chance: 0.2 }, effects: { chr: 5, spr: 5, str: 3 } },
+        { text: { zh: '💕 你在异世界遇到了命中注定的人。', en: '💕 You met your destiny in the other world.' }, cond: { minAge: 20, maxAge: 35, hasTag: 'in_isekai', minChr: 5, chance: 0.3 }, effects: { spr: 4, tag: 'partner' } },
+        { text: { zh: '📖 你利用前世的知识在异世界发明了许多东西。', en: '📖 Using your past life knowledge, you invented many things.' }, cond: { minAge: 19, maxAge: 40, hasTag: 'in_isekai', minInt: 6, chance: 0.3 }, effects: { int: 2, mny: 3 } },
+
+        // -- 女装大佬/男娘 --
+        { text: { zh: '👗 你在15岁时第一次尝试了女装，发现意外地好看。', en: '👗 At 15, you tried crossdressing — surprisingly stunning.' }, cond: { minAge: 15, maxAge: 15, hasTag: 'crossdress' }, effects: { chr: 4, spr: 2, tag: 'cd_awakened' } },
+        { text: { zh: '🌸 你的女装照在网上火了，粉丝暴涨！', en: '🌸 Your crossdress photos went viral online!' }, cond: { minAge: 16, maxAge: 25, hasTag: 'cd_awakened', minChr: 7, chance: 0.3 }, effects: { chr: 3, mny: 2, spr: 2 } },
+        { text: { zh: '💄 你成了知名的女装博主，收到了品牌代言。', en: '💄 You became a famous crossdress influencer with brand deals.' }, cond: { minAge: 18, maxAge: 30, hasTag: 'cd_awakened', minChr: 9, chance: 0.2 }, effects: { mny: 4, chr: 2, spr: 3 } },
+        { text: { zh: '😳 班上的男同学跟你表白了，你……', en: '😳 A male classmate confessed to you...' }, cond: { minAge: 16, maxAge: 18, hasTag: 'cd_awakened', minChr: 8, chance: 0.2 }, effects: { spr: 1 } },
+
+        // -- 穿越者（知晓未来）--
+        { text: { zh: '🔮 你利用"未来知识"精准预测了行业趋势，赚了一大笔。', en: '🔮 Using "future knowledge", you predicted trends and made a fortune.' }, cond: { minAge: 20, maxAge: 40, hasTag: 'time_traveler', chance: 0.3 }, effects: { mny: 5, int: 1 } },
+        { text: { zh: '🔮 你提前避开了一场大灾难。', en: '🔮 You avoided a major disaster thanks to foresight.' }, cond: { minAge: 15, maxAge: 60, hasTag: 'time_traveler', chance: 0.1 }, effects: { str: 2, spr: 2 } },
+        { text: { zh: '🔮 你试图改变一个人的命运，但发现有些事情无法改变。', en: '🔮 You tried to change someone\'s fate but discovered some things can\'t be changed.' }, cond: { minAge: 25, maxAge: 50, hasTag: 'time_traveler', chance: 0.15 }, effects: { spr: -3 } },
+
+        // -- 社恐专属 --
+        { text: { zh: '😰 你在公众场合被点名发言，紧张到手心冒汗。', en: '😰 You were called to speak publicly — palms sweating.' }, cond: { minAge: 12, maxAge: 35, hasTag: 'social_anxiety', chance: 0.15 }, effects: { spr: -2 } },
+        { text: { zh: '🏠 你发现了远程办公的工作，简直是社恐的天堂！', en: '🏠 You found a remote job — paradise for social anxiety!' }, cond: { minAge: 22, maxAge: 40, hasTag: 'social_anxiety', minInt: 6, chance: 0.2 }, effects: { spr: 3, mny: 1 } },
+        { text: { zh: '💪 你克服了社恐，第一次主动和陌生人聊天！', en: '💪 You overcame social anxiety and talked to a stranger!' }, cond: { minAge: 20, maxAge: 40, hasTag: 'social_anxiety', minSpr: 6, chance: 0.1 }, effects: { chr: 3, spr: 3 } },
+
+        // -- 氪金大佬 --
+        { text: { zh: '💳 你在游戏里氪了一万块，老婆/老公快气疯了。', en: '💳 You spent $1000 on a game. Your partner is furious.' }, cond: { minAge: 18, maxAge: 40, hasTag: 'whale', chance: 0.15 }, effects: { mny: -2, spr: -1 } },
+        { text: { zh: '🎮 你氪金出了全服第一的装备，成了服务器传说！', en: '🎮 Your spending got you the #1 gear on the server — legendary!' }, cond: { minAge: 18, maxAge: 35, hasTag: 'whale', minMny: 5, chance: 0.1 }, effects: { spr: 3, chr: 1, mny: -1, tag: 'gamer' } },
+
+        // -- 反派体质（30岁前倒霉事件）--
+        { text: { zh: '🌧️ 你又一次被命运捉弄了——出门就下雨，考试就忘带准考证。', en: '🌧️ Fate played tricks again — rain whenever you go out, forgot exam ID.' }, cond: { minAge: 10, maxAge: 29, hasTag: 'villain', chance: 0.2 }, effects: { spr: -2 } },
+        { text: { zh: '😈 别人的好运好像都被你吸走了，你简直是行走的霉运。', en: '😈 Others\' luck seems absorbed by you — you\'re a walking bad omen.' }, cond: { minAge: 15, maxAge: 29, hasTag: 'villain', chance: 0.15 }, effects: { spr: -1, chr: -1 } },
+
+        // -- 时间回溯（30岁返回起点）--
+        { text: { zh: '⏳ 你在30岁这天醒来，发现自己回到了婴儿时期！一切重新开始，但你的能力还在！', en: '⏳ At 30, you woke up as a baby! Starting over, but your abilities remain!' }, cond: { minAge: 30, maxAge: 30, hasTag: 'time_loop' }, effects: { spr: 3, tag: 'looped' } },
+
         // ===== 更多剧情弧线事件 =====
         { text: { zh: '你开始写一本小说，每天坚持写1000字。', en: 'You started writing a novel, 1000 words every day.' }, cond: { minAge: 18, maxAge: 50, minInt: 5, chance: 0.05 }, effects: { int: 1, tag: 'novelist' } },
         { text: { zh: '你的小说出版了！虽然销量一般，但你很满足。', en: 'Your novel was published! Sales were modest, but you felt fulfilled.' }, cond: { minAge: 20, maxAge: 55, hasTag: 'novelist', chance: 0.4 }, effects: { spr: 3, chr: 1 } },
@@ -698,12 +751,12 @@
 
     // ========== 结局数据 ==========
     const ENDINGS = [
-        { id: 'legend', name: { zh: '传奇人生', en: 'Legendary Life' }, desc: { zh: '你的人生堪称传奇，后人将铭记你的故事。', en: 'Your life was legendary, your story will be remembered.' }, cond: sum => sum >= 55 },
-        { id: 'brilliant', name: { zh: '辉煌一生', en: 'Brilliant Life' }, desc: { zh: '你度过了辉煌而充实的一生。', en: 'You lived a brilliant and fulfilling life.' }, cond: sum => sum >= 45 },
-        { id: 'wonderful', name: { zh: '精彩人生', en: 'Wonderful Life' }, desc: { zh: '你的人生精彩纷呈，没有遗憾。', en: 'Your life was wonderful, no regrets.' }, cond: sum => sum >= 35 },
-        { id: 'happy', name: { zh: '幸福生活', en: 'Happy Life' }, desc: { zh: '虽然平凡，但你过得很幸福。', en: 'Ordinary but happy.' }, cond: sum => sum >= 25 },
-        { id: 'normal', name: { zh: '平凡一生', en: 'Ordinary Life' }, desc: { zh: '你的人生平平无奇，但也算安稳。', en: 'Your life was ordinary but stable.' }, cond: sum => sum >= 15 },
-        { id: 'bitter', name: { zh: '苦涩人生', en: 'Bitter Life' }, desc: { zh: '你的人生充满坎坷，但你坚持了下来。', en: 'Your life was rough, but you persevered.' }, cond: sum => sum >= 5 },
+        { id: 'legend', name: { zh: '传奇人生', en: 'Legendary Life' }, desc: { zh: '你的人生堪称传奇，后人将铭记你的故事。', en: 'Your life was legendary, your story will be remembered.' }, cond: sum => sum >= 75 },
+        { id: 'brilliant', name: { zh: '辉煌一生', en: 'Brilliant Life' }, desc: { zh: '你度过了辉煌而充实的一生。', en: 'You lived a brilliant and fulfilling life.' }, cond: sum => sum >= 60 },
+        { id: 'wonderful', name: { zh: '精彩人生', en: 'Wonderful Life' }, desc: { zh: '你的人生精彩纷呈，没有遗憾。', en: 'Your life was wonderful, no regrets.' }, cond: sum => sum >= 48 },
+        { id: 'happy', name: { zh: '幸福生活', en: 'Happy Life' }, desc: { zh: '虽然平凡，但你过得很幸福。', en: 'Ordinary but happy.' }, cond: sum => sum >= 36 },
+        { id: 'normal', name: { zh: '平凡一生', en: 'Ordinary Life' }, desc: { zh: '你的人生平平无奇，但也算安稳。', en: 'Your life was ordinary but stable.' }, cond: sum => sum >= 24 },
+        { id: 'bitter', name: { zh: '苦涩人生', en: 'Bitter Life' }, desc: { zh: '你的人生充满坎坷，但你坚持了下来。', en: 'Your life was rough, but you persevered.' }, cond: sum => sum >= 12 },
         { id: 'tragic', name: { zh: '悲惨世界', en: 'Tragic Life' }, desc: { zh: '这一生……太难了。', en: 'This life... was too hard.' }, cond: () => true },
     ];
 
@@ -736,6 +789,12 @@
                 }
                 if (t.effects._protagonist) {
                     this.hasProtagonist = true;
+                }
+                if (t.effects._tag) {
+                    this.tags.add(t.effects._tag);
+                }
+                if (t.effects._maxAge) {
+                    this.maxAge = Math.min(this.maxAge, t.effects._maxAge);
                 }
                 if (t.effects._random2) {
                     const keys = ['chr', 'int', 'str', 'mny', 'spr'];
@@ -925,12 +984,41 @@
                 this.applyEffects(evt.effects);
                 yearLog.push(evt);
             }
+
+            // ===== 特殊天赋效果 =====
+            // 系统加持：每10年随机属性+2
+            if (this.tags.has('system_cheat') && this.age > 0 && this.age % 10 === 0) {
+                const keys = ['chr', 'int', 'str', 'mny', 'spr'];
+                const k = keys[Math.floor(Math.random() * keys.length)];
+                this.stats[k] += 2;
+                const sysEvt = { text: { zh: `【系统】恭喜！${k === 'chr' ? '颜值' : k === 'int' ? '智力' : k === 'str' ? '体质' : k === 'mny' ? '家境' : '快乐'}+2！`, en: `[System] Congrats! ${k.toUpperCase()}+2!` }, effects: {} };
+                yearLog.push(sysEvt);
+            }
+            // 锦鲤附体：每年5%概率随机属性+1
+            if (this.tags.has('koi_luck') && Math.random() < 0.05) {
+                const keys = ['chr', 'int', 'str', 'mny', 'spr'];
+                const k = keys[Math.floor(Math.random() * keys.length)];
+                this.stats[k] += 1;
+                yearLog.push({ text: { zh: '🐟 锦鲤附体！你莫名地走了好运。', en: '🐟 Lucky koi! You got mysteriously lucky.' }, effects: {} });
+            }
+            // 反派体质：30岁前坏事多，30岁后大逆转
+            if (this.tags.has('villain') && this.age === 30 && !this.tags.has('villain_reversed')) {
+                this.tags.add('villain_reversed');
+                this.stats.chr += 3; this.stats.mny += 3; this.stats.spr += 5;
+                yearLog.push({ text: { zh: '🔥 命运在此刻逆转！你的反派人生迎来了惊天大逆袭！', en: '🔥 Destiny reverses! Your villain life takes a legendary turn!' }, effects: {} });
+            }
+            // 短命体质：到最大年龄自动死亡
+            if (this.tags.has('short_lived') && this.age >= this.maxAge) {
+                this.alive = false;
+                yearLog.push({ text: { zh: '你感到体力在急速流失……短命的宿命无法逃脱。', en: 'You feel your vitality fading... the fate of a short life cannot be escaped.' }, effects: {} });
+            }
+
             // Clamp stats
             for (const k of ['chr', 'int', 'str', 'mny', 'spr']) {
                 this.stats[k] = Math.max(0, Math.min(20, this.stats[k]));
             }
 
-            if (!this.alive || this.checkDeath()) {
+            if (this.alive && (this.checkDeath() || !this.alive)) {
                 this.alive = false;
             }
 
@@ -965,6 +1053,9 @@
         getDeathCause() {
             const age = this.age;
             const s = this.stats;
+            // 特殊天赋死因
+            if (this.tags.has('short_lived')) return 'lr.death.short_lived';
+            if (this.tags.has('in_isekai')) return 'lr.death.isekai';
             if (age < 5) return 'lr.death.infant';
             if (age >= 85) return 'lr.death.old';
             if (age >= 70) return Math.random() < 0.6 ? 'lr.death.old' : 'lr.death.disease_old';
@@ -1016,6 +1107,14 @@
                 'parent_sick': { zh: '🏥 父母生病住院', en: '🏥 Parent was hospitalized' },
                 'rejected': { zh: '💔 告白被拒', en: '💔 Confession rejected' },
                 'gamer': { zh: '🎮 成为了资深玩家', en: '🎮 Became a gamer' },
+                'in_isekai': { zh: '⚡ 穿越到了异世界', en: '⚡ Transported to another world' },
+                'cd_awakened': { zh: '👗 觉醒了女装大佬之路', en: '👗 Awakened the crossdress path' },
+                'time_traveler': { zh: '🔮 拥有未来知识', en: '🔮 Had future knowledge' },
+                'system_cheat': { zh: '🎯 系统加持', en: '🎯 System cheat active' },
+                'villain_reversed': { zh: '🔥 反派体质大逆转', en: '🔥 Villain fate reversed' },
+                'looped': { zh: '⏳ 经历了时间回溯', en: '⏳ Experienced time loop' },
+                'koi_luck': { zh: '🐟 锦鲤附体', en: '🐟 Lucky koi blessing' },
+                'accident_survivor': { zh: '🏥 大难不死', en: '🏥 Survived a major accident' },
             };
             for (const [tag, text] of Object.entries(importantTags)) {
                 if (this.tags.has(tag)) {
@@ -1364,12 +1463,26 @@
             </div>
             <div class="lr-btn-group">
                 <button class="btn primary lr-btn" id="lr-restart">${t('lr.restart')}</button>
+                <button class="btn secondary lr-btn" id="lr-share">${t('lr.summary.share')}</button>
             </div>
         `;
 
         document.getElementById('lr-restart').addEventListener('click', () => {
             if (autoTimer) clearInterval(autoTimer);
             showTalentDraw();
+        });
+
+        document.getElementById('lr-share').addEventListener('click', () => {
+            const shareText = I18n.lang === 'zh'
+                ? `【人生重开模拟器】我获得了「${tObj(ending.name)}」！享年${game.age}岁，死因：${deathCauseText}。快来试试你的人生！`
+                : `[Life Restart] I got "${tObj(ending.name)}"! Lived to age ${game.age}. Try your own life!`;
+            const shareUrl = 'https://myluck.top/liferestart.html';
+            // 先复制到剪贴板
+            navigator.clipboard?.writeText(shareText + '\n' + shareUrl).catch(() => {});
+            // 调用分享面板
+            if (window.MyLuck.Share) {
+                window.MyLuck.Share.show(shareText, shareUrl);
+            }
         });
     }
 
