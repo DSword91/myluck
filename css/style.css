@@ -250,6 +250,62 @@ a{text-decoration:none;color:inherit;}
     .test-cards{grid-template-columns:repeat(2,1fr);}
 }
 
+/* ===== 页面动画 ===== */
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideRight{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+
+.anim-ready{opacity:0;transform:translateY(30px);transition:opacity 0.6s cubic-bezier(0.22,1,0.36,1),transform 0.6s cubic-bezier(0.22,1,0.36,1);}
+.anim-ready.anim-visible{opacity:1;transform:translateY(0);}
+.anim-ready.anim-delay-1{transition-delay:.1s;}
+.anim-ready.anim-delay-2{transition-delay:.2s;}
+.anim-ready.anim-delay-3{transition-delay:.3s;}
+.anim-ready.anim-delay-4{transition-delay:.4s;}
+
+/* 页面加载动画 */
+.hero-content .hero-title{animation:slideUp .8s cubic-bezier(0.22,1,0.36,1) both;}
+.hero-content .hero-subtitle{animation:slideUp .8s cubic-bezier(0.22,1,0.36,1) .15s both;}
+.hero-content .cta-btn{animation:scaleIn .6s cubic-bezier(0.22,1,0.36,1) .3s both;}
+
+/* 按钮点击反馈 */
+.btn-primary:active,.fortune-submit:active,.share-result-btn:active,.cta-btn:active,.retry-btn:active{transform:scale(0.97)!important;transition:transform .1s;}
+.test-card:active{transform:scale(0.98)!important;}
+
+/* 骨架屏闪烁 */
+.loading-shimmer{background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;}
+
+/* 顺滑过渡 */
+.section{transition:opacity .3s ease;}
+.card,.test-card,.quote-card,.wish-note,.legal-card{transition:var(--ease);}
+.nav-link,.back-link,.logo,.btn-primary,.btn-outline,.fortune-submit{transition:var(--ease);}
+
+/* 徽章动画 */
+.streak-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;background:linear-gradient(135deg,var(--secondary),var(--primary));color:#fff;border-radius:20px;font-size:.75rem;font-weight:600;animation:scaleIn .4s ease;}
+
+/* 成就弹出动画 */
+.achievement-toast{position:fixed;top:20px;right:20px;z-index:10000;background:var(--white);border-radius:var(--radius-sm);padding:16px 20px;box-shadow:0 8px 30px rgba(0,0,0,0.15);animation:slideRight .5s cubic-bezier(0.22,1,0.36,1) both;display:flex;align-items:center;gap:10px;max-width:320px;border-left:4px solid var(--secondary);}
+.achievement-toast .ach-icon{font-size:1.8rem;}
+.achievement-toast .ach-text{font-size:.85rem;color:var(--text);}
+.achievement-toast .ach-title{font-weight:700;color:var(--primary);display:block;margin-bottom:2px;}
+.achievement-toast.fade-out{animation:slideRight .4s reverse both;}
+
+/* 访客计数器 */
+.visitor-count{text-align:center;font-size:.78rem;color:var(--text-light);margin-top:12px;opacity:.8;}
+.visitor-count .count-num{font-weight:700;color:var(--primary);font-size:.85rem;}
+
+/* 每日签到条 */
+.daily-streak-bar{background:linear-gradient(135deg,rgba(253,203,110,0.12),rgba(225,112,85,0.08));border-radius:var(--radius-sm);padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;font-size:.85rem;}
+.daily-streak-bar .streak-info{display:flex;align-items:center;gap:8px;}
+.daily-streak-bar .streak-fire{font-size:1.3rem;}
+.daily-streak-bar .streak-text{color:var(--text);font-weight:500;}
+.daily-streak-bar .streak-days{display:flex;gap:4px;}
+.daily-streak-bar .streak-dot{width:10px;height:10px;border-radius:50%;background:#e0e0e0;transition:var(--ease);}
+.daily-streak-bar .streak-dot.active{background:var(--primary);}
+.daily-streak-bar .streak-dot.today{background:var(--secondary);box-shadow:0 0 6px rgba(253,203,110,0.6);}
+
 /* ===== 许愿墙 ===== */
 .wish-wall{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:24px;min-height:120px;}
 .wish-note{background:linear-gradient(135deg,#fff9e6,#fff3cc);padding:14px 16px;border-radius:6px 6px 6px 20px;box-shadow:2px 3px 10px rgba(0,0,0,0.06);max-width:220px;min-width:160px;font-size:.88rem;line-height:1.55;color:#5a4a3a;position:relative;transform:rotate(var(--rot,0deg));transition:transform .3s ease;}

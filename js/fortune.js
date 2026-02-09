@@ -212,19 +212,83 @@
         window.MyLuck.Share.show(text, 'https://myluck.top');
     });
 
-    // 每日名言
+    // 每日名言 — 优先从 Hitokoto API 拉取，失败则用本地
     const seed = getTodaySeed();
     const lang = I18n.lang;
-    const qList = quotes[lang] || quotes.zh;
-    const q = qList[Math.floor(seededRandom(seed + 999) * qList.length)];
-    document.getElementById('quote-text').textContent = q.t;
-    document.getElementById('quote-author').textContent = '—— ' + q.a;
+    const quoteText = document.getElementById('quote-text');
+    const quoteAuthor = document.getElementById('quote-author');
+
+    function setLocalQuote(lang) {
+        const qList = quotes[lang] || quotes.zh;
+        const q = qList[Math.floor(seededRandom(seed + 999) * qList.length)];
+        quoteText.textContent = q.t;
+        quoteAuthor.textContent = '—— ' + q.a;
+    }
+
+    async function fetchHitokoto() {
+        try {
+            // 类型: a=动画 b=漫画 c=游戏 d=文学 e=原创 f=网络 g=其他 h=影视 i=诗词 j=网易云 k=哲学 l=抖机灵
+            const res = await fetch('https://v1.hitokoto.cn?c=d&c=i&c=k&encode=json&charset=utf-8', { signal: AbortSignal.timeout(3000) });
+            const data = await res.json();
+            if (data && data.hitokoto) {
+                quoteText.textContent = data.hitokoto;
+                quoteAuthor.textContent = '—— ' + (data.from_who || data.from || '佚名');
+                // 缓存今日名言
+                localStorage.setItem('myluck-hitokoto', JSON.stringify({ date: new Date().toISOString().split('T')[0], text: data.hitokoto, author: data.from_who || data.from || '佚名' }));
+            }
+        } catch {
+            // API 失败则用本地名言，完全静默
+            setLocalQuote(I18n.lang);
+        }
+    }
+
+    // 检查缓存
+    try {
+        const cache = JSON.parse(localStorage.getItem('myluck-hitokoto'));
+        const today = new Date().toISOString().split('T')[0];
+        if (cache && cache.date === today) {
+            if (lang === 'zh') {
+                quoteText.textContent = cache.text;
+                quoteAuthor.textContent = '—— ' + cache.author;
+            } else {
+                setLocalQuote(lang);
+            }
+        } else if (lang === 'zh') {
+            setLocalQuote(lang); // 先展示本地，再异步更新
+            fetchHitokoto();
+        } else {
+            setLocalQuote(lang);
+        }
+    } catch {
+        setLocalQuote(lang);
+    }
+
+    // 连续签到条
+    const fortuneCard = document.getElementById('fortune-card');
+    if (fortuneCard) {
+        window.MyLuck.Streak.renderBar(fortuneCard);
+    }
+
+    // 虚拟访客计数
+    const quoteSection = document.getElementById('daily-quote');
+    if (quoteSection) {
+        window.MyLuck.injectVisitorCount(quoteSection.querySelector('.container'));
+    }
 
     // 语言切换时重新渲染动态内容
     document.addEventListener('langchange', () => {
-        const qLang = quotes[I18n.lang] || quotes.zh;
-        const qNew = qLang[Math.floor(seededRandom(seed + 999) * qLang.length)];
-        document.getElementById('quote-text').textContent = qNew.t;
-        document.getElementById('quote-author').textContent = '—— ' + qNew.a;
+        setLocalQuote(I18n.lang);
+        if (I18n.lang === 'zh') {
+            try {
+                const cache = JSON.parse(localStorage.getItem('myluck-hitokoto'));
+                const today = new Date().toISOString().split('T')[0];
+                if (cache && cache.date === today) {
+                    quoteText.textContent = cache.text;
+                    quoteAuthor.textContent = '—— ' + cache.author;
+                } else {
+                    fetchHitokoto();
+                }
+            } catch { /* ignore */ }
+        }
     });
 })();

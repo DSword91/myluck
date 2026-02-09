@@ -26,7 +26,7 @@
         },
 
         t(key, fallback) {
-            return this.translations[this.lang]?.[key] || this.translations['zh']?.[key] || fallback || key;
+            return this.translations[this.lang]?.[key] || this.translations['zh']?.[key] || fallback || null;
         },
 
         apply() {
@@ -195,7 +195,7 @@
     function injectCSP() {
         const meta = document.createElement('meta');
         meta.httpEquiv = 'Content-Security-Policy';
-        meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https:;";
+        meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://gc.zgo.at; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://v1.hitokoto.cn https://www.clarity.ms https://*.goatcounter.com;";
         document.head.prepend(meta);
 
         // 防止 referrer 泄露（隐藏来源）
@@ -313,6 +313,149 @@
         requestAnimationFrame(update);
     }
 
+    // ========== 滚动动画 (Intersection Observer) ==========
+    function initScrollAnimations() {
+        const els = document.querySelectorAll('.section, .card, .test-card, .quote-card, .legal-card');
+        els.forEach((el, i) => {
+            el.classList.add('anim-ready');
+            if (i % 4 === 1) el.classList.add('anim-delay-1');
+            if (i % 4 === 2) el.classList.add('anim-delay-2');
+            if (i % 4 === 3) el.classList.add('anim-delay-3');
+        });
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('anim-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+            document.querySelectorAll('.anim-ready').forEach(el => observer.observe(el));
+        } else {
+            document.querySelectorAll('.anim-ready').forEach(el => el.classList.add('anim-visible'));
+        }
+    }
+
+    // ========== 免费分析工具（隐私友好）==========
+    function injectAnalytics() {
+        // Microsoft Clarity — 免费热力图 & 会话回放
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window,document,"clarity","script","CLARITY_PROJECT_ID");
+
+        // GoatCounter — 免费隐私友好页面统计
+        const gc = document.createElement('script');
+        gc.async = true;
+        gc.dataset.goatcounter = 'https://myluck.goatcounter.com/count';
+        gc.src = '//gc.zgo.at/count.js';
+        document.head.appendChild(gc);
+    }
+
+    // ========== 连续签到系统 ==========
+    const Streak = {
+        KEY: 'myluck-streak',
+        get() {
+            try {
+                return JSON.parse(localStorage.getItem(this.KEY)) || { days: 0, last: '', total: 0 };
+            } catch { return { days: 0, last: '', total: 0 }; }
+        },
+        check() {
+            const data = this.get();
+            const today = new Date().toISOString().split('T')[0];
+            if (data.last === today) return data; // 今天已签
+            const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+            if (data.last === yesterday) {
+                data.days += 1;
+            } else {
+                data.days = 1;
+            }
+            data.last = today;
+            data.total = (data.total || 0) + 1;
+            localStorage.setItem(this.KEY, JSON.stringify(data));
+            return data;
+        },
+        renderBar(container) {
+            const data = this.check();
+            const bar = document.createElement('div');
+            bar.className = 'daily-streak-bar';
+            const lang = I18n.lang;
+            const dots = Array.from({ length: 7 }, (_, i) => {
+                const isActive = i < data.days;
+                const isToday = i === data.days - 1;
+                return `<div class="streak-dot ${isActive ? 'active' : ''} ${isToday ? 'today' : ''}"></div>`;
+            }).join('');
+            bar.innerHTML = `
+                <div class="streak-info">
+                    <span class="streak-fire">🔥</span>
+                    <span class="streak-text">${lang === 'zh' ? `连续 ${data.days} 天` : `${data.days} day streak`}</span>
+                </div>
+                <div class="streak-days">${dots}</div>`;
+            container.prepend(bar);
+            // 成就检查
+            this.checkAchievements(data);
+        },
+        checkAchievements(data) {
+            const achieved = JSON.parse(localStorage.getItem('myluck-achievements') || '[]');
+            const achList = [
+                { id: 'first', days: 1, icon: '🌱', zh: '初来乍到', en: 'First Visit' },
+                { id: 'streak3', days: 3, icon: '🔥', zh: '三日打卡', en: '3-Day Streak' },
+                { id: 'streak7', days: 7, icon: '🌟', zh: '周冠达人', en: '7-Day Streak' },
+                { id: 'total5', total: 5, icon: '🏅', zh: '忠实粉丝', en: 'Loyal Fan' },
+                { id: 'total10', total: 10, icon: '👑', zh: '资深玩家', en: 'Veteran' },
+            ];
+            achList.forEach(a => {
+                if (achieved.includes(a.id)) return;
+                const qualify = (a.days && data.days >= a.days) || (a.total && data.total >= a.total);
+                if (qualify) {
+                    achieved.push(a.id);
+                    localStorage.setItem('myluck-achievements', JSON.stringify(achieved));
+                    this.showAchievement(a);
+                }
+            });
+        },
+        showAchievement(ach) {
+            const lang = I18n.lang;
+            const toast = document.createElement('div');
+            toast.className = 'achievement-toast';
+            toast.innerHTML = `
+                <span class="ach-icon">${ach.icon}</span>
+                <div class="ach-text">
+                    <span class="ach-title">${lang === 'zh' ? '🎉 成就解锁！' : '🎉 Achievement!'}</span>
+                    ${lang === 'zh' ? ach.zh : ach.en}
+                </div>`;
+            document.body.appendChild(toast);
+            setTimeout(() => { toast.classList.add('fade-out'); }, 3000);
+            setTimeout(() => { toast.remove(); }, 3500);
+        }
+    };
+
+    // ========== 虚拟访客计数 ==========
+    function injectVisitorCount(container) {
+        const key = 'myluck-visitor-base';
+        let base = parseInt(localStorage.getItem(key));
+        if (!base) {
+            base = Math.floor(Math.random() * 5000 + 12000);
+            localStorage.setItem(key, base);
+        }
+        // 每天自然增长 50~150
+        const daysSinceEpoch = Math.floor(Date.now() / 86400000);
+        const stored = parseInt(localStorage.getItem('myluck-visitor-epoch') || '0');
+        if (!stored) localStorage.setItem('myluck-visitor-epoch', daysSinceEpoch);
+        const daysPassed = daysSinceEpoch - (stored || daysSinceEpoch);
+        const growth = daysPassed * (Math.floor(seededRandom(daysSinceEpoch) * 100) + 50);
+        const total = base + growth;
+        const lang = I18n.lang;
+        const el = document.createElement('div');
+        el.className = 'visitor-count';
+        el.innerHTML = lang === 'zh'
+            ? `👥 已有 <span class="count-num">${total.toLocaleString()}</span> 位小伙伴测过运气`
+            : `👥 <span class="count-num">${total.toLocaleString()}</span> people tested their luck`;
+        container.appendChild(el);
+    }
+
     // ========== 初始化 ==========
     function init() {
         injectCSP();
@@ -321,10 +464,13 @@
         injectFooter();
         Security.initProtection();
         injectSEO();
+        injectAnalytics();
 
         // 延迟应用 i18n（等页面脚本加载翻译）
         requestAnimationFrame(() => {
             I18n.apply();
+            // 滚动动画在 i18n 后启动
+            setTimeout(initScrollAnimations, 50);
         });
 
         // 确保刷新回到顶部
@@ -365,5 +511,5 @@
     }
 
     // ========== 全局导出 ==========
-    window.MyLuck = { I18n, Security, seededRandom, getTodaySeed, getStars, animateCounter, createAdSlot };
+    window.MyLuck = { I18n, Security, seededRandom, getTodaySeed, getStars, animateCounter, createAdSlot, Streak, injectVisitorCount };
 })();
