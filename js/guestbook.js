@@ -1,4 +1,4 @@
-// ========== 许愿墙 ==========
+// ========== 许愿墙 + 评论区 ==========
 (function () {
     'use strict';
     const { I18n, Security } = window.MyLuck;
@@ -13,6 +13,8 @@
         'gb.toomany': '发送太频繁了，休息一下吧~',
         'gb.tooshort': '至少写几个字吧~',
         'gb.bad': '请文明发言哦~',
+        'gb.comment_title': '💬 评论区',
+        'gb.comment_desc': '和大家一起交流讨论，分享你的测试心得',
     });
     I18n.add('en', {
         'gb.title': '🌟 Wishing Wall',
@@ -24,6 +26,8 @@
         'gb.toomany': 'Too fast! Take a break~',
         'gb.tooshort': 'Write a bit more~',
         'gb.bad': 'Please keep it friendly~',
+        'gb.comment_title': '💬 Comments',
+        'gb.comment_desc': 'Discuss and share your test experiences with everyone',
     });
     I18n.apply();
 
@@ -121,4 +125,53 @@
     document.addEventListener('langchange', renderWishes);
 
     renderWishes();
+
+    // ========== Waline 评论系统 ==========
+    // 服务端地址：部署 Waline 到 Vercel 后替换这里
+    const WALINE_SERVER = 'https://waline.myluck.top';
+
+    async function initWaline() {
+        try {
+            const { init } = await import('https://unpkg.com/@waline/client@v3/dist/waline.js');
+            const placeholder = document.getElementById('waline-placeholder');
+            if (placeholder) placeholder.style.display = 'none';
+            init({
+                el: '#waline',
+                serverURL: WALINE_SERVER,
+                lang: I18n.lang === 'zh' ? 'zh-CN' : 'en',
+                dark: false,
+                meta: ['nick'],
+                requiredMeta: [],
+                login: 'disable',
+                pageSize: 20,
+                wordLimit: 200,
+                emoji: ['//unpkg.com/@waline/emojis@1.2.0/weibo', '//unpkg.com/@waline/emojis@1.2.0/bilibili'],
+                locale: I18n.lang === 'zh' ? {
+                    placeholder: '说点什么吧~（无需登录）',
+                    sofa: '还没有评论，快来抢沙发吧~',
+                    nick: '昵称（可选）',
+                    submit: '发表评论',
+                } : {
+                    placeholder: 'Say something~ (no login required)',
+                    sofa: 'No comments yet. Be the first!',
+                    nick: 'Nickname (optional)',
+                    submit: 'Submit',
+                },
+            });
+        } catch (e) {
+            // Waline 加载失败（可能是服务端未部署），显示提示
+            const placeholder = document.getElementById('waline-placeholder');
+            if (placeholder) {
+                const lang = I18n.lang;
+                placeholder.innerHTML = lang === 'zh'
+                    ? '<p style="color:var(--text-light);font-size:.88rem;">💬 评论区即将开放，敬请期待~</p>'
+                    : '<p style="color:var(--text-light);font-size:.88rem;">💬 Comments coming soon, stay tuned~</p>';
+            }
+        }
+    }
+
+    // 延迟加载 Waline（不阻塞页面）
+    if (document.getElementById('waline')) {
+        setTimeout(initWaline, 500);
+    }
 })();

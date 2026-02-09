@@ -195,7 +195,7 @@
     function injectCSP() {
         const meta = document.createElement('meta');
         meta.httpEquiv = 'Content-Security-Policy';
-        meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://gc.zgo.at; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://v1.hitokoto.cn https://www.clarity.ms https://*.goatcounter.com;";
+        meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://gc.zgo.at https://zz.bdstatic.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https:; connect-src 'self' https://v1.hitokoto.cn https://www.clarity.ms https://*.goatcounter.com https:; frame-src 'self';";
         document.head.prepend(meta);
 
         // 防止 referrer 泄露（隐藏来源）
@@ -344,7 +344,7 @@
             c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
             t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window,document,"clarity","script","CLARITY_PROJECT_ID");
+        })(window,document,"clarity","script","vegznvelvk");
 
         // GoatCounter — 免费隐私友好页面统计
         const gc = document.createElement('script');
@@ -352,6 +352,20 @@
         gc.dataset.goatcounter = 'https://myluck.goatcounter.com/count';
         gc.src = '//gc.zgo.at/count.js';
         document.head.appendChild(gc);
+
+        // 百度自动推送 — 加速百度收录
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+            } else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            bp.async = true;
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
     }
 
     // ========== 连续签到系统 ==========

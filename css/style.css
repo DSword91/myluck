@@ -211,6 +211,25 @@ a{text-decoration:none;color:inherit;}
 /* ===== 免责标签 ===== */
 .disclaimer-badge{text-align:center;padding:8px;background:rgba(225,112,85,0.04);font-size:.76rem;color:var(--text-light);border-radius:var(--radius-sm);margin-top:20px;}
 
+/* ===== MBTI 统计 ===== */
+.mbti-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;}
+.mbti-stat-item{padding:10px 6px;border-radius:var(--radius-sm);text-align:center;background:rgba(253,203,110,0.06);border:1px solid rgba(225,112,85,0.06);transition:var(--ease);position:relative;overflow:hidden;}
+.mbti-stat-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.06);}
+.mbti-stat-item.my-type{border-color:var(--primary);background:rgba(225,112,85,0.08);}
+.mbti-stat-item.my-type::after{content:'← YOU';position:absolute;top:2px;right:4px;font-size:.55rem;color:var(--primary);font-weight:700;}
+.mbti-stat-type{font-size:.85rem;font-weight:800;color:var(--primary);letter-spacing:1px;}
+.mbti-stat-bar{height:4px;background:#f0f0f5;border-radius:2px;margin:4px 0;overflow:hidden;}
+.mbti-stat-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--primary),var(--secondary));transition:width 1s ease;}
+.mbti-stat-pct{font-size:.7rem;color:var(--text-light);}
+.mbti-stat-count{font-size:.65rem;color:var(--text-light);opacity:.7;}
+
+/* ===== Waline 评论覆写 ===== */
+.wl-comment{--waline-theme-color:var(--primary) !important;--waline-active-color:var(--primary-dark) !important;}
+
+@media(max-width:768px){
+    .mbti-stats-grid{grid-template-columns:repeat(2,1fr);}
+}
+
 /* ===== 页脚 ===== */
 .footer{background:#1e1e2e;color:rgba(255,255,255,0.65);padding:44px 0 20px;}
 .footer-content{display:grid;grid-template-columns:2fr 1fr 1fr;gap:32px;margin-bottom:32px;}
