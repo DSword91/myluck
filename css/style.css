@@ -136,6 +136,18 @@ a{text-decoration:none;color:inherit;}
 .mbti-dim .dim-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--primary),var(--secondary));transition:width .8s ease;}
 .mbti-dim .dim-value{font-size:.85rem;font-weight:600;color:var(--primary);}
 
+/* MBTI 综合分析 */
+.mbti-analysis-section{margin-top:20px;}
+.analysis-card{background:rgba(253,203,110,0.06);border:1px solid rgba(225,112,85,0.08);border-radius:var(--radius-sm);padding:16px;margin-bottom:12px;}
+.analysis-card h4{color:var(--primary);font-size:.92rem;margin:0 0 8px;border-bottom:1px solid rgba(225,112,85,0.1);padding-bottom:6px;}
+.analysis-card p{font-size:.85rem;color:var(--text);margin:0;line-height:1.6;}
+.analysis-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.cf-stack{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.cf-item{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:20px;background:rgba(225,112,85,0.04);}
+.cf-badge{display:inline-block;width:32px;height:32px;line-height:32px;text-align:center;border-radius:50%;font-size:.78rem;font-weight:700;}
+.cf-name{font-size:.78rem;color:var(--text);}
+.cf-role{font-size:.68rem;color:var(--text-light);opacity:.7;}
+
 /* ===== 色彩测试 ===== */
 .color-grid{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;}
 .color-btn{width:64px;height:64px;border:3px solid transparent;border-radius:50%;cursor:pointer;transition:var(--ease);box-shadow:0 4px 10px rgba(0,0,0,0.1);}
@@ -275,6 +287,7 @@ a{text-decoration:none;color:inherit;}
     .lucky-extras{flex-direction:column;gap:6px;}
     .color-btn{width:48px;height:48px;}
     .mbti-dims{grid-template-columns:1fr;}
+    .analysis-row{grid-template-columns:1fr;}
     .share-buttons{grid-template-columns:1fr;}
     .guestbook-form .form-row{flex-direction:column;}
 }

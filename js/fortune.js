@@ -26,8 +26,8 @@
         'fortune.r_luck': '偶遇好运', 'fortune.r_wisdom': '灵光一闪',
         'fortune.share': '📤 分享给朋友',
         'quote.title': '💬 每日正能量',
-        'card.mbti_title': 'MBTI 性格测试', 'card.mbti_desc': '完整60道题目，深度了解你的性格类型，发现真实的自己',
-        'card.mbti_tag': '60题 · 约10分钟',
+        'card.mbti_title': 'MBTI 性格测试', 'card.mbti_desc': '完整93道正规题目，深度了解你的性格类型，发现真实的自己',
+        'card.mbti_tag': '93题 · 约10-15分钟',
         'card.color_title': '幸运色彩测试', 'card.color_desc': '你最喜欢的颜色隐藏着什么趣味性格密码？点击揭晓',
         'card.color_tag': '8种色彩 · 秒出结果',
         'card.personality_title': '趣味性格标签', 'card.personality_desc': '8个生活场景问题，测出你的隐藏性格标签，准到你笑',
@@ -57,8 +57,8 @@
         'fortune.r_luck': 'Luck', 'fortune.r_wisdom': 'Inspiration',
         'fortune.share': '📤 Share with Friends',
         'quote.title': '💬 Daily Inspiration',
-        'card.mbti_title': 'MBTI Personality Test', 'card.mbti_desc': 'Full 60 questions to discover your personality type and understand yourself better',
-        'card.mbti_tag': '60 Qs · ~10 min',
+        'card.mbti_title': 'MBTI Personality Test', 'card.mbti_desc': 'Full 93 questions to discover your personality type and understand yourself better',
+        'card.mbti_tag': '93 Qs · ~10-15 min',
         'card.color_title': 'Lucky Color Test', 'card.color_desc': 'What does your favorite color reveal about your personality?',
         'card.color_tag': '8 Colors · Instant',
         'card.personality_title': 'Personality Tags', 'card.personality_desc': '8 fun scenario questions to uncover your hidden personality traits',
@@ -161,9 +161,13 @@
         const nameSeed = name ? [...name].reduce((a, c) => a + c.charCodeAt(0), 0) : 0;
 
         const baseSeed = getTodaySeed() + month + moodSeed + nameSeed;
-        const luck = Math.floor(seededRandom(baseSeed) * 40 + 60);
 
-        const dims = [1, 2, 3, 4, 5, 6].map(i => Math.floor(seededRandom(baseSeed + i) * 3 + 3));
+        // 彩蛋：纯白 + 八月 = 100% 好运
+        const isEasterEgg = (name === '纯白') && month === 8;
+        const luck = isEasterEgg ? 100 : Math.floor(seededRandom(baseSeed) * 40 + 60);
+        const dims = isEasterEgg
+            ? [5, 5, 5, 5, 5, 5]
+            : [1, 2, 3, 4, 5, 6].map(i => Math.floor(seededRandom(baseSeed + i) * 3 + 3));
         const lang = I18n.lang;
 
         // UI
@@ -181,7 +185,9 @@
         });
 
         const tipList = tips[lang] || tips.zh;
-        document.getElementById('lucky-tip').textContent = '💡 ' + tipList[Math.floor(seededRandom(baseSeed + 20) * tipList.length)];
+        document.getElementById('lucky-tip').textContent = isEasterEgg
+            ? (lang === 'zh' ? '💡 纯白专属：今天的你，运气值已经拉满，全世界都在为你让路！' : '💡 Special: Your luck is maxed out today, the whole world is making way for you!')
+            : '💡 ' + tipList[Math.floor(seededRandom(baseSeed + 20) * tipList.length)];
 
         const colorList = colors[lang] || colors.zh;
         const c = colorList[Math.floor(seededRandom(baseSeed + 30) * colorList.length)];

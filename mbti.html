@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MBTI 性格测试 - 完整的六十道题目，深度了解你的性格类型">
+    <meta name="description" content="MBTI 性格测试 - 完整93道正规题目，深度了解你的性格类型">
     <meta name="keywords" content="MBTI测试,MBTI性格测试,16型人格,性格分析,INFP,INTJ,ENFP,趣味测试,MyLuck">
     <meta name="referrer" content="no-referrer">
     <meta name="robots" content="index, follow">
-    <title>MBTI 性格测试 - MyLuck | 免费60题测试你的MBTI类型</title>
+    <title>MBTI 性格测试 - MyLuck | 免费93题正规测试你的MBTI类型</title>
     <link rel="canonical" href="https://myluck.top/mbti.html">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://challenges.cloudflare.com">
     <meta property="og:title" content="MBTI 性格测试 - MyLuck">
     <meta property="og:description" content="完整六十道题目，深度了解你的MBTI性格类型，免费在线测试">
     <meta property="og:url" content="https://myluck.top/mbti.html">
@@ -27,8 +30,26 @@
             <div class="container">
                 <h1 class="section-title" data-i18n="mbti.title">🧠 MBTI 性格测试</h1>
                 <p class="section-desc" data-i18n="mbti.desc">完整60道题目，探索你的性格类型（仅供娱乐参考）</p>
+                <div id="mbti-visitor-count"></div>
 
-                <div class="card" id="mbti-quiz">
+                <!-- MBTI 开始界面 -->
+                <div class="card" id="mbti-start">
+                    <div style="text-align:center;padding:20px 0;">
+                        <span style="font-size:3rem;">🧠</span>
+                        <h2 style="margin:12px 0 8px;" data-i18n="mbti.start_title">MBTI 性格类型测试</h2>
+                        <p style="color:#666;line-height:1.6;margin-bottom:16px;" data-i18n="mbti.start_desc">本测试共 93 道题目，全面评估你的性格类型。请根据直觉选择最接近你的选项。</p>
+                        <ul style="text-align:left;max-width:320px;margin:0 auto 20px;color:#888;font-size:.85rem;line-height:1.8;">
+                            <li data-i18n="mbti.start_tip1">约需 10-15 分钟</li>
+                            <li data-i18n="mbti.start_tip2">没有对错之分</li>
+                            <li data-i18n="mbti.start_tip3">凭第一直觉作答</li>
+                            <li data-i18n="mbti.start_tip4">仅供娱乐参考</li>
+                        </ul>
+                        <div id="turnstile-mbti" style="margin:10px 0;display:flex;justify-content:center;"></div>
+                        <button class="btn-primary" id="mbti-start-btn" style="font-size:1.1rem;padding:14px 48px;" data-i18n="mbti.start_btn">开始测试</button>
+                    </div>
+                </div>
+
+                <div class="card" id="mbti-quiz" style="display:none;">
                     <div class="mbti-progress"><div class="mbti-progress-bar" id="mbti-bar"></div></div>
                     <p class="mbti-progress-text" id="mbti-progress-text"></p>
                     <div class="mbti-question" id="mbti-q"></div>
@@ -65,7 +86,6 @@
                     <div style="text-align:center;margin-top:12px;">
                         <button class="rp-btn-share" id="mbti-rank-btn" style="background:#6c5ce7;display:none;" data-i18n="mbti.rank_btn">🏆 上榜</button>
                     </div>
-                    <div id="turnstile-mbti" style="margin:10px 0;display:flex;justify-content:center;"></div>
                 </div>
             </div>
         </section>

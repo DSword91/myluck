@@ -10,6 +10,9 @@
     <title>今日人设测试 - MyLuck | 你今天是什么搞笑人设？</title>
     <link rel="canonical" href="https://myluck.top/rp-test.html">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧧</text></svg>">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://challenges.cloudflare.com">
     <meta property="og:title" content="今日人设测试 - MyLuck">
     <meta property="og:description" content="输入名字测测你今天是什么搞笑人设！30种趣味人设等你解锁">
     <meta property="og:url" content="https://myluck.top/rp-test.html">
@@ -121,6 +124,7 @@
             <div class="container">
                 <h1 class="section-title" data-i18n="rp.title">🧧 今日人设测试</h1>
                 <p class="section-desc" data-i18n="rp.desc">点击按钮，随机生成你的搞笑人设！也可输入名字 🎭</p>
+                <div id="rp-visitor-count"></div>
 
                 <div class="rp-container">
                     <div class="card">
@@ -165,9 +169,11 @@
                             <div class="rp-actions">
                                 <button class="rp-btn-share" id="rp-share" data-i18n="rp.share">📤 分享人设</button>
                                 <button class="rp-btn-retry" id="rp-retry" data-i18n="rp.retry">🔄 再来一次</button>
-                                <button class="rp-btn-share" id="rp-rank" style="background:#00b894;" data-i18n="rp.rank">🏆 上榜</button>
                             </div>
                             <div id="turnstile-rp" style="margin:10px 0;display:flex;justify-content:center;"></div>
+                            <div style="text-align:center;">
+                                <button class="rp-btn-share" id="rp-rank" style="background:#00b894;" data-i18n="rp.rank">🏆 上榜</button>
+                            </div>
                         </div>
                     </div>
 

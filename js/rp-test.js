@@ -275,6 +275,16 @@
         // 加载全球排行榜
         loadLeaderboard();
 
+        // 注入统计人数
+        var rpVisitor = document.getElementById('rp-visitor-count');
+        if (rpVisitor && window.MyLuck && window.MyLuck.injectVisitorCount) {
+            window.MyLuck.injectVisitorCount(rpVisitor, {
+                id: 'rp',
+                labelZh: '测过人设',
+                labelEn: 'tested their persona'
+            });
+        }
+
         // Turnstile 延迟到结果显示后渲染（见 showResult）
 
         // 语言切换时刷新内容

@@ -170,11 +170,6 @@
         slip.scrollIntoView({ behavior: 'smooth', block: 'center' });
         // 保存当前结果用于分享
         window._currentStick = stick;
-        // 结果显示后再渲染 Turnstile（容器可见后才能正常渲染）
-        if (window.MyLuck && window.MyLuck.Turnstile && !window._turnstileRendered) {
-            window._turnstileRendered = true;
-            window.MyLuck.Turnstile.render('turnstile-fortune');
-        }
     }
 
     // 摇签动画
@@ -354,6 +349,12 @@
         updateDailyInfo();
 
         function doDraw() {
+            // 求签前验证 Turnstile
+            var Turnstile = window.MyLuck && window.MyLuck.Turnstile;
+            if (Turnstile && Turnstile.isEnabled && Turnstile.isEnabled() && !Turnstile.isVerified()) {
+                alert(isEnNow() ? 'Please complete verification first' : '请先完成人机验证');
+                return;
+            }
             shakeAndDraw(firstDraw);
             firstDraw = false;
         }
@@ -364,7 +365,10 @@
         if (redrawBtn) redrawBtn.addEventListener('click', function () { doDraw(); });
         if (rankBtn) rankBtn.addEventListener('click', submitFortuneToLeaderboard);
 
-        // Turnstile 延迟到结果显示后渲染（见 showResult）
+        // Turnstile 在页面加载时渲染（求签前验证）
+        if (window.MyLuck && window.MyLuck.Turnstile && window.MyLuck.Turnstile.isEnabled()) {
+            window.MyLuck.Turnstile.render('turnstile-fortune');
+        }
 
         // 排行榜
         initLeaderboard();

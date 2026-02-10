@@ -124,7 +124,7 @@
         'draw.ranked': '✅ 已上榜！',
         'draw.rank_fail': '上榜失败，请稍后重试',
         // 每日运气排行榜
-        'fortune.leaderboard': '🏆 今日运气排行榜',
+        'fortune.leaderboard': '🏆 今日全球运气排行榜',
         'fortune.rank': '🏆 上榜',
         'fortune.ranked': '✅ 已上榜！',
         'fortune.rank_fail': '上榜失败，请稍后重试',
@@ -211,7 +211,7 @@
         'draw.ranked': '✅ Ranked!',
         'draw.rank_fail': 'Failed to rank, try again later',
         // Fortune leaderboard
-        'fortune.leaderboard': '🏆 Today\'s Luck Ranking',
+        'fortune.leaderboard': '🏆 Today\'s Global Luck Ranking',
         'fortune.rank': '🏆 Rank Me!',
         'fortune.ranked': '✅ Ranked!',
         'fortune.rank_fail': 'Failed to rank, try again later',
@@ -770,26 +770,36 @@
     };
 
     // ========== 虚拟访客计数 ==========
-    function injectVisitorCount(container) {
-        const key = 'myluck-visitor-base';
-        let base = parseInt(localStorage.getItem(key));
+    function injectVisitorCount(container, opts) {
+        opts = opts || {};
+        var testId = opts.id || 'fortune';
+        var labelZh = opts.labelZh || '测过运气';
+        var labelEn = opts.labelEn || 'tested their luck';
+        var baseKey = 'myluck-visitor-base-' + testId;
+        var epochKey = 'myluck-visitor-epoch-' + testId;
+
+        let base = parseInt(localStorage.getItem(baseKey));
         if (!base) {
-            base = Math.floor(Math.random() * 5000 + 12000);
-            localStorage.setItem(key, base);
+            base = Math.floor(seededRandom(testId.length * 7 + 99) * 5000 + 12000);
+            localStorage.setItem(baseKey, base);
         }
-        // 每天自然增长 50~150
-        const daysSinceEpoch = Math.floor(Date.now() / 86400000);
-        const stored = parseInt(localStorage.getItem('myluck-visitor-epoch') || '0');
-        if (!stored) localStorage.setItem('myluck-visitor-epoch', daysSinceEpoch);
-        const daysPassed = daysSinceEpoch - (stored || daysSinceEpoch);
-        const growth = daysPassed * (Math.floor(seededRandom(daysSinceEpoch) * 100) + 50);
+        // 统一：每10分钟增长1~10人
+        var GROWTH_START = new Date('2026-02-01T00:00:00Z').getTime();
+        var elapsed = Date.now() - GROWTH_START;
+        var growth = 0;
+        if (elapsed > 0) {
+            var intervals = Math.floor(elapsed / 600000);
+            for (var i = 0; i < intervals; i++) {
+                growth += Math.floor(seededRandom(i * 17 + testId.charCodeAt(0)) * 10) + 1;
+            }
+        }
         const total = base + growth;
         const lang = I18n.lang;
         const el = document.createElement('div');
         el.className = 'visitor-count';
         el.innerHTML = lang === 'zh'
-            ? `👥 已有 <span class="count-num">${total.toLocaleString()}</span> 位小伙伴测过运气`
-            : `👥 <span class="count-num">${total.toLocaleString()}</span> people tested their luck`;
+            ? `👥 已有 <span class="count-num">${total.toLocaleString()}</span> 位小伙伴${labelZh}`
+            : `👥 <span class="count-num">${total.toLocaleString()}</span> people ${labelEn}`;
         container.appendChild(el);
     }
 

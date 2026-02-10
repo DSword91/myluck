@@ -1,10 +1,10 @@
-// ========== MBTI 完整测试 (60题) ==========
+// ========== MBTI 完整测试 (93题) ==========
 (function () {
     'use strict';
     const { I18n } = window.MyLuck;
 
-    I18n.add('zh', { 'mbti.title': '🧠 MBTI 性格测试', 'mbti.desc': '完整60道题目，探索你的性格类型（仅供娱乐参考）', 'mbti.retry': '🔄 重新测试', 'mbti.qof': '第 {0} / {1} 题', 'mbti.stats_title': '📊 MBTI 类型分布', 'mbti.stats_desc': '看看大家都是什么类型', 'mbti.history': '你的测试记录' });
-    I18n.add('en', { 'mbti.title': '🧠 MBTI Personality Test', 'mbti.desc': 'Full 60 questions to discover your type (for fun only)', 'mbti.retry': '🔄 Retake', 'mbti.qof': 'Q {0} of {1}', 'mbti.stats_title': '📊 MBTI Type Distribution', 'mbti.stats_desc': 'See what types everyone got', 'mbti.history': 'Your History' });
+    I18n.add('zh', { 'mbti.title': '🧠 MBTI 性格测试', 'mbti.desc': '完整93道题目，探索你的性格类型（仅供娱乐参考）', 'mbti.retry': '🔄 重新测试', 'mbti.qof': '第 {0} / {1} 题', 'mbti.stats_title': '📊 MBTI 类型分布', 'mbti.stats_desc': '看看大家都是什么类型', 'mbti.history': '你的测试记录', 'mbti.start_title': 'MBTI 性格类型测试', 'mbti.start_desc': '本测试共 93 道题目，全面评估你的性格类型。请根据直觉选择最接近你的选项。', 'mbti.start_tip1': '约需 10-15 分钟', 'mbti.start_tip2': '没有对错之分', 'mbti.start_tip3': '凭第一直觉作答', 'mbti.start_tip4': '仅供娱乐参考', 'mbti.start_btn': '开始测试', 'mbti.analysis_title': '📖 深度分析', 'mbti.strengths': '✅ 优势', 'mbti.weaknesses': '⚠️ 可能的挑战', 'mbti.careers': '💼 适合的方向', 'mbti.compatible': '💕 最佳拍档', 'mbti.cognitive': '🧩 认知功能' });
+    I18n.add('en', { 'mbti.title': '🧠 MBTI Personality Test', 'mbti.desc': 'Full 93 questions to discover your type (for fun only)', 'mbti.retry': '🔄 Retake', 'mbti.qof': 'Q {0} of {1}', 'mbti.stats_title': '📊 MBTI Type Distribution', 'mbti.stats_desc': 'See what types everyone got', 'mbti.history': 'Your History', 'mbti.start_title': 'MBTI Personality Type Test', 'mbti.start_desc': '93 questions for a comprehensive personality assessment. Choose the option that feels most natural to you.', 'mbti.start_tip1': 'Takes 10-15 minutes', 'mbti.start_tip2': 'No right or wrong answers', 'mbti.start_tip3': 'Go with your first instinct', 'mbti.start_tip4': 'For entertainment only', 'mbti.start_btn': 'Start Test', 'mbti.analysis_title': '📖 In-Depth Analysis', 'mbti.strengths': '✅ Strengths', 'mbti.weaknesses': '⚠️ Potential Challenges', 'mbti.careers': '💼 Suitable Paths', 'mbti.compatible': '💕 Best Match', 'mbti.cognitive': '🧩 Cognitive Functions' });
     I18n.apply();
 
     // 题库：[维度, 中文A, 中文B, 英文A, 英文B]  A选项倾向 E/S/T/J, B选项倾向 I/N/F/P
@@ -76,26 +76,91 @@
         ['JP','朋友约我我希望提前知道','朋友临时约我我也很开心','I want to know about plans in advance','I\'m happy with last-minute invitations'],
         ['JP','决策之后我很少后悔','我做完决定还会继续考虑','After a decision I rarely second-guess','After deciding I keep reconsidering'],
         ['JP','我觉得计划让事情更顺利','我觉得变化让事情更有趣','I think plans make things smoother','I think changes make things more exciting'],
+
+        // 拓展题 E/I (9题)
+        ['EI','我更喜欢大型聚会','我更喜欢小型聚餐','I prefer large gatherings','I prefer small dinners'],
+        ['EI','我容易融入新的社交环境','我需要时间适应新环境','I easily blend into new social settings','I need time to adjust to new settings'],
+        ['EI','讨论问题时我善于表达','讨论问题时我更善于倾听','In discussions I\'m good at expressing','In discussions I\'m a better listener'],
+        ['EI','我喜欢边聊边思考','我需要安静才能好好思考','I like thinking while chatting','I need quiet to think properly'],
+        ['EI','一个人待久了我会闷','和人待久了我需要独处','Being alone too long bores me','Being with people too long drains me'],
+        ['EI','我经常主动发起对话','我通常等别人先开口','I often initiate conversations','I usually wait for others to start'],
+        ['EI','我愿意在公共场合发言','在公共场合发言让我不自在','I\'m willing to speak publicly','Public speaking makes me uncomfortable'],
+        ['EI','节假日我想外出社交','节假日我想在家休息','On holidays I want to socialize','On holidays I want to rest at home'],
+        ['EI','我的能量来自人际互动','我的能量来自独处反思','My energy comes from social interactions','My energy comes from solitude and reflection'],
+
+        // 拓展题 S/N (8题)
+        ['SN','我喜欢有清楚的指令','我喜欢用自己的方式探索','I like having clear instructions','I prefer exploring my own way'],
+        ['SN','我记忆中更多是具体事件','我记忆中更多是感受和印象','My memories are mostly specific events','My memories are mostly feelings and impressions'],
+        ['SN','我注重当前的实际需求','我注重未来的发展潜力','I focus on current practical needs','I focus on future potential'],
+        ['SN','我做事脚踏实地','我做事天马行空','I work in a grounded way','I work in an imaginative way'],
+        ['SN','解决问题我从已知经验出发','解决问题我喜欢寻找全新思路','I solve problems from known experience','I solve problems by seeking fresh approaches'],
+        ['SN','我更关心"是什么"','我更关心"为什么"和"如果"','I care more about "what is"','I care more about "why" and "what if"'],
+        ['SN','我觉得实际经验比理论重要','我觉得理论和概念很有价值','Practical experience beats theory to me','Theory and concepts are valuable to me'],
+        ['SN','我阅读时注意细节','我阅读时寻找隐含含义','When reading I focus on details','When reading I look for hidden meanings'],
+
+        // 拓展题 T/F (8题)
+        ['TF','我以公正为原则','我以同理心为原则','I am guided by fairness','I am guided by empathy'],
+        ['TF','我觉得决策不应太感情用事','我觉得情感在决策中很重要','Decisions shouldn\'t be emotional','Emotions are important in decisions'],
+        ['TF','我注重效率和成果','我注重人际和感受','I focus on efficiency and results','I focus on relationships and feelings'],
+        ['TF','受到批评时我会理性反思','受到批评时我会感到受伤','When criticized I reflect rationally','When criticized I feel hurt'],
+        ['TF','我用"是否合理"来评判事物','我用"是否合情"来评判事物','I judge things by "is it reasonable"','I judge things by "is it compassionate"'],
+        ['TF','我认为竞争能激发潜力','我认为合作更能发挥价值','Competition brings out potential','Cooperation brings out the best'],
+        ['TF','别人需要帮忙时我先分析原因','别人需要帮忙时我先表达支持','When others need help I analyze first','When others need help I show support first'],
+        ['TF','我更看重一个人的能力表现','我更看重一个人的内心品质','I value competence more','I value inner character more'],
+
+        // 拓展题 J/P (8题)
+        ['JP','完成任务给我满足感','开始新项目给我兴奋感','Completing tasks gives me satisfaction','Starting new projects gives me excitement'],
+        ['JP','我通常准时或提前到达','我经常踩着点或迟到','I usually arrive on time or early','I often arrive just on time or late'],
+        ['JP','我的生活比较有规律','我的生活比较随性自由','My life is fairly routine','My life is fairly spontaneous'],
+        ['JP','制定好计划后我会严格遵守','我会根据情况灵活调整计划','Once I make a plan I follow it strictly','I adjust plans flexibly as needed'],
+        ['JP','没有计划我会感到焦虑','没有计划我会感到自在','Without plans I feel anxious','Without plans I feel free'],
+        ['JP','做事情我追求结果和闭环','做事情我享受过程和探索','I pursue outcomes and closure','I enjoy the process and exploration'],
+        ['JP','购物前我会做研究比较','购物我更靠当下的感觉','I research before buying','I buy based on how I feel in the moment'],
+        ['JP','在混乱中我想马上整理','在混乱中我能安然自若','In chaos I want to organize immediately','In chaos I can remain calm'],
     ];
 
     // 16 型描述
     const types = {
-        ISTJ: { zh: { name: '检查者', emoji: '📋', desc: '你是一个认真负责、值得信赖的人。做事有条不紊、一丝不苟，是组织中的中流砥柱。你重视传统和规则，用行动而非言语来表达关心。在你身上，人们总能看到踏实和可靠。' }, en: { name: 'Inspector', emoji: '📋', desc: 'You are responsible, dependable, and thorough. You approach tasks methodically and are the backbone of any group. You value tradition and express care through actions rather than words.' }},
-        ISFJ: { zh: { name: '守护者', emoji: '🛡️', desc: '温柔细心的你总是默默照顾身边的人。你有很强的观察力，能记住别人的喜好和需求。你低调但可靠，是朋友们最温暖的港湾。你的奉献精神让每个人都感到被珍视。' }, en: { name: 'Protector', emoji: '🛡️', desc: 'Gentle and attentive, you quietly take care of those around you. Your keen observation helps you remember others\' preferences. You\'re the warmest harbor for your friends.' }},
-        INFJ: { zh: { name: '提倡者', emoji: '🌙', desc: '你拥有深邃的洞察力和理想主义精神。外表安静，内心世界却极其丰富。你追求有意义的生活，能够理解人心深处的渴望。你的存在总是给人以启发和温暖。' }, en: { name: 'Advocate', emoji: '🌙', desc: 'You have deep insight and idealistic spirit. Quiet on the outside but incredibly rich within, you seek a meaningful life and understand the deepest human yearnings.' }},
-        INTJ: { zh: { name: '建筑师', emoji: '🏗️', desc: '独立自主、战略思维是你的标志。你善于构建宏大的蓝图并一步步去实现。在你的世界里，没有什么是不可能的。你的决心和远见让你成为天生的战略家。' }, en: { name: 'Architect', emoji: '🏗️', desc: 'Independent and strategic, you excel at building grand visions and executing them step by step. In your world, nothing is impossible. Your determination makes you a natural strategist.' }},
-        ISTP: { zh: { name: '鉴赏家', emoji: '🔧', desc: '冷静务实的你是天生的问题解决者。你喜欢用双手探索世界，动手能力超强。面对突发状况你总能保持冷静，灵活应对。你享受自由，不喜受到束缚。' }, en: { name: 'Virtuoso', emoji: '🔧', desc: 'Cool and practical, you\'re a natural problem solver. You love exploring the world hands-on and stay calm under pressure. You value freedom and resist constraints.' }},
-        ISFP: { zh: { name: '探险家', emoji: '🎨', desc: '你是一个温柔的自由灵魂，用感性的方式体验世界。你有独特的审美品味和艺术天赋。虽然不善言辞，但你的善良和真诚会在行动中自然流露。' }, en: { name: 'Adventurer', emoji: '🎨', desc: 'A gentle free spirit, you experience the world through feelings. You have unique aesthetic taste and artistic talent. Though not always vocal, your kindness shines through actions.' }},
-        INFP: { zh: { name: '调停者', emoji: '🦋', desc: '你是一个理想主义的梦想家，内心世界如同一座花园般丰富多彩。你追求真诚和深度的连接，对不公正的事情会挺身而出。你的想象力和同理心是你最大的超能力。' }, en: { name: 'Mediator', emoji: '🦋', desc: 'An idealistic dreamer, your inner world is as rich as a garden. You seek authenticity and deep connections, standing up against injustice. Your imagination and empathy are your superpowers.' }},
-        INTP: { zh: { name: '逻辑学家', emoji: '🔬', desc: '你拥有无穷的好奇心和独到的分析能力。思想是你最锋利的工具。你喜欢解构复杂的问题，寻找事物背后的逻辑。在知识的海洋里，你永远不会感到厌倦。' }, en: { name: 'Logician', emoji: '🔬', desc: 'With endless curiosity and sharp analytical skills, your mind is your greatest tool. You love deconstructing complex problems and finding the logic behind things.' }},
-        ESTP: { zh: { name: '企业家', emoji: '⚡', desc: '充满行动力和冒险精神的你活在当下。你反应敏捷，善于把握机会，喜欢刺激和挑战。你的魅力和果断让你成为人群中最耀眼的存在。' }, en: { name: 'Entrepreneur', emoji: '⚡', desc: 'Full of action and adventure, you live in the moment. Quick to react and seize opportunities, your charisma and decisiveness make you shine in any crowd.' }},
-        ESFP: { zh: { name: '表演者', emoji: '🎭', desc: '你是天生的焦点人物，热爱生活中的每一个精彩瞬间。你的热情和活力具有强大的感染力，和你在一起永远不会无聊。你用真诚和快乐温暖着每一个人。' }, en: { name: 'Entertainer', emoji: '🎭', desc: 'The life of every party, you love every exciting moment life offers. Your enthusiasm is contagious, and being around you is never boring. You warm everyone with genuine joy.' }},
-        ENFP: { zh: { name: '竞选者', emoji: '🌊', desc: '你是一个充满激情和创造力的自由灵魂。你能在任何事物中发现可能性，你的热情能够激励身边的每一个人。对你来说，人生就是一场充满惊喜的探险。' }, en: { name: 'Campaigner', emoji: '🌊', desc: 'A passionate and creative free spirit, you find possibilities in everything. Your enthusiasm inspires everyone around you. Life, for you, is an adventure full of surprises.' }},
-        ENTP: { zh: { name: '辩论家', emoji: '💡', desc: '机智灵活的你天生就是创新者。你享受思维的碰撞和辩论的快感，善于从不同角度审视问题。你的创造力和口才让你成为任何讨论中最有趣的声音。' }, en: { name: 'Debater', emoji: '💡', desc: 'Witty and flexible, you\'re a natural innovator. You enjoy intellectual sparring and examining problems from every angle. Your creativity makes you the most interesting voice in any discussion.' }},
-        ESTJ: { zh: { name: '总经理', emoji: '👔', desc: '你是一个出色的组织者和领导者。你有清晰的目标和坚定的执行力，善于建立秩序和制度。人们信赖你的判断力和办事能力，你是团队的核心支柱。' }, en: { name: 'Executive', emoji: '👔', desc: 'An outstanding organizer and leader, you have clear goals and firm execution. People trust your judgment and capability. You are the core pillar of any team.' }},
-        ESFJ: { zh: { name: '执政官', emoji: '❤️', desc: '温暖热心的你是社交圈的纽带。你善于照顾他人、营造和谐的氛围。你的慷慨和细心让你成为朋友中最受欢迎的人。你用爱和关怀凝聚了身边的每一个人。' }, en: { name: 'Consul', emoji: '❤️', desc: 'Warm and caring, you\'re the glue of your social circle. You excel at caring for others and creating harmony. Your generosity makes you the most beloved among friends.' }},
-        ENFJ: { zh: { name: '主人公', emoji: '🌟', desc: '你是天生的领袖和鼓舞者。你有强大的同理心和远见卓识，能够激发每个人的潜力。你追求让世界变得更好，你的热情和使命感几乎改变了你接触的每一个人。' }, en: { name: 'Protagonist', emoji: '🌟', desc: 'A natural leader and inspirer, you have powerful empathy and vision. You bring out the best in everyone and strive to make the world better through your passion.' }},
-        ENTJ: { zh: { name: '指挥官', emoji: '🎖️', desc: '你是一个果断自信的领导者，天生就擅长制定战略和带领团队走向成功。你有极强的目标导向和执行力，在你的字典里没有"不可能"。你的魄力和远见令人敬佩。' }, en: { name: 'Commander', emoji: '🎖️', desc: 'A decisive and confident leader, you excel at strategy and leading teams to success. Goal-oriented with strong execution, "impossible" isn\'t in your dictionary.' }},
+        ISTJ: { zh: { name: '检查者', emoji: '📋', desc: '你是一个认真负责、值得信赖的人。做事有条不紊、一丝不苟，是组织中的中流砥柱。你重视传统和规则，用行动而非言语来表达关心。在你身上，人们总能看到踏实和可靠。', strengths: '责任心强、细致严谨、言出必行', weaknesses: '可能过于固执、不擅表达情感', careers: '会计、审计、工程师、项目管理', compatible: 'ESFP、ESTP' }, en: { name: 'Inspector', emoji: '📋', desc: 'You are responsible, dependable, and thorough. You approach tasks methodically and are the backbone of any group. You value tradition and express care through actions rather than words.', strengths: 'Reliable, detail-oriented, keeps promises', weaknesses: 'Can be rigid, difficulty expressing emotions', careers: 'Accounting, Auditing, Engineering, Project Mgmt', compatible: 'ESFP, ESTP' }},
+        ISFJ: { zh: { name: '守护者', emoji: '🛡️', desc: '温柔细心的你总是默默照顾身边的人。你有很强的观察力，能记住别人的喜好和需求。你低调但可靠，是朋友们最温暖的港湾。你的奉献精神让每个人都感到被珍视。', strengths: '体贴入微、忠诚可靠、观察力强', weaknesses: '容易忽略自身需求、不善拒绝', careers: '医护、教育、社工、行政', compatible: 'ESFP、ESTP' }, en: { name: 'Protector', emoji: '🛡️', desc: 'Gentle and attentive, you quietly take care of those around you. Your keen observation helps you remember others\' preferences. You\'re the warmest harbor for your friends.', strengths: 'Caring, loyal, observant', weaknesses: 'May neglect own needs, difficulty saying no', careers: 'Healthcare, Education, Social Work, Admin', compatible: 'ESFP, ESTP' }},
+        INFJ: { zh: { name: '提倡者', emoji: '🌙', desc: '你拥有深邃的洞察力和理想主义精神。外表安静，内心世界却极其丰富。你追求有意义的生活，能够理解人心深处的渴望。你的存在总是给人以启发和温暖。', strengths: '洞察力强、富有远见、善解人意', weaknesses: '可能过于理想化、容易内耗', careers: '心理咨询、写作、教育、非营利', compatible: 'ENFP、ENTP' }, en: { name: 'Advocate', emoji: '🌙', desc: 'You have deep insight and idealistic spirit. Quiet on the outside but incredibly rich within, you seek a meaningful life and understand the deepest human yearnings.', strengths: 'Insightful, visionary, empathetic', weaknesses: 'Can be overly idealistic, prone to burnout', careers: 'Counseling, Writing, Education, Nonprofit', compatible: 'ENFP, ENTP' }},
+        INTJ: { zh: { name: '建筑师', emoji: '🏗️', desc: '独立自主、战略思维是你的标志。你善于构建宏大的蓝图并一步步去实现。在你的世界里，没有什么是不可能的。你的决心和远见让你成为天生的战略家。', strengths: '战略思维、独立自主、执行力强', weaknesses: '可能显得高冷、对他人要求过高', careers: '科研、战略顾问、技术架构、创业', compatible: 'ENFP、ENTP' }, en: { name: 'Architect', emoji: '🏗️', desc: 'Independent and strategic, you excel at building grand visions and executing them step by step. In your world, nothing is impossible.', strengths: 'Strategic thinking, independent, strong execution', weaknesses: 'Can seem aloof, high standards for others', careers: 'Research, Strategy Consulting, Tech Architecture, Startup', compatible: 'ENFP, ENTP' }},
+        ISTP: { zh: { name: '鉴赏家', emoji: '🔧', desc: '冷静务实的你是天生的问题解决者。你喜欢用双手探索世界，动手能力超强。面对突发状况你总能保持冷静，灵活应对。你享受自由，不喜受到束缚。', strengths: '冷静应变、动手能力强、逻辑清晰', weaknesses: '不善表达感情、可能过于冒险', careers: '机械工程、技术支持、体育、手工艺', compatible: 'ESTJ、ENTJ' }, en: { name: 'Virtuoso', emoji: '🔧', desc: 'Cool and practical, you\'re a natural problem solver. You love exploring the world hands-on and stay calm under pressure.', strengths: 'Calm under pressure, hands-on, logical', weaknesses: 'Difficulty expressing feelings, can be risk-prone', careers: 'Mechanical Eng, Tech Support, Sports, Crafts', compatible: 'ESTJ, ENTJ' }},
+        ISFP: { zh: { name: '探险家', emoji: '🎨', desc: '你是一个温柔的自由灵魂，用感性的方式体验世界。你有独特的审美品味和艺术天赋。虽然不善言辞，但你的善良和真诚会在行动中自然流露。', strengths: '审美独到、善良温暖、适应力强', weaknesses: '容易回避冲突、不善长期规划', careers: '设计、艺术、摄影、自然探索', compatible: 'ESTJ、ESFJ' }, en: { name: 'Adventurer', emoji: '🎨', desc: 'A gentle free spirit, you experience the world through feelings. You have unique aesthetic taste and artistic talent.', strengths: 'Artistic sense, warm-hearted, adaptable', weaknesses: 'Avoids conflict, difficulty with long-term planning', careers: 'Design, Art, Photography, Nature Exploration', compatible: 'ESTJ, ESFJ' }},
+        INFP: { zh: { name: '调停者', emoji: '🦋', desc: '你是一个理想主义的梦想家，内心世界如同一座花园般丰富多彩。你追求真诚和深度的连接，对不公正的事情会挺身而出。你的想象力和同理心是你最大的超能力。', strengths: '共情力强、创造力丰富、忠于价值', weaknesses: '容易情绪化、可能逃避现实', careers: '写作、心理咨询、艺术、人文研究', compatible: 'ENFJ、ENTJ' }, en: { name: 'Mediator', emoji: '🦋', desc: 'An idealistic dreamer, your inner world is as rich as a garden. You seek authenticity and deep connections.', strengths: 'Empathetic, creative, value-driven', weaknesses: 'Can be emotional, may avoid reality', careers: 'Writing, Counseling, Art, Humanities Research', compatible: 'ENFJ, ENTJ' }},
+        INTP: { zh: { name: '逻辑学家', emoji: '🔬', desc: '你拥有无穷的好奇心和独到的分析能力。思想是你最锋利的工具。你喜欢解构复杂的问题，寻找事物背后的逻辑。在知识的海洋里，你永远不会感到厌倦。', strengths: '分析力强、创新思维、求知欲旺', weaknesses: '社交被动、容易过度思考', careers: '科研、编程、数据分析、哲学', compatible: 'ENTJ、ESTJ' }, en: { name: 'Logician', emoji: '🔬', desc: 'With endless curiosity and sharp analytical skills, your mind is your greatest tool.', strengths: 'Analytical, innovative thinking, curious', weaknesses: 'Socially passive, overthinking', careers: 'Research, Programming, Data Analysis, Philosophy', compatible: 'ENTJ, ESTJ' }},
+        ESTP: { zh: { name: '企业家', emoji: '⚡', desc: '充满行动力和冒险精神的你活在当下。你反应敏捷，善于把握机会，喜欢刺激和挑战。你的魅力和果断让你成为人群中最耀眼的存在。', strengths: '行动力强、适应力佳、魅力十足', weaknesses: '可能缺乏耐心、忽视长远后果', careers: '创业、销售、体育、急救', compatible: 'ISFJ、ISTJ' }, en: { name: 'Entrepreneur', emoji: '⚡', desc: 'Full of action and adventure, you live in the moment. Your charisma and decisiveness make you shine in any crowd.', strengths: 'Action-oriented, adaptable, charismatic', weaknesses: 'May lack patience, overlook long-term effects', careers: 'Entrepreneurship, Sales, Sports, Emergency Services', compatible: 'ISFJ, ISTJ' }},
+        ESFP: { zh: { name: '表演者', emoji: '🎭', desc: '你是天生的焦点人物，热爱生活中的每一个精彩瞬间。你的热情和活力具有强大的感染力，和你在一起永远不会无聊。', strengths: '乐观开朗、善于社交、活力充沛', weaknesses: '可能缺乏计划性、容易分心', careers: '娱乐、公关、旅游、活动策划', compatible: 'ISFJ、ISTJ' }, en: { name: 'Entertainer', emoji: '🎭', desc: 'The life of every party, you love every exciting moment life offers. Your enthusiasm is contagious.', strengths: 'Optimistic, social, energetic', weaknesses: 'May lack planning, easily distracted', careers: 'Entertainment, PR, Tourism, Event Planning', compatible: 'ISFJ, ISTJ' }},
+        ENFP: { zh: { name: '竞选者', emoji: '🌊', desc: '你是一个充满激情和创造力的自由灵魂。你能在任何事物中发现可能性，你的热情能够激励身边的每一个人。', strengths: '热情洋溢、创意无穷、善于启发', weaknesses: '容易三分钟热度、不擅处理细节', careers: '创意、媒体、教育、市场营销', compatible: 'INFJ、INTJ' }, en: { name: 'Campaigner', emoji: '🌊', desc: 'A passionate and creative free spirit, you find possibilities in everything. Your enthusiasm inspires everyone around you.', strengths: 'Passionate, creative, inspiring', weaknesses: 'May lose interest quickly, weak on details', careers: 'Creative, Media, Education, Marketing', compatible: 'INFJ, INTJ' }},
+        ENTP: { zh: { name: '辩论家', emoji: '💡', desc: '机智灵活的你天生就是创新者。你享受思维的碰撞和辩论的快感，善于从不同角度审视问题。', strengths: '思维敏捷、口才出众、创新能力强', weaknesses: '可能过于好辩、不擅坚持到底', careers: '法律、创业、咨询、产品设计', compatible: 'INFJ、INTJ' }, en: { name: 'Debater', emoji: '💡', desc: 'Witty and flexible, you\'re a natural innovator. You enjoy intellectual sparring and examining problems from every angle.', strengths: 'Quick-witted, eloquent, innovative', weaknesses: 'Can be argumentative, difficulty following through', careers: 'Law, Entrepreneurship, Consulting, Product Design', compatible: 'INFJ, INTJ' }},
+        ESTJ: { zh: { name: '总经理', emoji: '👔', desc: '你是一个出色的组织者和领导者。你有清晰的目标和坚定的执行力，善于建立秩序和制度。', strengths: '组织力强、务实高效、领导力佳', weaknesses: '可能过于强势、不善变通', careers: '管理、法律、金融、军事', compatible: 'ISFP、ISTP' }, en: { name: 'Executive', emoji: '👔', desc: 'An outstanding organizer and leader, you have clear goals and firm execution.', strengths: 'Organized, practical, strong leadership', weaknesses: 'Can be domineering, inflexible', careers: 'Management, Law, Finance, Military', compatible: 'ISFP, ISTP' }},
+        ESFJ: { zh: { name: '执政官', emoji: '❤️', desc: '温暖热心的你是社交圈的纽带。你善于照顾他人、营造和谐的氛围。你的慷慨和细心让你成为朋友中最受欢迎的人。', strengths: '乐于助人、社交能力强、细心体贴', weaknesses: '过度在意他人评价、可能忽略自我', careers: '医护、教育、客服、公共关系', compatible: 'ISFP、ISTP' }, en: { name: 'Consul', emoji: '❤️', desc: 'Warm and caring, you\'re the glue of your social circle. Your generosity makes you the most beloved among friends.', strengths: 'Helpful, socially skilled, attentive', weaknesses: 'Overly concerned with others\' opinions, may neglect self', careers: 'Healthcare, Education, Customer Service, PR', compatible: 'ISFP, ISTP' }},
+        ENFJ: { zh: { name: '主人公', emoji: '🌟', desc: '你是天生的领袖和鼓舞者。你有强大的同理心和远见卓识，能够激发每个人的潜力。', strengths: '同理心强、有感染力、善于引导', weaknesses: '可能过度牺牲自我、容易理想化', careers: '教育、人力资源、培训、心理咨询', compatible: 'INFP、ISFP' }, en: { name: 'Protagonist', emoji: '🌟', desc: 'A natural leader and inspirer, you have powerful empathy and vision. You bring out the best in everyone.', strengths: 'Empathetic, charismatic, good at mentoring', weaknesses: 'May over-sacrifice, idealistic', careers: 'Education, HR, Training, Counseling', compatible: 'INFP, ISFP' }},
+        ENTJ: { zh: { name: '指挥官', emoji: '🎖️', desc: '你是一个果断自信的领导者，天生就擅长制定战略和带领团队走向成功。你有极强的目标导向和执行力。', strengths: '决断力强、战略思维、目标导向', weaknesses: '可能过于强势、不够耐心倾听', careers: '企业管理、战略咨询、投资、政治', compatible: 'INFP、INTP' }, en: { name: 'Commander', emoji: '🎖️', desc: 'A decisive and confident leader, you excel at strategy and leading teams to success. "Impossible" isn\'t in your dictionary.', strengths: 'Decisive, strategic, goal-oriented', weaknesses: 'Can be domineering, impatient with listening', careers: 'Executive Mgmt, Strategy Consulting, Investment, Politics', compatible: 'INFP, INTP' }},
+    };
+
+    // 认知功能映射
+    const cognitiveFunctions = {
+        ISTJ: { dom: 'Si', aux: 'Te', tert: 'Fi', inf: 'Ne' },
+        ISFJ: { dom: 'Si', aux: 'Fe', tert: 'Ti', inf: 'Ne' },
+        INFJ: { dom: 'Ni', aux: 'Fe', tert: 'Ti', inf: 'Se' },
+        INTJ: { dom: 'Ni', aux: 'Te', tert: 'Fi', inf: 'Se' },
+        ISTP: { dom: 'Ti', aux: 'Se', tert: 'Ni', inf: 'Fe' },
+        ISFP: { dom: 'Fi', aux: 'Se', tert: 'Ni', inf: 'Te' },
+        INFP: { dom: 'Fi', aux: 'Ne', tert: 'Si', inf: 'Te' },
+        INTP: { dom: 'Ti', aux: 'Ne', tert: 'Si', inf: 'Fe' },
+        ESTP: { dom: 'Se', aux: 'Ti', tert: 'Fe', inf: 'Ni' },
+        ESFP: { dom: 'Se', aux: 'Fi', tert: 'Te', inf: 'Ni' },
+        ENFP: { dom: 'Ne', aux: 'Fi', tert: 'Te', inf: 'Si' },
+        ENTP: { dom: 'Ne', aux: 'Ti', tert: 'Fe', inf: 'Si' },
+        ESTJ: { dom: 'Te', aux: 'Si', tert: 'Ne', inf: 'Fi' },
+        ESFJ: { dom: 'Fe', aux: 'Si', tert: 'Ne', inf: 'Ti' },
+        ENFJ: { dom: 'Fe', aux: 'Ni', tert: 'Se', inf: 'Ti' },
+        ENTJ: { dom: 'Te', aux: 'Ni', tert: 'Se', inf: 'Fi' },
+    };
+    const cfNames = {
+        zh: { Si: '内向感觉', Se: '外向感觉', Ni: '内向直觉', Ne: '外向直觉', Ti: '内向思考', Te: '外向思考', Fi: '内向情感', Fe: '外向情感' },
+        en: { Si: 'Introverted Sensing', Se: 'Extraverted Sensing', Ni: 'Introverted Intuition', Ne: 'Extraverted Intuition', Ti: 'Introverted Thinking', Te: 'Extraverted Thinking', Fi: 'Introverted Feeling', Fe: 'Extraverted Feeling' }
     };
 
     let current = 0;
@@ -169,11 +234,74 @@
             </div>`;
         }).join('');
 
+        // 综合分析区域
+        renderAnalysis(type, lang);
+
         document.getElementById('mbti-result').scrollIntoView({ behavior: 'smooth' });
 
         // 统计：保存结果 & 展示分布
         saveMBTIResult(type);
         showMBTIStats(type);
+    }
+
+    function renderAnalysis(type, lang) {
+        const data = types[type][lang] || types[type].zh;
+        const cf = cognitiveFunctions[type];
+        const cfN = cfNames[lang] || cfNames.zh;
+
+        let analysisEl = document.getElementById('mbti-analysis');
+        if (!analysisEl) {
+            analysisEl = document.createElement('div');
+            analysisEl.id = 'mbti-analysis';
+            analysisEl.className = 'mbti-analysis-section';
+            const dimsEl = document.getElementById('mbti-dims');
+            dimsEl.parentNode.insertBefore(analysisEl, dimsEl.nextSibling);
+        }
+
+        const secTitle = lang === 'zh' ? '深度分析' : 'In-Depth Analysis';
+        const cfTitle = lang === 'zh' ? '认知功能栈' : 'Cognitive Function Stack';
+        const strTitle = lang === 'zh' ? '核心优势' : 'Key Strengths';
+        const weakTitle = lang === 'zh' ? '潜在盲点' : 'Potential Blind Spots';
+        const careerTitle = lang === 'zh' ? '适合的职业方向' : 'Career Directions';
+        const compatTitle = lang === 'zh' ? '最佳匹配类型' : 'Best Compatible Types';
+
+        const cfLabels = lang === 'zh'
+            ? ['主导功能', '辅助功能', '第三功能', '劣势功能']
+            : ['Dominant', 'Auxiliary', 'Tertiary', 'Inferior'];
+
+        analysisEl.innerHTML = `
+            <h3 style="text-align:center;color:var(--primary);margin:24px 0 16px;font-size:1.15rem;">${secTitle}</h3>
+            <div class="analysis-card">
+                <h4>${cfTitle}</h4>
+                <div class="cf-stack">
+                    ${[['dom', cfLabels[0], 'var(--primary)'], ['aux', cfLabels[1], 'var(--secondary)'], ['tert', cfLabels[2], 'var(--accent)'], ['inf', cfLabels[3], '#aaa']].map(([k, label, color]) => `
+                    <div class="cf-item">
+                        <span class="cf-badge" style="background:${color};color:#fff;">${cf[k]}</span>
+                        <span class="cf-name">${cfN[cf[k]]}</span>
+                        <span class="cf-role">${label}</span>
+                    </div>`).join('')}
+                </div>
+            </div>
+            <div class="analysis-row">
+                <div class="analysis-card half">
+                    <h4>${strTitle}</h4>
+                    <p>${data.strengths}</p>
+                </div>
+                <div class="analysis-card half">
+                    <h4>${weakTitle}</h4>
+                    <p>${data.weaknesses}</p>
+                </div>
+            </div>
+            <div class="analysis-row">
+                <div class="analysis-card half">
+                    <h4>${careerTitle}</h4>
+                    <p>${data.careers}</p>
+                </div>
+                <div class="analysis-card half">
+                    <h4>${compatTitle}</h4>
+                    <p>${data.compatible}</p>
+                </div>
+            </div>`;
     }
 
     // ===== MBTI 统计系统 =====
@@ -284,8 +412,19 @@
         }
     }
 
-    // 初始化
-    render();
+    // 初始化 — 显示开始界面，等待用户点击开始
+    document.getElementById('mbti-start-btn')?.addEventListener('click', () => {
+        // 检查人机验证
+        if (window.MyLuck && window.MyLuck.Turnstile && !window.MyLuck.Turnstile.isVerified()) {
+            const lang = I18n.lang;
+            alert(lang === 'zh' ? '请先完成人机验证' : 'Please complete verification first');
+            return;
+        }
+        document.getElementById('mbti-start').style.display = 'none';
+        document.getElementById('mbti-quiz').style.display = 'block';
+        render();
+        document.getElementById('mbti-quiz').scrollIntoView({ behavior: 'smooth' });
+    });
 
     // 语言切换时重新渲染当前状态
     document.addEventListener('langchange', () => {
@@ -321,6 +460,8 @@
 
             // 重新渲染统计
             showMBTIStats(type);
+            // 重新渲染分析
+            renderAnalysis(type, lang);
         } else {
             // 答题中：重新渲染当前题目
             render();
@@ -330,10 +471,10 @@
     document.getElementById('mbti-retry')?.addEventListener('click', () => {
         current = 0;
         scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
-        document.getElementById('mbti-quiz').style.display = 'block';
+        document.getElementById('mbti-quiz').style.display = 'none';
         document.getElementById('mbti-result').style.display = 'none';
-        render();
-        document.getElementById('mbti-quiz').scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('mbti-start').style.display = 'block';
+        document.getElementById('mbti-start').scrollIntoView({ behavior: 'smooth' });
     });
 
     document.getElementById('mbti-share')?.addEventListener('click', () => {
@@ -454,6 +595,16 @@
 
     // 初始化排行榜
     loadMBTILeaderboard();
+
+    // 注入统计人数
+    var mbtiVisitor = document.getElementById('mbti-visitor-count');
+    if (mbtiVisitor && window.MyLuck && window.MyLuck.injectVisitorCount) {
+        window.MyLuck.injectVisitorCount(mbtiVisitor, {
+            id: 'mbti',
+            labelZh: '做过MBTI测试',
+            labelEn: 'took the MBTI test'
+        });
+    }
 
     // Turnstile
     if (window.MyLuck.Turnstile && window.MyLuck.Turnstile.isEnabled()) {
