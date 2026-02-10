@@ -183,92 +183,42 @@
         return d.innerHTML;
     }
 
-    // ========== Supabase 排行榜 ==========
-    const SUPABASE_URL = 'https://qerajxnmtwyjtokhaonq.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlcmFqeG5tdHd5anRva2hhb25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MTA1MjksImV4cCI6MjA4NjE4NjUyOX0.sUMZ_RIu9zLjMOB3nnruJezlQL0i-GrunDIkahWcF5E';
-    let supabaseClient = null;
-
-    async function getSupabase() {
-        if (supabaseClient) return supabaseClient;
-        try {
-            const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-            supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-            return supabaseClient;
-        } catch (e) { return null; }
-    }
+    // ========== 排行榜（统一模块） ==========
+    var currentResult = null;
 
     async function loadLeaderboard() {
-        var container = document.getElementById('rp-global-list');
-        if (!container) return;
-        try {
-            var sb = await getSupabase();
-            if (!sb) { container.innerHTML = '<p style="text-align:center;color:#bbb;">' + (I18n ? I18n.t('rp.rank_fail') : 'Leaderboard unavailable') + '</p>'; return; }
-            var today = new Date().toISOString().slice(0, 10);
-            var { data, error } = await sb.from('leaderboard').select('*').eq('test_date', today).eq('visible', true).order('score', { ascending: false }).limit(20);
-            if (error || !data) { container.innerHTML = '<p style="text-align:center;color:#bbb;">' + (I18n ? I18n.t('rp.rank_fail') : 'Load failed') + '</p>'; return; }
-            if (data.length === 0) {
-                var I18n = window.MyLuck && window.MyLuck.I18n;
-                container.innerHTML = '<p style="text-align:center;color:#bbb;">' + (I18n ? I18n.t('rp.board_empty') : '还没有人上榜，来当第一个！') + '</p>';
-                return;
-            }
-            container.innerHTML = '';
-            var medals = ['🥇', '🥈', '🥉'];
-            data.forEach(function (entry, i) {
-                var div = document.createElement('div');
-                div.className = 'rp-rank-row';
-                var medal = i < 3 ? '<span class="rp-rank-medal">' + medals[i] + '</span>' : '<span class="rp-rank-medal" style="opacity:0.3">#' + (i + 1) + '</span>';
-                div.innerHTML = '<div class="rp-rank-left">' + medal + '<span class="rp-rank-name">' + escapeHtml(entry.character_emoji || '') + ' ' + escapeHtml(entry.name || '') + '</span><span class="rp-rank-char">' + escapeHtml(entry.character_title || '') + '</span></div><span class="rp-rank-score" style="color:' + getColor(entry.score) + '">' + entry.score + '</span>';
-                container.appendChild(div);
-            });
-        } catch (e) {
-            container.innerHTML = '<p style="text-align:center;color:#bbb;">' + (I18n ? I18n.t('rp.rank_fail') : 'Leaderboard unavailable') + '</p>';
-        }
+        var LB = window.MyLuck && window.MyLuck.Leaderboard;
+        if (!LB) return;
+        await LB.load('rp-global-list', 'rp');
     }
-
-    var currentResult = null;
 
     async function submitToLeaderboard() {
         if (!currentResult) return;
         var I18n = window.MyLuck && window.MyLuck.I18n;
-        var Security = window.MyLuck && window.MyLuck.Security;
-        var Turnstile = window.MyLuck && window.MyLuck.Turnstile;
-
-        // 反垃圾检查
-        if (Security && !Security.rateLimit('leaderboard', 5)) {
-            alert(I18n ? I18n.t('gb.toomany') : '操作太频繁，请稍后再试');
-            return;
-        }
-        if (Turnstile && !Turnstile.isVerified()) {
-            alert(I18n && I18n.lang === 'en' ? 'Please complete verification' : '请完成人机验证');
-            return;
-        }
+        var LB = window.MyLuck && window.MyLuck.Leaderboard;
+        if (!LB) return;
 
         var rankBtn = document.getElementById('rp-rank');
         if (rankBtn) { rankBtn.disabled = true; rankBtn.textContent = '...'; }
 
-        try {
-            var sb = await getSupabase();
-            if (!sb) throw new Error('No Supabase');
-            var today = new Date().toISOString().slice(0, 10);
-            var isEn = I18n && I18n.lang === 'en';
-            var { error } = await sb.from('leaderboard').insert({
-                name: currentResult.name,
-                character_id: currentResult.character.id,
-                character_emoji: currentResult.character.emoji,
-                character_title: isEn ? currentResult.character.titleEn : currentResult.character.title,
-                score: currentResult.score,
-                test_type: 'rp',
-                test_date: today,
-                visible: true
-            });
-            if (error) throw error;
-            if (rankBtn) rankBtn.textContent = I18n ? I18n.t('rp.ranked') : '✅ 已上榜！';
-            if (Turnstile) Turnstile.reset();
-            await loadLeaderboard();
-        } catch (e) {
-            alert(I18n ? I18n.t('rp.rank_fail') : '上榜失败，请稍后重试');
-            if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = I18n ? I18n.t('rp.rank') : '🏆 上榜'; }
-        }
+        var isEn = I18n && I18n.lang === 'en';
+        var success = await LB.submit('rp', {
+            name: currentResult.name,
+            score: currentResult.score,
+            character_id: String(currentResult.character.id),
+            character_emoji: currentResult.character.emoji,
+            character_title: isEn ? currentResult.character.titleEn : currentResult.character.title
+        }, {
+            onSuccess: function () {
+                if (rankBtn) rankBtn.textContent = I18n ? I18n.t('rp.ranked') : '✅ 已上榜！';
+                loadLeaderboard();
+            },
+            onFail: function () {
+                alert(I18n ? I18n.t('rp.rank_fail') : '上榜失败，请稍后重试');
+                if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = I18n ? I18n.t('rp.rank') : '🏆 上榜'; }
+            }
+        });
+        if (!success && rankBtn) { rankBtn.disabled = false; rankBtn.textContent = I18n ? I18n.t('rp.rank') : '🏆 上榜'; }
     }
 
     function shareRP() {
@@ -279,18 +229,16 @@
         var isEn = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
 
         var text = isEn
-            ? 'My Daily Persona on MyLuck: ' + emoji + ' [' + title + '] ' + score + '%\n\n' + desc + '\n\nFind your persona 👉 https://myluck.top/rp-test.html'
-            : '我在 MyLuck 测出今日人设：' + emoji + '【' + title + '】' + score + '分\n\n' + desc + '\n\n快来测测你是什么人设 👉 https://myluck.top/rp-test.html';
+            ? 'My Daily Persona on MyLuck: ' + emoji + ' [' + title + '] ' + score + '%\n\n' + desc
+            : '我在 MyLuck 测出今日人设：' + emoji + '【' + title + '】' + score + '分\n\n' + desc;
         var shareTitle = isEn ? 'MyLuck Daily Persona - ' + title : 'MyLuck 今日人设 - ' + title;
 
-        if (navigator.share) {
-            navigator.share({ title: shareTitle, text: text, url: 'https://myluck.top/rp-test.html' }).catch(function () { });
+        if (window.MyLuck && window.MyLuck.Share) {
+            window.MyLuck.Share.show(text, 'https://myluck.top/rp-test.html', { title: shareTitle });
         } else if (navigator.clipboard) {
-            navigator.clipboard.writeText(text).then(function () {
-                alert(isEn ? 'Result copied! Share it with friends!' : '结果已复制到剪贴板，快去分享给朋友吧！');
+            navigator.clipboard.writeText(text + '\nhttps://myluck.top/rp-test.html').then(function () {
+                alert(isEn ? 'Result copied!' : '结果已复制！');
             });
-        } else {
-            prompt(isEn ? 'Copy and share with friends:' : '复制以下结果分享给朋友：', text);
         }
     }
 
@@ -314,6 +262,11 @@
 
         // 加载全球排行榜
         loadLeaderboard();
+
+        // 初始化 Turnstile 人机验证
+        if (window.MyLuck && window.MyLuck.Turnstile && window.MyLuck.Turnstile.isEnabled()) {
+            window.MyLuck.Turnstile.render('turnstile-rp');
+        }
 
         // 语言切换时刷新内容
         document.addEventListener('langchange', function () {

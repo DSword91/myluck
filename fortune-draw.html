@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="在线求签抽签 - 虔诚摇签，获取今日运势指引。观音灵签风格，每日一签，趣味娱乐">
-    <meta name="keywords" content="在线求签,抽签,每日一签,观音灵签,运势签,今日运签,求签问卦,MyLuck,myluck.top">
+    <meta name="description" content="在线求签抽签 - 百支传统签诗，中英双语解签。虔诚摇签，获取今日运势指引，趋吉避凶">
+    <meta name="keywords" content="在线求签,抽签,每日一签,观音灵签,100支签诗,中英解签,运势签,今日运签,MyLuck,myluck.top">
     <meta name="referrer" content="no-referrer">
     <meta name="robots" content="index, follow">
-    <title>在线求签 - MyLuck | 每日一签测运势</title>
+    <title>在线求签 - MyLuck | 百支签诗 中英解签</title>
     <link rel="canonical" href="https://myluck.top/fortune-draw.html">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎋</text></svg>">
     <meta property="og:title" content="在线求签 - MyLuck">
-    <meta property="og:description" content="虔诚摇签，获取今日运势指引。每日一签，趣味娱乐">
+    <meta property="og:description" content="百支传统签诗，中英双语解签。每日一签，趣味娱乐">
     <meta property="og:url" content="https://myluck.top/fortune-draw.html">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="MyLuck">
     <meta property="og:locale" content="zh_CN">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="在线求签 - MyLuck">
-    <meta name="twitter:description" content="虔诚摇签，获取今日运势指引">
+    <meta name="twitter:description" content="百支传统签诗，中英双语解签">
     <link rel="stylesheet" href="css/style.css">
     <style>
         .draw-container { max-width: 500px; margin: 0 auto; text-align: center; }
@@ -159,9 +159,14 @@
                             <div class="slip-actions">
                                 <button class="btn-share-slip" id="share-slip" data-i18n="draw.share">📤 分享签文</button>
                                 <button class="btn-redraw" id="redraw-btn" data-i18n="draw.redraw">🔄 再求一签</button>
+                                <button class="btn-share-slip" id="fortune-rank" style="background:#fdcb6e;color:#333;">🏆 上榜</button>
                             </div>
+                            <div id="turnstile-fortune" style="margin:10px 0;display:flex;justify-content:center;"></div>
                         </div>
                     </div>
+
+                    <!-- 排行榜 -->
+                    <div id="fortune-board-section"></div>
 
                     <p class="disclaimer-text" data-i18n="disclaimer.tag">仅供娱乐参考 · 算法随机生成 · 请勿迷信</p>
                 </div>
@@ -171,6 +176,8 @@
 
     <script src="js/common.js" defer></script>
     <script src="js/share.js" defer></script>
+    <script src="js/leaderboard.js" defer></script>
+    <script src="js/fortune-sticks-data.js" defer></script>
     <script src="js/fortune-draw.js" defer></script>
     <noscript>
         <div style="text-align:center;padding:40px 20px;">

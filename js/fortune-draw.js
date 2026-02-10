@@ -5,121 +5,99 @@
     // 签文等级英文映射
     const LEVEL_EN = { '上上签': 'Supreme Fortune', '上签': 'Great Fortune', '中上签': 'Good Fortune', '中签': 'Average Fortune', '中下签': 'Below Average', '下签': 'Poor Fortune', '下下签': 'Worst Fortune' };
 
-    // 四维方面英文映射
+    // 四维方面英文映射 (完整100签覆盖)
     const ASPECT_EN = {
+        // ---- 事业 Career ----
         '大展宏图': 'Sky\'s the limit', '步步高升': 'Rapid promotion', '贵人提携': 'Helped by mentor', '逆境翻盘': 'Comeback time', '事业有成': 'Great success',
-        '机会不断': 'Opportunities ahead', '合作顺利': 'Smooth teamwork', '考试通过': 'Exams passed', '稳中有升': 'Steady rise', '贵人相助': 'Noble helper',
-        '团队和睦': 'Great team vibe', '努力有成': 'Hard work pays off', '峰回路转': 'Plot twist coming', '口碑极佳': 'Great reputation', '晋升在望': 'Promotion near',
+        '名利双收': 'Fame & fortune', '掌控全局': 'Full control', '四面开花': 'Blooming all around', '机会不断': 'Opportunities ahead', '合作顺利': 'Smooth teamwork',
+        '考试通过': 'Exams passed', '稳中有升': 'Steady rise', '贵人相助': 'Noble helper', '团队和睦': 'Great team vibe', '努力有成': 'Hard work pays off',
+        '峰回路转': 'Plot twist coming', '口碑极佳': 'Great reputation', '晋升在望': 'Promotion near', '实力取胜': 'Win by strength', '大显身手': 'Show your talent',
+        '先难后易': 'Hard then easy', '才华展现': 'Talent revealed', '人脉广通': 'Wide connections', '跨越发展': 'Leap forward',
         '顺其自然': 'Go with the flow', '态度决定': 'Attitude is key', '等待时机': 'Wait for timing', '先苦后甜': 'Sweet after bitter', '淡定从容': 'Stay calm',
-        '平稳发展': 'Steady growth', '机会将至': 'Chance coming', '脚踏实地': 'Stay grounded',
+        '平稳发展': 'Steady growth', '机会将至': 'Chance coming', '脚踏实地': 'Stay grounded', '默默耕耘': 'Silent efforts', '拓展视野': 'Broaden horizons',
+        '远方机会': 'Distant chance', '正能量满满': 'Full positivity', '勤奋有加': 'Extra diligent', '即将转机': 'Turning point soon',
         '维持现状': 'Status quo', '谨慎决策': 'Decide carefully', '换个思路': 'Try new approach', '立即行动': 'Act now', '静待时机': 'Wait patiently',
         '塞翁失马': 'Blessing in disguise', '团队合作': 'Team effort', '安守本分': 'Stay humble', '再进一步': 'One more step', '放眼长远': 'Think long term',
-        '安于现状': 'Accept present', '暂时困扰': 'Temporary setback',
+        '安于现状': 'Accept present', '暂时困扰': 'Temporary setback', '扬长避短': 'Play to strengths', '日久见功': 'Time proves worth',
+        '寻求合作': 'Seek cooperation', '居安思危': 'Prepare for worst', '坚持正道': 'Stay righteous', '做好准备': 'Be prepared', '换位思考': 'Walk in their shoes',
+        '珍惜机会': 'Cherish chances', '从容应对': 'Handle calmly', '考验之中': 'Being tested', '轮到你了': 'Your turn now', '随遇而安': 'Go with flow',
+        '打好基础': 'Build foundation', '谦虚学习': 'Learn humbly', '退让有智': 'Wise to yield', '修炼内功': 'Inner training',
         '遇到阻碍': 'Obstacles ahead', '暂停计划': 'Pause plans', '寻求帮助': 'Ask for help', '有变动': 'Changes coming', '小心受骗': 'Beware of scams',
-        '低谷期': 'Low period', '放慢脚步': 'Slow down',
+        '低谷期': 'Low period', '放慢脚步': 'Slow down', '跳出局限': 'Break free', '少说多做': 'Less talk more action', '听取建议': 'Take advice',
+        '独自承受': 'Bear it alone', '小心维护': 'Guard carefully', '给人面子': 'Save face', '不要冒险': 'Don\'t risk',
         '困难重重': 'Many challenges', '多重挑战': 'Multiple hurdles', '仔细检查': 'Double check', '方向不明': 'Direction unclear', '低调行事': 'Stay low-key',
-        '暂时停滞': 'Stagnation', '暂避锋芒': 'Lay low',
+        '情绪管理': 'Manage emotions', '不要出头': 'Don\'t stand out', '咬牙坚持': 'Grit through', '学习提升': 'Learn & grow', '暂时低估': 'Undervalued now',
+        '改正错误': 'Fix mistakes', '吸取教训': 'Learn lessons', '推倒重来': 'Start over', '接受现实': 'Accept reality', '凤凰涅槃': 'Phoenix rebirth',
+        '暂时停滞': 'Stagnation', '暂避锋芒': 'Lay low', '万事如意': 'Everything goes well',
+        // ---- 感情 Love ----
         '佳缘天成': 'Destined love', '喜结良缘': 'Happy union', '天赐良缘': 'Heaven-sent match', '破镜重圆': 'Reconciliation', '家庭美满': 'Happy family',
         '桃花正旺': 'Romance blooming', '感情升温': 'Love growing', '有情人终成眷属': 'Lovers unite', '和谐甜蜜': 'Sweet harmony', '有人暗恋': 'Secret admirer',
         '缘分将至': 'Fate approaching', '日久生情': 'Love grows slowly', '意外邂逅': 'Surprise encounter', '真心相待': 'True-hearted', '佳偶天成': 'Perfect match',
+        '众星捧月': 'Center of attention', '桃花遍地': 'Romance everywhere', '真爱降临': 'True love arrives', '霸道总裁': 'Alpha energy', '万人迷': 'Irresistible charm',
+        '人见人爱': 'Universally loved', '贵人牵线': 'Matchmaker help', '苦尽甘来': 'Sweet after bitter', '新的圈子': 'New social circle', '异地缘分': 'Long-distance fate',
+        '善良吸引人': 'Kindness attracts', '用心经营': 'Invest in love', '守得云开': 'Wait for sunshine', '不表白也被看到': 'Noticed without words',
         '缘分有时': 'Fate has timing', '心态要好': 'Keep positive', '不急不缓': 'No rush', '考验过后': 'After the test', '随缘随心': 'Follow your heart',
         '细水长流': 'Steady & lasting', '珍惜眼前': 'Cherish the present', '慢慢培养': 'Build slowly',
         '不温不火': 'Neither hot nor cold', '观望为主': 'Wait and see', '放宽心胸': 'Open your heart', '主动出击': 'Take initiative', '不要催促': 'Don\'t rush',
-        '因祸得福': 'Fortune from misfortune', '相互体谅': 'Mutual understanding', '顺其自然': 'Let it be', '差一步表白': 'Almost confessed', '放下执念': 'Let go',
-        '平淡是福': 'Simplicity is bliss', '小有波折': 'Minor bumps',
+        '因祸得福': 'Fortune from misfortune', '相互体谅': 'Mutual understanding', '差一步表白': 'Almost confessed', '放下执念': 'Let go',
+        '平淡是福': 'Simplicity is bliss', '小有波折': 'Minor bumps', '接受不完美': 'Accept imperfect', '日久见真心': 'Time reveals truth',
+        '互相理解': 'Mutual understanding', '互相扶持': 'Support each other', '不要大意': 'Don\'t be careless', '以诚相待': 'Be sincere',
+        '先了解再行动': 'Understand first', '多理解对方': 'More empathy', '珍惜感情': 'Cherish feelings', '不慌不忙': 'No panic',
+        '感情磨练': 'Love trials', '风水轮流': 'Tables will turn', '不执着': 'Don\'t cling', '低调恋爱': 'Low-key romance', '低调相处': 'Keep it low-key', '淡然处之': 'Stay detached',
         '沟通不畅': 'Poor communication', '冷静思考': 'Think calmly', '暂时孤独': 'Temporarily alone', '起伏不定': 'Ups and downs', '看清真心': 'See true feelings',
-        '冷淡期': 'Cool period', '给彼此空间': 'Give space',
+        '冷淡期': 'Cool period', '给彼此空间': 'Give space', '不要争吵': 'Don\'t argue', '找朋友聊聊': 'Talk to a friend', '思念故人': 'Missing someone',
+        '不要炫耀': 'Don\'t show off', '放过对方': 'Let them go', '不要赌气': 'Don\'t be petty',
         '需要磨合': 'Needs adjustment', '误会增多': 'More misunderstandings', '言多必失': 'Less is more', '飘忽不定': 'Unstable', '谦让为上': 'Be humble',
-        '冷静反思': 'Calm reflection', '独处反思': 'Solo reflection',
+        '考验感情': 'Testing love', '学会沟通': 'Learn to communicate', '不被理解': 'Misunderstood', '修复关系': 'Fix relationship', '放下过去': 'Let go of past',
+        '天涯共此时': 'Together in spirit', '烈火重生': 'Reborn from fire', '重新开始': 'Fresh start',
+        '冷静反思': 'Calm reflection', '独处反思': 'Solo reflection', '大风大浪': 'Stormy seas',
+        // ---- 财运 Wealth ----
         '财源广进': 'Wealth pouring in', '意外之财': 'Surprise fortune', '丰收满仓': 'Full harvest', '否极泰来': 'Fortune after misfortune', '衣食无忧': 'No worries',
+        '日进斗金': 'Gold every day', '八方来财': 'Wealth from all sides', '商业嗅觉敏锐': 'Sharp business sense', '投资将回报': 'Investment payoff', '价值释放': 'Value unleashed',
+        '和气生财': 'Harmony brings wealth', '一本万利': 'Huge returns', '闷声发财': 'Quietly getting rich', '新领域机会': 'New field chance', '外来投资': 'Outside investment',
+        '善因善果': 'Good karma', '一分耕耘一分收': 'Reap what you sow', '绝处逢生': 'Saved at the last moment',
         '收入看涨': 'Income rising', '小有收获': 'Small gains', '投资回报': 'Investment payoff', '知足常乐': 'Content & happy', '意外收入': 'Windfall',
-        '劳有所得': 'Work rewarded', '柳暗花明': 'Light after dark', '善有善报': 'Karma returns good', '稳步增长': 'Steady growth',
+        '劳有所得': 'Work rewarded', '柳暗花明': 'Light after dark', '善有善报': 'Karma returns good', '稳步增长': 'Steady growth', '财来财去终有余': 'Wealth flows & stays',
         '不急不躁': 'No hurry', '储蓄为主': 'Save first', '先投入后回报': 'Invest then gain', '不贪不求': 'No greed', '小富即安': 'Content with enough',
         '适度享受': 'Enjoy moderately', '积少成多': 'Little by little',
         '收支平衡': 'Breaking even', '保守理财': 'Conservative finance', '分散投资': 'Diversify', '该花就花': 'Spend when needed', '长线投资': 'Long-term invest',
         '失之东隅': 'Lost here found there', '合伙经营': 'Partnership', '量入为出': 'Live within means', '快到回本': 'Almost even', '目光远大': 'Big vision',
-        '够用就好': 'Enough is enough',
+        '够用就好': 'Enough is enough', '先苦后甜': 'Sweet after bitter', '保持信心': 'Stay confident', '先储蓄后投资': 'Save then invest', '不露富': 'Don\'t flaunt wealth',
+        '节俭为本': 'Frugality first', '合资共赢': 'Joint win', '留有余地': 'Leave room', '正当经营': 'Honest business', '调查研究': 'Do research',
+        '互利共赢': 'Mutual benefit', '见好就收': 'Quit while ahead', '灵活应变': 'Be flexible', '平衡配置': 'Balanced allocation', '心想事成': 'Wishes come true',
         '开支增大': 'Expenses rising', '减少投资': 'Reduce investments', '勒紧腰带': 'Tighten belt', '有得有失': 'Win some lose some', '警惕陷阱': 'Watch for traps',
-        '紧缩期': 'Tight period', '稳健为主': 'Be conservative',
-        '入不敷出': 'Overspending', '意外支出': 'Unexpected costs', '谨防损失': 'Guard against loss', '不稳定': 'Unstable', '保守理财': 'Play it safe',
-        '注意节俭': 'Be frugal', '极度节俭': 'Ultra frugal',
+        '紧缩期': 'Tight period', '稳健为主': 'Be conservative', '暂时退出': 'Temporary exit', '换个角度': 'Change perspective', '低调处理': 'Handle quietly',
+        '请教专家': 'Consult experts', '拮据时期': 'Tight times', '谨防回调': 'Watch for pullback', '不要赶尽杀绝': 'Don\'t go all out',
+        '入不敷出': 'Overspending', '意外支出': 'Unexpected costs', '谨防损失': 'Guard against loss', '不稳定': 'Unstable',
+        '注意节俭': 'Be frugal', '极度节俭': 'Ultra frugal', '缩减开支': 'Cut spending', '隐藏财富': 'Hide wealth', '不要赌博': 'Don\'t gamble',
+        '困难时期': 'Hard times', '学习理财': 'Learn finance', '价值被低估': 'Undervalued', '止损': 'Cut losses', '接受损失': 'Accept loss',
+        '从零起步': 'Start from zero', '勿求完美': 'Don\'t seek perfection', '浴火重生': 'Reborn from fire',
+        // ---- 健康 Health ----
         '精力充沛': 'Full of energy', '身强体壮': 'Strong & healthy', '心身康泰': 'Mind & body well', '病去体安': 'Recovery coming', '长寿安康': 'Long & healthy life',
+        '神采奕奕': 'Radiant', '活力四射': 'Full of vigor', '百毒不侵': 'Immune to all', '虎背熊腰': 'Strong build', '焕然一新': 'Refreshed',
+        '笑口常开': 'Always smiling', '蒸蒸日上': 'Getting better daily',
         '身体不错': 'Feeling good', '精神焕发': 'Refreshed spirit', '旧疾渐愈': 'Old illness healing', '平安健康': 'Safe & sound', '无大碍': 'No big deal',
         '心情愉悦': 'Happy mood', '坚持锻炼': 'Keep exercising', '渐入佳境': 'Getting better', '身心通泰': 'Totally well', '活力满满': 'Full of vitality',
         '放松心情': 'Relax', '身心愉悦': 'Mind & body happy', '养精蓄锐': 'Rest & recharge', '锻炼见效': 'Exercise working', '身心自在': 'At ease',
-        '安然无恙': 'Safe & unharmed', '天气转好': 'Weather improving', '日积月累': 'Gradual progress',
+        '安然无恙': 'Safe & unharmed', '天气转好': 'Weather improving', '日积月累': 'Gradual progress', '冬去春来': 'Winter turns spring', '旅行有益': 'Travel helps',
+        '阳光心态': 'Sunny mindset', '劳逸结合': 'Balance work & rest', '好转在即': 'Improving soon',
         '注意休息': 'Get more rest', '定期体检': 'Regular checkups', '多做运动': 'Exercise more', '及时就医': 'See doctor promptly', '静养为主': 'Rest primarily',
         '心态要平': 'Stay balanced', '不信偏方': 'No folk remedies', '要注意休息': 'Must rest more', '不要熬夜': 'Don\'t stay up late',
+        '全面检查': 'Full checkup', '减少争吵': 'Less arguing', '需要关怀': 'Need care', '高处风大': 'Windy at top', '心存善念': 'Kind thoughts',
+        '不要逞强': 'Don\'t overdo', '好好调理': 'Take care', '撑下去': 'Hang in there', '咨询医生': 'Consult doctor', '相信会好': 'Believe in recovery',
+        '改变习惯': 'Change habits', '不要自责': 'Don\'t blame yourself', '重建健康': 'Rebuild health', '绝境重生': 'Rise from bottom',
+        '阴阳调和': 'Yin-yang balance', '福寿双全': 'Fortune & longevity', '行得正坐得端': 'Walk upright', '对症下药': 'Right treatment',
+        '与人为善': 'Be kind', '趁健康多保养': 'Maintain while healthy', '稳定情绪': 'Stabilize emotions', '锻炼意志': 'Build willpower',
+        '群体活动': 'Group activities', '防患未然': 'Prevent problems', '戒骄戒躁': 'Stay calm & humble', '心平气和': 'Inner peace', '静心养神': 'Meditate & rest',
         '注意身体': 'Take care', '免疫力低': 'Low immunity', '预防为主': 'Prevention first', '身心疲惫': 'Exhausted', '韬光养晦': 'Lay low & recover',
-        '好好休息': 'Rest well', '调养生息': 'Recuperate', '心宽体健': 'Peace of mind',
-        '注意保养': 'Take care of yourself', '多加小心': 'Be careful', '情绪低落': 'Feeling down', '规律作息': 'Regular routine'
+        '好好休息': 'Rest well', '调养生息': 'Recuperate', '心宽体健': 'Peace of mind', '紧急保护': 'Emergency care',
+        '注意保养': 'Take care of yourself', '多加小心': 'Be careful', '情绪低落': 'Feeling down', '规律作息': 'Regular routine',
+        '相互关心': 'Care for each other', '坚持治疗': 'Continue treatment', '简单生活': 'Simple living',
+        '小病防大': 'Prevent small illness', '开阔心胸': 'Open your mind', '内在调养': 'Inner nourishment'
     };
 
-    // 49支灵签数据
-    const FORTUNE_STICKS = [
-        // ===== 上上签 (5支) =====
-        { id: 1, level: '上上签', cls: 'great', poem: '春来花开满园香\n贵人相助运道昌\n凡事顺遂心如意\n前程似锦耀辉光', interpret: '此签大吉，万事亨通。如日中天，诸事皆顺，贵人频现，财运亨通。宜积极进取，把握良机。', career: '大展宏图', love: '佳缘天成', wealth: '财源广进', health: '精力充沛' },
-        { id: 2, level: '上上签', cls: 'great', poem: '金鳞岂是池中物\n一遇风云便化龙\n乘风破浪会有时\n直挂云帆济沧海', interpret: '此签为龙腾之象，预示突破与飞跃。长期的努力即将获得丰厚回报，大胆行动方能成就非凡。', career: '步步高升', love: '喜结良缘', wealth: '意外之财', health: '身强体壮' },
-        { id: 3, level: '上上签', cls: 'great', poem: '紫气东来满庭芳\n吉星高照喜洋洋\n千里姻缘一线牵\n万事如意福满堂', interpret: '紫气东来，福运降临。此签预示全方位的好运，尤其在人际关系和家庭方面，将有喜事临门。', career: '贵人提携', love: '天赐良缘', wealth: '丰收满仓', health: '心身康泰' },
-        { id: 4, level: '上上签', cls: 'great', poem: '枯木逢春再发枝\n乌云散尽见晴时\n守得花开终有日\n翻身跃上最高枝', interpret: '此签预示困境即将结束，否极泰来。之前的坚持和等待将获得回报，人生将迎来崭新的篇章。', career: '逆境翻盘', love: '破镜重圆', wealth: '否极泰来', health: '病去体安' },
-        { id: 5, level: '上上签', cls: 'great', poem: '三星高照福禄全\n喜事连连乐无边\n风调雨顺年丰稳\n阖家欢乐笑开颜', interpret: '三星拱照，福禄寿三全。此签预示家庭和睦、事业稳固、健康无忧，是难得的全面大吉之签。', career: '事业有成', love: '家庭美满', wealth: '衣食无忧', health: '长寿安康' },
-
-        // ===== 上签 (10支) =====
-        { id: 6, level: '上签', cls: 'good', poem: '东风送暖百花开\n万紫千红次第来\n好运连连人欢喜\n心想事成不用猜', interpret: '此签为春风得意之象，运势上扬。机会正在靠近，保持积极心态，好事自然来。', career: '机会不断', love: '桃花正旺', wealth: '收入看涨', health: '身体不错' },
-        { id: 7, level: '上签', cls: 'good', poem: '月到中秋分外明\n人逢喜事精神清\n举杯邀月同欢乐\n好运随风送上门', interpret: '如中秋明月般圆满。此签预示近期将有喜事降临，人际关系和谐，适合社交活动。', career: '合作顺利', love: '感情升温', wealth: '小有收获', health: '精神焕发' },
-        { id: 8, level: '上签', cls: 'good', poem: '久旱逢甘雨\n他乡遇故知\n金榜题名日\n洞房花烛时', interpret: '人生四大喜事齐聚，此签预示等待已久的好消息即将到来，耐心终将得到回报。', career: '考试通过', love: '有情人终成眷属', wealth: '投资回报', health: '旧疾渐愈' },
-        { id: 9, level: '上签', cls: 'good', poem: '竹报平安春意浓\n梅开五福喜相逢\n和风细雨润无声\n处处皆是好光景', interpret: '平稳中见吉祥，此签预示平顺安康的好运。不求大富大贵，但诸事顺心如意。', career: '稳中有升', love: '和谐甜蜜', wealth: '细水长流', health: '平安健康' },
-        { id: 10, level: '上签', cls: 'good', poem: '一帆风顺行千里\n半道贵人暗相助\n莫道前路多坎坷\n风雨过后见彩虹', interpret: '此签预示有贵人暗中相助，即便遇到困难也能逢凶化吉。保持乐观心态最为重要。', career: '贵人相助', love: '有人暗恋', wealth: '意外收入', health: '无大碍' },
-        { id: 11, level: '上签', cls: 'good', poem: '鹊桥相会喜气浓\n红线牵引有缘逢\n勿问前程多远近\n且行且珍惜当中', interpret: '此签利感情，有缘之人正在靠近。珍惜眼前人和机会，幸福就在身边。', career: '团队和睦', love: '缘分将至', wealth: '知足常乐', health: '心情愉悦' },
-        { id: 12, level: '上签', cls: 'good', poem: '春风化雨润万物\n勤耕细作收获丰\n不必忧愁前路事\n付出之后有回丰', interpret: '辛勤的付出即将迎来收获的季节。此签鼓励持续努力，不要急于求成。', career: '努力有成', love: '日久生情', wealth: '劳有所得', health: '坚持锻炼' },
-        { id: 13, level: '上签', cls: 'good', poem: '柳暗花明又一村\n山重水复路还存\n莫言此路行不通\n转角遇见满天春', interpret: '此签预示看似困难的事情将出现转机。换个角度思考问题，意想不到的好事正在等你。', career: '峰回路转', love: '意外邂逅', wealth: '柳暗花明', health: '渐入佳境' },
-        { id: 14, level: '上签', cls: 'good', poem: '积善之家有余庆\n行好之人天自佑\n但行好事莫问果\n福报自来不须求', interpret: '善行积德之象，此签提示保持善良与正直，好运自然会降临。近期有行善得福的机会。', career: '口碑极佳', love: '真心相待', wealth: '善有善报', health: '身心通泰' },
-        { id: 15, level: '上签', cls: 'good', poem: '青云直上九重天\n乘龙快婿美名传\n功名利禄非难事\n但须勤奋在当先', interpret: '此签预示上升的运势，但需要自身的努力配合。机会已经出现，就看你是否能抓住。', career: '晋升在望', love: '佳偶天成', wealth: '稳步增长', health: '活力满满' },
-
-        // ===== 中上签 (8支) =====
-        { id: 16, level: '中上签', cls: 'good', poem: '船到桥头自然直\n车到山前必有路\n凡事不必太着急\n水到渠成好运来', interpret: '此签劝诫不必过于焦虑，事情会自然解决。保持平常心，顺其自然反而会有好结果。', career: '顺其自然', love: '缘分有时', wealth: '不急不躁', health: '放松心情' },
-        { id: 17, level: '中上签', cls: 'good', poem: '小桥流水有人家\n春暖花开满天涯\n只要心中有阳光\n处处都是好年华', interpret: '此签预示内心的态度决定运势的好坏。保持积极乐观，好运便会不期而至。', career: '态度决定', love: '心态要好', wealth: '知足常乐', health: '身心愉悦' },
-        { id: 18, level: '中上签', cls: 'good', poem: '好风凭借力\n送我上青云\n且待时机到\n一举定乾坤', interpret: '此签提示时机很重要，目前正在积蓄力量的阶段。等到合适的时机一举出击，必能成功。', career: '等待时机', love: '不急不缓', wealth: '储蓄为主', health: '养精蓄锐' },
-        { id: 19, level: '中上签', cls: 'good', poem: '风吹杨柳暗自舞\n雨打芭蕉声声酥\n不经一番寒彻骨\n怎得梅花扑鼻香', interpret: '此签预示经历考验后将迎来甜美的果实。当前的困难都是为了之后的幸福做铺垫。', career: '先苦后甜', love: '考验过后', wealth: '先投入后回报', health: '锻炼见效' },
-        { id: 20, level: '中上签', cls: 'good', poem: '明月当空照九州\n清风拂面百无忧\n但求心中常自在\n何须外物苦追求', interpret: '此签提示幸福来自内心的满足。不要过于追逐外在的东西，内心的平静才是真正的好运。', career: '淡定从容', love: '随缘随心', wealth: '不贪不求', health: '身心自在' },
-        { id: 21, level: '中上签', cls: 'good', poem: '青山不改绿水流\n花落花开年复年\n且把浮名换浅唱\n岁月静好乐悠然', interpret: '此签主平安喜乐，虽无大起大落，但生活稳定幸福。享受当下，珍惜平凡的美好。', career: '平稳发展', love: '细水长流', wealth: '小富即安', health: '安然无恙' },
-        { id: 22, level: '中上签', cls: 'good', poem: '燕子归来春又到\n花开花落自有时\n人生得意须尽欢\n莫使金樽空对月', interpret: '此签预示好运正在路上，但提醒要及时把握机会享受生活。活在当下，珍惜眼前。', career: '机会将至', love: '珍惜眼前', wealth: '适度享受', health: '天气转好' },
-        { id: 23, level: '中上签', cls: 'good', poem: '千里之行始于足下\n万事开头难过后\n只要功夫深似铁\n磨杵也能成绣针', interpret: '此签鼓励脚踏实地。大目标要分解成小步骤，一步步来，最终必能到达理想的彼岸。', career: '脚踏实地', love: '慢慢培养', wealth: '积少成多', health: '日积月累' },
-
-        // ===== 中签 (12支) =====
-        { id: 24, level: '中签', cls: 'fair', poem: '浮云蔽日终须散\n流水行舟复又还\n但看眼前风景好\n何必忧愁到明天', interpret: '此签预示运势平平，不好不坏。暂时的困扰终会过去，不必过分担忧，安心做好当下。', career: '维持现状', love: '不温不火', wealth: '收支平衡', health: '注意休息' },
-        { id: 25, level: '中签', cls: 'fair', poem: '半山腰上看风景\n不上不下心悠然\n进退之间须谨慎\n三思而后再向前', interpret: '此签提示当前处于关键抉择时期。不要冲动行事，多思考多权衡，稳妥为上。', career: '谨慎决策', love: '观望为主', wealth: '保守理财', health: '定期体检' },
-        { id: 26, level: '中签', cls: 'fair', poem: '天涯何处无芳草\n何必单恋一枝花\n放宽心胸看世界\n处处都有好办法', interpret: '此签提示不要执着于单一选择。打开思路，多考虑其他可能性，也许更好的选择正在别处等你。', career: '换个思路', love: '放宽心胸', wealth: '分散投资', health: '多做运动' },
-        { id: 27, level: '中签', cls: 'fair', poem: '有花堪折直须折\n莫待无花空折枝\n今日事情今日了\n莫将诸事到明推', interpret: '此签提醒要及时行动，不要拖延。该做的事情不要犹豫，错过时机就难以弥补。', career: '立即行动', love: '主动出击', wealth: '该花就花', health: '及时就医' },
-        { id: 28, level: '中签', cls: 'fair', poem: '守得云开见日出\n静待花开终有时\n急躁反而误大事\n耐心等待最相宜', interpret: '此签建议保持耐心和定力。急于求成反而会适得其反，安静等待才是上策。', career: '静待时机', love: '不要催促', wealth: '长线投资', health: '静养为主' },
-        { id: 29, level: '中签', cls: 'fair', poem: '塞翁失马焉知非福\n祸福相依莫强求\n看似不顺实有因\n回头方知是好路', interpret: '此签提示表面的不顺可能暗藏好运。不要被眼前的困难吓倒，它可能是通往更好结局的必经之路。', career: '塞翁失马', love: '因祸得福', wealth: '失之东隅', health: '小病防大' },
-        { id: 30, level: '中签', cls: 'fair', poem: '风雨同舟共前行\n患难与共见真情\n独行虽快众行远\n合作方能成大器', interpret: '此签强调团队和合作的力量。不要独自承担一切，寻求帮助和支持会让事情事半功倍。', career: '团队合作', love: '相互体谅', wealth: '合伙经营', health: '相互关心' },
-        { id: 31, level: '中签', cls: 'fair', poem: '四季轮回有定数\n春去秋来各有时\n勿要强求不属己\n安分守己待佳期', interpret: '此签提示顺应自然规律，不要强求不属于自己的东西。当前最好的策略是安分守己。', career: '安守本分', love: '顺其自然', wealth: '量入为出', health: '规律作息' },
-        { id: 32, level: '中签', cls: 'fair', poem: '画龙不须点睛时\n万事俱备等东风\n差的只是一步路\n再进一步便成功', interpret: '此签预示你离成功只差一步。不要半途而废，再坚持一下就能看到曙光。', career: '再进一步', love: '差一步表白', wealth: '快到回本', health: '坚持治疗' },
-        { id: 33, level: '中签', cls: 'fair', poem: '人生在世不称意\n明朝散发弄扁舟\n莫道浮云遮望眼\n风物长宜放眼量', interpret: '此签提示要有长远眼光。暂时的不如意只是人生的一小段，从更高的角度看，一切都会好起来。', career: '放眼长远', love: '放下执念', wealth: '目光远大', health: '调整心态' },
-        { id: 34, level: '中签', cls: 'fair', poem: '平平淡淡才是真\n简简单单最快乐\n不求大富与大贵\n但求安康伴此生', interpret: '此签提示平淡的生活中有最真实的幸福。不要好高骛远，珍惜现在拥有的一切。', career: '安于现状', love: '平淡是福', wealth: '够用就好', health: '简单生活' },
-        { id: 35, level: '中签', cls: 'fair', poem: '问君能有几多愁\n恰似一江春水流\n愁来愁去终须散\n转眼红日上西楼', interpret: '此签提示忧愁只是暂时的。困扰你的事情终究会过去，保持乐观心态最重要。', career: '暂时困扰', love: '小有波折', wealth: '起伏不定', health: '心宽体健' },
-
-        // ===== 中下签 (7支) =====
-        { id: 36, level: '中下签', cls: 'poor', poem: '山高路远行路难\n雾锁前程不见天\n虽是一时风雨急\n雨过天晴在明天', interpret: '此签预示近期运势略有波折。虽然前路不太明朗，但只要坚持就能度过难关。', career: '遇到阻碍', love: '沟通不畅', wealth: '开支增大', health: '注意保养' },
-        { id: 37, level: '中下签', cls: 'poor', poem: '逆水行舟不进退\n风大浪急要小心\n收帆稳舵待风平\n切莫冒进遭祸殃', interpret: '此签提示当前要谨慎行事，不宜冒进。退一步海阔天空，等待更好的时机再出发。', career: '暂停计划', love: '冷静思考', wealth: '减少投资', health: '多加小心' },
-        { id: 38, level: '中下签', cls: 'poor', poem: '独木难支大厦倾\n孤雁难飞万里程\n知己难求心莫急\n静待春风暖自明', interpret: '此签提示不要独自硬撑。遇到困难时要学会求助，但也要保持耐心，不可操之过急。', career: '寻求帮助', love: '暂时孤独', wealth: '勒紧腰带', health: '情绪低落' },
-        { id: 39, level: '中下签', cls: 'poor', poem: '花开花落两由之\n世事无常莫叹息\n得之淡然失之坦\n心平气和度光阴', interpret: '此签提示世事无常，得失随缘。不要太执着于结果，保持平和的心态来面对生活中的变化。', career: '有变动', love: '起伏不定', wealth: '有得有失', health: '心态要平' },
-        { id: 40, level: '中下签', cls: 'poor', poem: '雾里看花花不真\n水中捞月月难寻\n虚幻之事莫追逐\n脚踏实地才为真', interpret: '此签警示不要被虚幻的东西所迷惑。有人可能在欺骗你，要擦亮眼睛辨别真假。', career: '小心受骗', love: '看清真心', wealth: '警惕陷阱', health: '不信偏方' },
-        { id: 41, level: '中下签', cls: 'poor', poem: '寒冬腊月雪纷飞\n百花凋零鸟不归\n但知冬去春必至\n忍耐一时便是春', interpret: '此签预示正处于人生的"寒冬"阶段。虽然艰难，但这只是暂时的，春天一定会来。', career: '低谷期', love: '冷淡期', wealth: '紧缩期', health: '要注意休息' },
-        { id: 42, level: '中下签', cls: 'poor', poem: '欲速则不达\n欲益反而损\n退后一步想\n方为上上策', interpret: '此签提示凡事不可急躁冒进。越着急越容易出错，退一步思考反而能找到更好的方法。', career: '放慢脚步', love: '给彼此空间', wealth: '稳健为主', health: '不要熬夜' },
-
-        // ===== 下签 (5支) =====
-        { id: 43, level: '下签', cls: 'poor', poem: '暗夜行路须仔细\n处处荆棘要留心\n虽是前路难行走\n黎明之前最黑暗', interpret: '此签预示当前处境较为艰难。但请记住：黎明前的黑暗最深，曙光就在不远处，坚持就是胜利。', career: '困难重重', love: '需要磨合', wealth: '入不敷出', health: '注意身体' },
-        { id: 44, level: '下签', cls: 'poor', poem: '屋漏偏逢连夜雨\n船迟又遇打头风\n且将烦恼都放下\n明朝自有明朝风', interpret: '此签预示近期可能遭遇连环不顺。但不要被困难击倒，一切终将过去。', career: '多重挑战', love: '误会增多', wealth: '意外支出', health: '免疫力低' },
-        { id: 45, level: '下签', cls: 'poor', poem: '失之毫厘差千里\n一着不慎满盘输\n凡事三思而后行\n小心驶得万年船', interpret: '此签警示要格外小心谨慎。在做重要决定时尤其要深思熟虑，一个小错误可能导致大问题。', career: '仔细检查', love: '言多必失', wealth: '谨防损失', health: '预防为主' },
-        { id: 46, level: '下签', cls: 'poor', poem: '浮萍漂泊无定所\n随波逐流任东西\n若要安身立命处\n先须稳住自己心', interpret: '此签提示当前可能感到迷茫和不知所措。最重要的是先安定内心，找到自己的方向。', career: '方向不明', love: '飘忽不定', wealth: '不稳定', health: '身心疲惫' },
-        { id: 47, level: '下签', cls: 'poor', poem: '满招损来谦受益\n骄兵必败古今同\n低头做事莫张扬\n韬光养晦待时中', interpret: '此签警示不要骄傲自满。低调做人、老实做事才是当前最好的策略。', career: '低调行事', love: '谦让为上', wealth: '保守理财', health: '韬光养晦' },
-
-        // ===== 下下签 (2支) =====
-        { id: 48, level: '下下签', cls: 'poor', poem: '乌云压城城欲摧\n风雨飘摇路难归\n但看四季终轮转\n冬去春来花自开', interpret: '此签虽为下下签，但请记住：最坏的时候也意味着转机即将到来。坚持住，一切都会好起来的。不要灰心！', career: '暂时停滞', love: '冷静反思', wealth: '注意节俭', health: '好好休息' },
-        { id: 49, level: '下下签', cls: 'poor', poem: '四面楚歌声声急\n虎落平阳被犬欺\n忍得一时风浪过\n终有拨云见日时', interpret: '此签预示当前处境不佳，但这是人生的必经阶段。熬过去了，前面就是坦途。所谓"吃得苦中苦，方为人上人"。', career: '暂避锋芒', love: '独处反思', wealth: '极度节俭', health: '调养生息' }
-    ];
+    // 使用外部数据文件 fortune-sticks-data.js 的100支灵签
+    let STICKS = [];
 
     // 公用种子随机数
     function seededRandom(seed) {
@@ -159,14 +137,12 @@
     function drawFortune(isDaily) {
         let stick;
         if (isDaily) {
-            // 每日固定签：基于日期种子
             const rng = seededRandom(getTodaySeed());
-            const idx = Math.floor(rng() * FORTUNE_STICKS.length);
-            stick = FORTUNE_STICKS[idx];
+            const idx = Math.floor(rng() * STICKS.length);
+            stick = STICKS[idx];
         } else {
-            // 随机签
-            const idx = Math.floor(Math.random() * FORTUNE_STICKS.length);
-            stick = FORTUNE_STICKS[idx];
+            const idx = Math.floor(Math.random() * STICKS.length);
+            stick = STICKS[idx];
         }
         return stick;
     }
@@ -179,14 +155,20 @@
         const levelEl = document.getElementById('slip-level');
         levelEl.textContent = isEn ? (LEVEL_EN[stick.level] || stick.level) : stick.level;
         levelEl.className = 'slip-level ' + stick.cls;
+        // 诗词始终中文（文化元素）
         document.getElementById('slip-poem').innerHTML = stick.poem.replace(/\n/g, '<br>');
-        document.getElementById('slip-interpret').textContent = (isEn ? '📜 Interpretation: ' : '📜 解签：') + stick.interpret;
+        // 解签：中文 or 英文
+        var interpretText = isEn ? (stick.interpretEn || stick.interpret) : stick.interpret;
+        document.getElementById('slip-interpret').textContent = (isEn ? '📜 Interpretation: ' : '📜 解签：') + interpretText;
+        // 四维方面
         document.getElementById('asp-career').textContent = isEn ? (ASPECT_EN[stick.career] || stick.career) : stick.career;
         document.getElementById('asp-love').textContent = isEn ? (ASPECT_EN[stick.love] || stick.love) : stick.love;
         document.getElementById('asp-wealth').textContent = isEn ? (ASPECT_EN[stick.wealth] || stick.wealth) : stick.wealth;
         document.getElementById('asp-health').textContent = isEn ? (ASPECT_EN[stick.health] || stick.health) : stick.health;
         slip.style.display = 'block';
         slip.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // 保存当前结果用于分享
+        window._currentStick = stick;
     }
 
     // 摇签动画
@@ -204,76 +186,164 @@
         hint.textContent = isEn1 ? '🙏 Drawing fortune...' : '🙏 虔诚摇签中...';
         hint.style.animation = 'none';
 
-        // 摇签1.5秒
         setTimeout(function () {
             scene.classList.remove('shaking');
             scene.classList.add('drawn');
 
-            // 随机选一根签棍飞出
-            const sticks = document.querySelectorAll('.stick');
-            const chosenIdx = Math.floor(Math.random() * sticks.length);
-            sticks[chosenIdx].classList.add('chosen');
+            var stickEls = document.querySelectorAll('.stick');
+            var chosenIdx = Math.floor(Math.random() * stickEls.length);
+            stickEls[chosenIdx].classList.add('chosen');
 
-            // 延迟显示结果
             setTimeout(function () {
-                const stick = drawFortune(isDaily);
+                var stick = drawFortune(isDaily);
                 showResult(stick);
                 btn.disabled = false;
-                const isEn2 = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
+                var isEn2 = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
                 hint.textContent = isEn2 ? '✨ Fortune revealed below' : '✨ 签文已出，请查看下方';
                 hint.style.animation = '';
-
-                // 重新初始化签棍
                 setTimeout(initSticks, 1000);
             }, 600);
         }, 1500);
     }
 
-    // 分享签文
+    // 分享签文（使用统一分享模块）
     function shareSlip() {
-        const number = document.getElementById('slip-number').textContent;
-        const level = document.getElementById('slip-level').textContent;
-        const poem = document.getElementById('slip-poem').textContent;
-        const isEn = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
+        var number = document.getElementById('slip-number').textContent;
+        var level = document.getElementById('slip-level').textContent;
+        var poem = document.getElementById('slip-poem').textContent;
+        var isEn = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
 
-        const text = isEn
-            ? 'I drew ' + number + ' [' + level + '] on MyLuck!\n\n' + poem + '\n\nTry your fortune 👉 https://myluck.top/fortune-draw.html'
-            : '我在 MyLuck 求得了' + number + '【' + level + '】\n\n' + poem + '\n\n来试试你的运势吧 👉 https://myluck.top/fortune-draw.html';
-        const title = isEn ? 'MyLuck Fortune - ' + level : 'MyLuck 灵签 - ' + level;
+        var text = isEn
+            ? 'I drew ' + number + ' [' + level + '] on MyLuck!\n\n' + poem
+            : '我在 MyLuck 求得了' + number + '【' + level + '】\n\n' + poem;
+        var title = isEn ? 'MyLuck Fortune - ' + level : 'MyLuck 灵签 - ' + level;
 
-        if (navigator.share) {
-            navigator.share({ title: title, text: text, url: 'https://myluck.top/fortune-draw.html' }).catch(function () { });
+        if (window.MyLuck && window.MyLuck.Share) {
+            window.MyLuck.Share.show(text, 'https://myluck.top/fortune-draw.html', { title: title });
         } else if (navigator.clipboard) {
-            navigator.clipboard.writeText(text).then(function () {
-                alert(isEn ? 'Fortune copied! Share it with friends!' : '签文已复制到剪贴板，快去分享给朋友吧！');
+            navigator.clipboard.writeText(text + '\nhttps://myluck.top/fortune-draw.html').then(function () {
+                alert(isEn ? 'Fortune copied!' : '签文已复制！');
             });
-        } else {
-            prompt(isEn ? 'Copy and share with friends:' : '复制以下签文分享给朋友：', text);
         }
+    }
+
+    // 排行榜功能
+    function initLeaderboard() {
+        var boardSection = document.getElementById('fortune-board-section');
+        var LB = window.MyLuck && window.MyLuck.Leaderboard;
+        if (!boardSection || !LB) return;
+
+        var en = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
+        boardSection.innerHTML = LB.createHTML({
+            boardId: 'fortune-board-list',
+            titleZh: '🏆 今日灵签排行',
+            titleEn: '🏆 Today\'s Fortune Ranking'
+        });
+
+        // 自定义渲染签面排行
+        LB.load('fortune-board-list', 'fortune', {
+            formatEntry: function (entry, i, medal) {
+                var emoji = entry.character_emoji ? escapeHtml(entry.character_emoji) + ' ' : '';
+                var detail = entry.character_title ? '<span class="lb-detail">' + escapeHtml(entry.character_title) + '</span>' : '';
+                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + escapeHtml(entry.name || '匿名') + '</span>' + detail + '</div><span class="lb-score" style="color:' + getColor(entry.score) + '">' + (entry.score || 0) + '</span>';
+            }
+        });
+    }
+
+    function escapeHtml(str) {
+        if (window.MyLuck && window.MyLuck.Security) return window.MyLuck.Security.escapeHtml(str);
+        var d = document.createElement('div');
+        d.textContent = str;
+        return d.innerHTML;
+    }
+
+    function getColor(score) {
+        if (score >= 90) return '#e17055';
+        if (score >= 70) return '#fdcb6e';
+        if (score >= 50) return '#00b894';
+        if (score >= 30) return '#74b9ff';
+        return '#b2bec3';
+    }
+
+    // 签等级对应分数
+    function levelScore(level) {
+        var scores = { '上上签': 100, '上签': 85, '中上签': 72, '中签': 55, '中下签': 38, '下签': 22, '下下签': 8 };
+        return scores[level] || 50;
+    }
+
+    async function submitFortuneToLeaderboard() {
+        if (!window._currentStick) {
+            alert(isEnNow() ? 'Draw first!' : '请先求签！');
+            return;
+        }
+        var stick = window._currentStick;
+        var LB = window.MyLuck && window.MyLuck.Leaderboard;
+        if (!LB) return;
+
+        var I18n = window.MyLuck && window.MyLuck.I18n;
+        var t = function(k, fb) { return I18n ? I18n.t(k) : fb; };
+        var en = isEnNow();
+        var name = prompt(en ? 'Enter your name for leaderboard:' : '输入你的名字上榜：');
+        if (!name || !name.trim()) return;
+        name = name.trim().substring(0, 20);
+
+        var rankBtn = document.getElementById('fortune-rank');
+        if (rankBtn) { rankBtn.disabled = true; rankBtn.textContent = '...'; }
+
+        var score = levelScore(stick.level);
+        var success = await LB.submit('fortune', {
+            name: name,
+            score: score,
+            character_id: String(stick.id),
+            character_emoji: stick.level === '上上签' ? '🎊' : stick.level === '上签' ? '✨' : stick.level === '中上签' ? '🌟' : stick.level === '中签' ? '📜' : stick.level === '中下签' ? '🌧️' : stick.level === '下签' ? '🌫️' : '⛈️',
+            character_title: en ? (LEVEL_EN[stick.level] || stick.level) : stick.level
+        }, {
+            onSuccess: function () {
+                if (rankBtn) rankBtn.textContent = t('draw.ranked', '✅ 已上榜！');
+                LB.load('fortune-board-list', 'fortune');
+            },
+            onFail: function () {
+                alert(t('draw.rank_fail', '上榜失败，请稍后重试'));
+                if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = t('draw.rank', '🏆 上榜'); }
+            }
+        });
+        if (!success && rankBtn) { rankBtn.disabled = false; rankBtn.textContent = t('draw.rank', '🏆 上榜'); }
+    }
+
+    function isEnNow() {
+        return window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en';
     }
 
     // 入口
     function init() {
+        // 从外部数据文件加载签数据
+        STICKS = window.FORTUNE_STICKS || [];
+        if (STICKS.length === 0) {
+            console.warn('[fortune-draw] No fortune sticks data found. Check fortune-sticks-data.js');
+        }
+
         initSticks();
 
-        const scene = document.getElementById('draw-scene');
-        const btn = document.getElementById('draw-btn');
-        const shareBtn = document.getElementById('share-slip');
-        const redrawBtn = document.getElementById('redraw-btn');
-        const dailyInfo = document.getElementById('daily-info');
+        var scene = document.getElementById('draw-scene');
+        var btn = document.getElementById('draw-btn');
+        var shareBtn = document.getElementById('share-slip');
+        var redrawBtn = document.getElementById('redraw-btn');
+        var rankBtn = document.getElementById('fortune-rank');
+        var dailyInfo = document.getElementById('daily-info');
 
-        // 第一次求签为每日签（固定），之后为随机签
-        let firstDraw = true;
+        var firstDraw = true;
 
-        if (dailyInfo) {
-            const d = new Date();
-            const isEnInit = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
+        function updateDailyInfo() {
+            if (!dailyInfo) return;
+            var d = new Date();
+            var isEnInit = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
             if (isEnInit) {
-                dailyInfo.textContent = '📅 ' + d.toLocaleDateString('en-US') + ' · First draw is your daily fortune';
+                dailyInfo.textContent = '📅 ' + d.toLocaleDateString('en-US') + ' · First draw is your daily fortune · ' + STICKS.length + ' sticks';
             } else {
-                dailyInfo.textContent = '📅 ' + d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日 · 首次为每日专属签';
+                dailyInfo.textContent = '📅 ' + d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日 · 首次为每日专属签 · 共' + STICKS.length + '支签';
             }
         }
+        updateDailyInfo();
 
         function doDraw() {
             shakeAndDraw(firstDraw);
@@ -283,8 +353,24 @@
         if (scene) scene.addEventListener('click', doDraw);
         if (btn) btn.addEventListener('click', doDraw);
         if (shareBtn) shareBtn.addEventListener('click', shareSlip);
-        if (redrawBtn) redrawBtn.addEventListener('click', function () {
-            doDraw();
+        if (redrawBtn) redrawBtn.addEventListener('click', function () { doDraw(); });
+        if (rankBtn) rankBtn.addEventListener('click', submitFortuneToLeaderboard);
+
+        // Turnstile
+        if (window.MyLuck && window.MyLuck.Turnstile) {
+            window.MyLuck.Turnstile.render('turnstile-fortune');
+        }
+
+        // 排行榜
+        initLeaderboard();
+
+        // 语言切换监听
+        window.addEventListener('langchange', function () {
+            updateDailyInfo();
+            if (window._currentStick) {
+                showResult(window._currentStick);
+            }
+            initLeaderboard();
         });
     }
 
