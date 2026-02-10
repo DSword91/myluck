@@ -2,6 +2,59 @@
 (function () {
     'use strict';
 
+    // 签文等级英文映射
+    const LEVEL_EN = { '上上签': 'Supreme Fortune', '上签': 'Great Fortune', '中上签': 'Good Fortune', '中签': 'Average Fortune', '中下签': 'Below Average', '下签': 'Poor Fortune', '下下签': 'Worst Fortune' };
+
+    // 四维方面英文映射
+    const ASPECT_EN = {
+        '大展宏图': 'Sky\'s the limit', '步步高升': 'Rapid promotion', '贵人提携': 'Helped by mentor', '逆境翻盘': 'Comeback time', '事业有成': 'Great success',
+        '机会不断': 'Opportunities ahead', '合作顺利': 'Smooth teamwork', '考试通过': 'Exams passed', '稳中有升': 'Steady rise', '贵人相助': 'Noble helper',
+        '团队和睦': 'Great team vibe', '努力有成': 'Hard work pays off', '峰回路转': 'Plot twist coming', '口碑极佳': 'Great reputation', '晋升在望': 'Promotion near',
+        '顺其自然': 'Go with the flow', '态度决定': 'Attitude is key', '等待时机': 'Wait for timing', '先苦后甜': 'Sweet after bitter', '淡定从容': 'Stay calm',
+        '平稳发展': 'Steady growth', '机会将至': 'Chance coming', '脚踏实地': 'Stay grounded',
+        '维持现状': 'Status quo', '谨慎决策': 'Decide carefully', '换个思路': 'Try new approach', '立即行动': 'Act now', '静待时机': 'Wait patiently',
+        '塞翁失马': 'Blessing in disguise', '团队合作': 'Team effort', '安守本分': 'Stay humble', '再进一步': 'One more step', '放眼长远': 'Think long term',
+        '安于现状': 'Accept present', '暂时困扰': 'Temporary setback',
+        '遇到阻碍': 'Obstacles ahead', '暂停计划': 'Pause plans', '寻求帮助': 'Ask for help', '有变动': 'Changes coming', '小心受骗': 'Beware of scams',
+        '低谷期': 'Low period', '放慢脚步': 'Slow down',
+        '困难重重': 'Many challenges', '多重挑战': 'Multiple hurdles', '仔细检查': 'Double check', '方向不明': 'Direction unclear', '低调行事': 'Stay low-key',
+        '暂时停滞': 'Stagnation', '暂避锋芒': 'Lay low',
+        '佳缘天成': 'Destined love', '喜结良缘': 'Happy union', '天赐良缘': 'Heaven-sent match', '破镜重圆': 'Reconciliation', '家庭美满': 'Happy family',
+        '桃花正旺': 'Romance blooming', '感情升温': 'Love growing', '有情人终成眷属': 'Lovers unite', '和谐甜蜜': 'Sweet harmony', '有人暗恋': 'Secret admirer',
+        '缘分将至': 'Fate approaching', '日久生情': 'Love grows slowly', '意外邂逅': 'Surprise encounter', '真心相待': 'True-hearted', '佳偶天成': 'Perfect match',
+        '缘分有时': 'Fate has timing', '心态要好': 'Keep positive', '不急不缓': 'No rush', '考验过后': 'After the test', '随缘随心': 'Follow your heart',
+        '细水长流': 'Steady & lasting', '珍惜眼前': 'Cherish the present', '慢慢培养': 'Build slowly',
+        '不温不火': 'Neither hot nor cold', '观望为主': 'Wait and see', '放宽心胸': 'Open your heart', '主动出击': 'Take initiative', '不要催促': 'Don\'t rush',
+        '因祸得福': 'Fortune from misfortune', '相互体谅': 'Mutual understanding', '顺其自然': 'Let it be', '差一步表白': 'Almost confessed', '放下执念': 'Let go',
+        '平淡是福': 'Simplicity is bliss', '小有波折': 'Minor bumps',
+        '沟通不畅': 'Poor communication', '冷静思考': 'Think calmly', '暂时孤独': 'Temporarily alone', '起伏不定': 'Ups and downs', '看清真心': 'See true feelings',
+        '冷淡期': 'Cool period', '给彼此空间': 'Give space',
+        '需要磨合': 'Needs adjustment', '误会增多': 'More misunderstandings', '言多必失': 'Less is more', '飘忽不定': 'Unstable', '谦让为上': 'Be humble',
+        '冷静反思': 'Calm reflection', '独处反思': 'Solo reflection',
+        '财源广进': 'Wealth pouring in', '意外之财': 'Surprise fortune', '丰收满仓': 'Full harvest', '否极泰来': 'Fortune after misfortune', '衣食无忧': 'No worries',
+        '收入看涨': 'Income rising', '小有收获': 'Small gains', '投资回报': 'Investment payoff', '知足常乐': 'Content & happy', '意外收入': 'Windfall',
+        '劳有所得': 'Work rewarded', '柳暗花明': 'Light after dark', '善有善报': 'Karma returns good', '稳步增长': 'Steady growth',
+        '不急不躁': 'No hurry', '储蓄为主': 'Save first', '先投入后回报': 'Invest then gain', '不贪不求': 'No greed', '小富即安': 'Content with enough',
+        '适度享受': 'Enjoy moderately', '积少成多': 'Little by little',
+        '收支平衡': 'Breaking even', '保守理财': 'Conservative finance', '分散投资': 'Diversify', '该花就花': 'Spend when needed', '长线投资': 'Long-term invest',
+        '失之东隅': 'Lost here found there', '合伙经营': 'Partnership', '量入为出': 'Live within means', '快到回本': 'Almost even', '目光远大': 'Big vision',
+        '够用就好': 'Enough is enough',
+        '开支增大': 'Expenses rising', '减少投资': 'Reduce investments', '勒紧腰带': 'Tighten belt', '有得有失': 'Win some lose some', '警惕陷阱': 'Watch for traps',
+        '紧缩期': 'Tight period', '稳健为主': 'Be conservative',
+        '入不敷出': 'Overspending', '意外支出': 'Unexpected costs', '谨防损失': 'Guard against loss', '不稳定': 'Unstable', '保守理财': 'Play it safe',
+        '注意节俭': 'Be frugal', '极度节俭': 'Ultra frugal',
+        '精力充沛': 'Full of energy', '身强体壮': 'Strong & healthy', '心身康泰': 'Mind & body well', '病去体安': 'Recovery coming', '长寿安康': 'Long & healthy life',
+        '身体不错': 'Feeling good', '精神焕发': 'Refreshed spirit', '旧疾渐愈': 'Old illness healing', '平安健康': 'Safe & sound', '无大碍': 'No big deal',
+        '心情愉悦': 'Happy mood', '坚持锻炼': 'Keep exercising', '渐入佳境': 'Getting better', '身心通泰': 'Totally well', '活力满满': 'Full of vitality',
+        '放松心情': 'Relax', '身心愉悦': 'Mind & body happy', '养精蓄锐': 'Rest & recharge', '锻炼见效': 'Exercise working', '身心自在': 'At ease',
+        '安然无恙': 'Safe & unharmed', '天气转好': 'Weather improving', '日积月累': 'Gradual progress',
+        '注意休息': 'Get more rest', '定期体检': 'Regular checkups', '多做运动': 'Exercise more', '及时就医': 'See doctor promptly', '静养为主': 'Rest primarily',
+        '心态要平': 'Stay balanced', '不信偏方': 'No folk remedies', '要注意休息': 'Must rest more', '不要熬夜': 'Don\'t stay up late',
+        '注意身体': 'Take care', '免疫力低': 'Low immunity', '预防为主': 'Prevention first', '身心疲惫': 'Exhausted', '韬光养晦': 'Lay low & recover',
+        '好好休息': 'Rest well', '调养生息': 'Recuperate', '心宽体健': 'Peace of mind',
+        '注意保养': 'Take care of yourself', '多加小心': 'Be careful', '情绪低落': 'Feeling down', '规律作息': 'Regular routine'
+    };
+
     // 49支灵签数据
     const FORTUNE_STICKS = [
         // ===== 上上签 (5支) =====
@@ -124,14 +177,14 @@
         const isEn = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
         document.getElementById('slip-number').textContent = isEn ? 'Stick #' + stick.id : '第 ' + stick.id + ' 签';
         const levelEl = document.getElementById('slip-level');
-        levelEl.textContent = stick.level;
+        levelEl.textContent = isEn ? (LEVEL_EN[stick.level] || stick.level) : stick.level;
         levelEl.className = 'slip-level ' + stick.cls;
         document.getElementById('slip-poem').innerHTML = stick.poem.replace(/\n/g, '<br>');
         document.getElementById('slip-interpret').textContent = (isEn ? '📜 Interpretation: ' : '📜 解签：') + stick.interpret;
-        document.getElementById('asp-career').textContent = stick.career;
-        document.getElementById('asp-love').textContent = stick.love;
-        document.getElementById('asp-wealth').textContent = stick.wealth;
-        document.getElementById('asp-health').textContent = stick.health;
+        document.getElementById('asp-career').textContent = isEn ? (ASPECT_EN[stick.career] || stick.career) : stick.career;
+        document.getElementById('asp-love').textContent = isEn ? (ASPECT_EN[stick.love] || stick.love) : stick.love;
+        document.getElementById('asp-wealth').textContent = isEn ? (ASPECT_EN[stick.wealth] || stick.wealth) : stick.wealth;
+        document.getElementById('asp-health').textContent = isEn ? (ASPECT_EN[stick.health] || stick.health) : stick.health;
         slip.style.display = 'block';
         slip.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
@@ -181,16 +234,21 @@
         const number = document.getElementById('slip-number').textContent;
         const level = document.getElementById('slip-level').textContent;
         const poem = document.getElementById('slip-poem').textContent;
-        const text = '我在 MyLuck 求得了' + number + '【' + level + '】\n\n' + poem + '\n\n来试试你的运势吧 👉 https://myluck.top/fortune-draw.html';
+        const isEn = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
+
+        const text = isEn
+            ? 'I drew ' + number + ' [' + level + '] on MyLuck!\n\n' + poem + '\n\nTry your fortune 👉 https://myluck.top/fortune-draw.html'
+            : '我在 MyLuck 求得了' + number + '【' + level + '】\n\n' + poem + '\n\n来试试你的运势吧 👉 https://myluck.top/fortune-draw.html';
+        const title = isEn ? 'MyLuck Fortune - ' + level : 'MyLuck 灵签 - ' + level;
 
         if (navigator.share) {
-            navigator.share({ title: 'MyLuck 灵签 - ' + level, text: text, url: 'https://myluck.top/fortune-draw.html' }).catch(function () { });
+            navigator.share({ title: title, text: text, url: 'https://myluck.top/fortune-draw.html' }).catch(function () { });
         } else if (navigator.clipboard) {
             navigator.clipboard.writeText(text).then(function () {
-                alert('签文已复制到剪贴板，快去分享给朋友吧！');
+                alert(isEn ? 'Fortune copied! Share it with friends!' : '签文已复制到剪贴板，快去分享给朋友吧！');
             });
         } else {
-            prompt('复制以下签文分享给朋友：', text);
+            prompt(isEn ? 'Copy and share with friends:' : '复制以下签文分享给朋友：', text);
         }
     }
 

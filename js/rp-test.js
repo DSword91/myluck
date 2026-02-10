@@ -167,11 +167,12 @@
     function renderHistory(history) {
         var container = document.getElementById('rp-history');
         if (!container || !history.length) return;
+        var isEn = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
         container.innerHTML = '';
         history.forEach(function (h) {
             var div = document.createElement('div');
             div.className = 'rp-history-item';
-            div.innerHTML = '<span class="rp-history-name">' + h.emoji + ' ' + escapeHtml(h.name) + '</span><span class="rp-history-score" style="color:' + getColor(h.score) + '">' + h.score + '分 · ' + escapeHtml(h.title) + '</span>';
+            div.innerHTML = '<span class="rp-history-name">' + h.emoji + ' ' + escapeHtml(h.name) + '</span><span class="rp-history-score" style="color:' + getColor(h.score) + '">' + h.score + (isEn ? '% · ' : '分 · ') + escapeHtml(h.title) + '</span>';
             container.appendChild(div);
         });
     }
@@ -201,10 +202,10 @@
         if (!container) return;
         try {
             var sb = await getSupabase();
-            if (!sb) { container.innerHTML = '<p style="text-align:center;color:#bbb;">排行榜暂不可用</p>'; return; }
+            if (!sb) { container.innerHTML = '<p style="text-align:center;color:#bbb;">' + (I18n ? I18n.t('rp.rank_fail') : 'Leaderboard unavailable') + '</p>'; return; }
             var today = new Date().toISOString().slice(0, 10);
             var { data, error } = await sb.from('leaderboard').select('*').eq('test_date', today).eq('visible', true).order('score', { ascending: false }).limit(20);
-            if (error || !data) { container.innerHTML = '<p style="text-align:center;color:#bbb;">加载失败</p>'; return; }
+            if (error || !data) { container.innerHTML = '<p style="text-align:center;color:#bbb;">' + (I18n ? I18n.t('rp.rank_fail') : 'Load failed') + '</p>'; return; }
             if (data.length === 0) {
                 var I18n = window.MyLuck && window.MyLuck.I18n;
                 container.innerHTML = '<p style="text-align:center;color:#bbb;">' + (I18n ? I18n.t('rp.board_empty') : '还没有人上榜，来当第一个！') + '</p>';
@@ -220,7 +221,7 @@
                 container.appendChild(div);
             });
         } catch (e) {
-            container.innerHTML = '<p style="text-align:center;color:#bbb;">排行榜暂不可用</p>';
+            container.innerHTML = '<p style="text-align:center;color:#bbb;">' + (I18n ? I18n.t('rp.rank_fail') : 'Leaderboard unavailable') + '</p>';
         }
     }
 
@@ -275,13 +276,21 @@
         var score = document.getElementById('char-score').textContent;
         var emoji = document.getElementById('char-emoji').textContent;
         var desc = document.getElementById('char-desc').textContent;
-        var text = '我在 MyLuck 测出今日人设：' + emoji + '【' + title + '】' + score + '分\n\n' + desc + '\n\n快来测测你是什么人设 👉 https://myluck.top/rp-test.html';
+        var isEn = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
+
+        var text = isEn
+            ? 'My Daily Persona on MyLuck: ' + emoji + ' [' + title + '] ' + score + '%\n\n' + desc + '\n\nFind your persona 👉 https://myluck.top/rp-test.html'
+            : '我在 MyLuck 测出今日人设：' + emoji + '【' + title + '】' + score + '分\n\n' + desc + '\n\n快来测测你是什么人设 👉 https://myluck.top/rp-test.html';
+        var shareTitle = isEn ? 'MyLuck Daily Persona - ' + title : 'MyLuck 今日人设 - ' + title;
+
         if (navigator.share) {
-            navigator.share({ title: 'MyLuck 今日人设 - ' + title, text: text, url: 'https://myluck.top/rp-test.html' }).catch(function () { });
+            navigator.share({ title: shareTitle, text: text, url: 'https://myluck.top/rp-test.html' }).catch(function () { });
         } else if (navigator.clipboard) {
-            navigator.clipboard.writeText(text).then(function () { alert('结果已复制到剪贴板，快去分享给朋友吧！'); });
+            navigator.clipboard.writeText(text).then(function () {
+                alert(isEn ? 'Result copied! Share it with friends!' : '结果已复制到剪贴板，快去分享给朋友吧！');
+            });
         } else {
-            prompt('复制以下结果分享给朋友：', text);
+            prompt(isEn ? 'Copy and share with friends:' : '复制以下结果分享给朋友：', text);
         }
     }
 
@@ -305,6 +314,15 @@
 
         // 加载全球排行榜
         loadLeaderboard();
+
+        // 语言切换时刷新内容
+        document.addEventListener('langchange', function () {
+            if (currentResult) {
+                showResult(currentResult.name);
+            }
+            try { renderHistory(JSON.parse(localStorage.getItem('myluck_rp_history') || '[]')); } catch (e) { }
+            loadLeaderboard();
+        });
     }
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

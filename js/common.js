@@ -84,7 +84,7 @@
         'footer.privacy': '隐私政策',
         'footer.terms': '使用条款',
         'footer.disclaimer': '免责声明',
-        'footer.copy': '© 2025 MyLuck.top · 所有测试结果均由算法随机生成，仅供娱乐',
+        'footer.copy': '© 2026 MyLuck.top · 所有测试结果均由算法随机生成，仅供娱乐',
         'share.title': '分享结果',
         'share.copy': '复制链接',
         'share.copied': '已复制！',
@@ -156,7 +156,7 @@
         'footer.privacy': 'Privacy Policy',
         'footer.terms': 'Terms of Use',
         'footer.disclaimer': 'Disclaimer',
-        'footer.copy': '© 2025 MyLuck.top · All results are randomly generated for entertainment only',
+        'footer.copy': '© 2026 MyLuck.top · All results are randomly generated for entertainment only',
         'share.title': 'Share Result',
         'share.copy': 'Copy Link',
         'share.copied': 'Copied!',
@@ -282,7 +282,7 @@
     // ========== Cloudflare Turnstile 反垃圾模块 ==========
     // 使用方法：去 Cloudflare Dashboard → Turnstile → Add Site → 获取 site key
     // 然后把下方 TURNSTILE_SITE_KEY 替换为你的 site key
-    const TURNSTILE_SITE_KEY = ''; // 留空则禁用 Turnstile，填入 site key 启用
+    const TURNSTILE_SITE_KEY = '0x4AAAAAACZ5cJF8duhs4a2v'; // 留空则禁用 Turnstile，填入 site key 启用
     const Turnstile = {
         loaded: false,
         token: null,
@@ -437,7 +437,7 @@
                     </div>
                 </div>
                 <div class="footer-bottom">
-                    <p data-i18n="footer.copy">© 2025 MyLuck.top · 所有测试结果均由算法随机生成，仅供娱乐</p>
+                    <p data-i18n="footer.copy">© 2026 MyLuck.top · 所有测试结果均由算法随机生成，仅供娱乐</p>
                 </div>
             </div>`;
         document.body.appendChild(footer);
@@ -705,26 +705,39 @@
 
         // JSON-LD BreadcrumbList（面包屑导航）
         if (page !== 'index.html') {
-            const pageTitles = {
+            const pageTitlesZh = {
                 'mbti.html': 'MBTI 性格测试',
                 'color.html': '幸运色彩测试',
                 'personality.html': '趣味性格测试',
                 'guestbook.html': '许愿墙',
                 'liferestart.html': '人生重开模拟器',
                 'fortune-draw.html': '在线求签',
-                'rp-test.html': '今日人品测试',
+                'rp-test.html': '今日人设测试',
                 'privacy.html': '隐私政策',
                 'terms.html': '使用条款',
                 'disclaimer.html': '免责声明'
             };
+            const pageTitlesEn = {
+                'mbti.html': 'MBTI Personality Test',
+                'color.html': 'Lucky Color Test',
+                'personality.html': 'Fun Personality Test',
+                'guestbook.html': 'Wish Wall',
+                'liferestart.html': 'Life Restart Simulator',
+                'fortune-draw.html': 'Fortune Sticks',
+                'rp-test.html': 'Daily Persona Test',
+                'privacy.html': 'Privacy Policy',
+                'terms.html': 'Terms of Use',
+                'disclaimer.html': 'Disclaimer'
+            };
+            const ptMap = isZh ? pageTitlesZh : pageTitlesEn;
             const bc = document.createElement('script');
             bc.type = 'application/ld+json';
             bc.textContent = JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "BreadcrumbList",
                 "itemListElement": [
-                    { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://myluck.top/" },
-                    { "@type": "ListItem", "position": 2, "name": pageTitles[page] || document.title, "item": pageUrl }
+                    { "@type": "ListItem", "position": 1, "name": isZh ? "首页" : "Home", "item": "https://myluck.top/" },
+                    { "@type": "ListItem", "position": 2, "name": ptMap[page] || document.title, "item": pageUrl }
                 ]
             });
             document.head.appendChild(bc);
