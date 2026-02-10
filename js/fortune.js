@@ -150,29 +150,6 @@
         ],
     };
 
-    // 每日测试限制
-    var TEST_KEY = 'myluck-fortune-test';
-    function getTodayStr() {
-        var d = new Date();
-        return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-    }
-    function hasTestedToday() {
-        try {
-            var saved = JSON.parse(localStorage.getItem(TEST_KEY));
-            return saved && saved.date === getTodayStr();
-        } catch(e) { return false; }
-    }
-    function saveTodayTest(params) {
-        localStorage.setItem(TEST_KEY, JSON.stringify({ date: getTodayStr(), month: params.month, mood: params.mood, name: params.name }));
-    }
-    function getTodayTest() {
-        try {
-            var saved = JSON.parse(localStorage.getItem(TEST_KEY));
-            if (saved && saved.date === getTodayStr()) return saved;
-        } catch(e) {}
-        return null;
-    }
-
     // 生成运势
     function generate() {
         const month = parseInt(document.getElementById('fortune-month').value);
@@ -222,36 +199,14 @@
 
         result.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-        // 保存今日已测试
-        saveTodayTest({ month: month, mood: mood, name: name });
-        var submitBtn = document.getElementById('fortune-submit');
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.textContent = I18n.lang === 'zh' ? '今日已测试' : 'Tested Today';
-        }
+        // 保存分数用于上榜
+        lastLuckScore = luck;
+        lastResultName = name;
+        var rankBtn = document.getElementById('fortune-rank-btn');
+        if (rankBtn) { rankBtn.style.display = 'inline-block'; rankBtn.disabled = false; rankBtn.textContent = I18n.t('fortune.rank'); }
     }
 
-    document.getElementById('fortune-submit').addEventListener('click', function () {
-        if (hasTestedToday()) {
-            alert(I18n.lang === 'zh' ? '今日已测试过运势，明天再来吧！' : 'Already tested today. Come back tomorrow!');
-            return;
-        }
-        generate();
-    });
-
-    // 页面加载时恢复今日已测试的结果
-    (function restoreIfTested() {
-        var saved = getTodayTest();
-        if (saved) {
-            var monthEl = document.getElementById('fortune-month');
-            var nameEl = document.getElementById('fortune-name');
-            var moodEl = document.getElementById('fortune-mood');
-            if (monthEl) monthEl.value = saved.month;
-            if (nameEl) nameEl.value = saved.name || '';
-            if (moodEl && saved.mood) moodEl.value = saved.mood;
-            generate();
-        }
-    })();
+    document.getElementById('fortune-submit').addEventListener('click', generate);
 
     // 分享
     document.getElementById('share-btn')?.addEventListener('click', () => {
@@ -341,5 +296,76 @@
                 }
             } catch { /* ignore */ }
         }
+        loadFortuneLeaderboard();
     });
+
+    // ===== 运气排行榜 =====
+    let lastLuckScore = 0;
+    let lastResultName = '';
+
+    async function loadFortuneLeaderboard() {
+        const LB = window.MyLuck && window.MyLuck.Leaderboard;
+        if (!LB) return;
+
+        await LB.load('fortune-board-list', 'fortune', {
+            virtualCount: 10,
+            virtualConfig: {
+                getEntry: function(rng, idx) {
+                    return {
+                        score: Math.floor(rng(1) * 40 + 60),
+                        character_emoji: ['🌟','🔥','💫','🌈','🎉','🍀','⭐','💎','🌸','🎯'][Math.floor(rng(2) * 10)],
+                        character_title: ''
+                    };
+                }
+            },
+            formatEntry: function(entry, i, medal) {
+                const esc = window.MyLuck.Security ? window.MyLuck.Security.escapeHtml : (s) => s;
+                const emoji = entry.character_emoji || '🍀';
+                const scoreColor = entry.score >= 90 ? '#e17055' : entry.score >= 70 ? '#fdcb6e' : '#00b894';
+                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + ' ' + esc(entry.name || '匿名') + '</span></div><span class="lb-score" style="color:' + scoreColor + '">' + entry.score + '%</span>';
+            }
+        });
+    }
+
+    async function submitFortuneScore() {
+        if (!lastLuckScore) return;
+        const LB = window.MyLuck && window.MyLuck.Leaderboard;
+        if (!LB) return;
+
+        const rankBtn = document.getElementById('fortune-rank-btn');
+        if (rankBtn) { rankBtn.disabled = true; rankBtn.textContent = '...'; }
+
+        const moodEmojis = { happy: '😊', calm: '😌', excited: '🤩', tired: '😴', anxious: '😰' };
+        const mood = document.getElementById('fortune-mood').value;
+        const emoji = moodEmojis[mood] || '🍀';
+
+        await LB.submit('fortune', {
+            name: lastResultName || (I18n.lang === 'en' ? 'Anonymous' : '匿名'),
+            score: lastLuckScore,
+            character_emoji: emoji,
+            character_title: ''
+        }, {
+            onSuccess: function() {
+                if (rankBtn) rankBtn.textContent = I18n.t('fortune.ranked');
+                loadFortuneLeaderboard();
+            },
+            onFail: function() {
+                alert(I18n.t('fortune.rank_fail'));
+                if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = I18n.t('fortune.rank'); }
+            }
+        });
+        if (rankBtn && !rankBtn.disabled) { rankBtn.disabled = false; rankBtn.textContent = I18n.t('fortune.rank'); }
+    }
+
+    // 绑定上榜按钮
+    const fortuneRankBtn = document.getElementById('fortune-rank-btn');
+    if (fortuneRankBtn) fortuneRankBtn.addEventListener('click', submitFortuneScore);
+
+    // 初始化排行榜
+    loadFortuneLeaderboard();
+
+    // Turnstile 延迟渲染
+    if (window.MyLuck.Turnstile && window.MyLuck.Turnstile.isEnabled()) {
+        window.MyLuck.Turnstile.render('turnstile-fortune');
+    }
 })();

@@ -133,35 +133,6 @@
         }
     }
 
-    // 每日抽签限制（每人每天只能抽一次）
-    var DRAW_KEY = 'myluck-fortune-draw';
-
-    function getTodayStr() {
-        var d = new Date();
-        return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-    }
-
-    function hasDrewToday() {
-        try {
-            var saved = JSON.parse(localStorage.getItem(DRAW_KEY));
-            return saved && saved.date === getTodayStr();
-        } catch (e) { return false; }
-    }
-
-    function saveTodayDraw(stick) {
-        localStorage.setItem(DRAW_KEY, JSON.stringify({ date: getTodayStr(), stickId: stick.id }));
-    }
-
-    function getTodayDraw() {
-        try {
-            var saved = JSON.parse(localStorage.getItem(DRAW_KEY));
-            if (saved && saved.date === getTodayStr()) {
-                return STICKS.find(function (s) { return s.id === saved.stickId; }) || null;
-            }
-        } catch (e) {}
-        return null;
-    }
-
     // 抽签逻辑
     function drawFortune(isDaily) {
         let stick;
@@ -206,7 +177,6 @@
     }
 
     // 摇签动画
-    var redrawBtn_ref = null; // 由 init() 设置
     function shakeAndDraw(isDaily) {
         const scene = document.getElementById('draw-scene');
         const btn = document.getElementById('draw-btn');
@@ -232,13 +202,9 @@
             setTimeout(function () {
                 var stick = drawFortune(isDaily);
                 showResult(stick);
-                saveTodayDraw(stick);
-                // 锁定按钮，今日已抽
-                btn.disabled = true;
-                if (redrawBtn_ref) redrawBtn_ref.disabled = true;
+                btn.disabled = false;
                 var isEn2 = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
-                hint.textContent = isEn2 ? '✨ Fortune revealed · One draw per day' : '✨ 签文已出 · 每日仅限一次';
-                btn.textContent = isEn2 ? 'Drawn Today' : '今日已抽';
+                hint.textContent = isEn2 ? '✨ Fortune revealed below' : '✨ 签文已出，请查看下方';
                 hint.style.animation = '';
                 setTimeout(initSticks, 1000);
             }, 600);
@@ -283,10 +249,7 @@
         LB.load('fortune-board-list', 'fortune', {
             formatEntry: function (entry, i, medal) {
                 var emoji = entry.character_emoji ? escapeHtml(entry.character_emoji) + ' ' : '';
-                // 根据当前语言翻译 character_title（数据库始终存中文key）
-                var titleRaw = entry.character_title || '';
-                var titleDisplay = en ? (LEVEL_EN[titleRaw] || titleRaw) : titleRaw;
-                var detail = titleDisplay ? '<span class="lb-detail">' + escapeHtml(titleDisplay) + '</span>' : '';
+                var detail = entry.character_title ? '<span class="lb-detail">' + escapeHtml(entry.character_title) + '</span>' : '';
                 return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + escapeHtml(entry.name || '匿名') + '</span>' + detail + '</div><span class="lb-score" style="color:' + getColor(entry.score) + '">' + (entry.score || 0) + '</span>';
             }
         });
@@ -338,7 +301,7 @@
             score: score,
             character_id: String(stick.id),
             character_emoji: stick.level === '上上签' ? '🎊' : stick.level === '上签' ? '✨' : stick.level === '中上签' ? '🌟' : stick.level === '中签' ? '📜' : stick.level === '中下签' ? '🌧️' : stick.level === '下签' ? '🌫️' : '⛈️',
-            character_title: stick.level  // 始终存中文key，渲染时按语言翻译
+            character_title: en ? (LEVEL_EN[stick.level] || stick.level) : stick.level
         }, {
             onSuccess: function () {
                 if (rankBtn) rankBtn.textContent = t('draw.ranked', '✅ 已上榜！');
@@ -372,10 +335,6 @@
         var redrawBtn = document.getElementById('redraw-btn');
         var rankBtn = document.getElementById('fortune-rank');
         var dailyInfo = document.getElementById('daily-info');
-        var hint = document.getElementById('draw-hint');
-
-        // 保存 redrawBtn 引用供 shakeAndDraw 使用
-        redrawBtn_ref = redrawBtn;
 
         var firstDraw = true;
 
@@ -384,30 +343,14 @@
             var d = new Date();
             var isEnInit = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
             if (isEnInit) {
-                dailyInfo.textContent = '📅 ' + d.toLocaleDateString('en-US') + ' · One draw per day · ' + STICKS.length + ' sticks';
+                dailyInfo.textContent = '📅 ' + d.toLocaleDateString('en-US') + ' · First draw is your daily fortune · ' + STICKS.length + ' sticks';
             } else {
-                dailyInfo.textContent = '📅 ' + d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日 · 每日限抽一次 · 共' + STICKS.length + '支签';
+                dailyInfo.textContent = '📅 ' + d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日 · 首次为每日专属签 · 共' + STICKS.length + '支签';
             }
         }
         updateDailyInfo();
 
-        // 检查今日是否已抽签
-        var todayStick = getTodayDraw();
-        if (todayStick) {
-            showResult(todayStick);
-            btn.disabled = true;
-            if (redrawBtn) redrawBtn.disabled = true;
-            var isEnCheck = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
-            if (hint) hint.textContent = isEnCheck ? '✨ Fortune revealed · One draw per day' : '✨ 签文已出 · 每日仅限一次';
-            if (btn) btn.textContent = isEnCheck ? 'Drawn Today' : '今日已抽';
-        }
-
         function doDraw() {
-            if (hasDrewToday()) {
-                var isEnBlock = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
-                alert(isEnBlock ? 'You have already drawn today. Come back tomorrow!' : '今日已抽过签，明天再来吧！');
-                return;
-            }
             shakeAndDraw(firstDraw);
             firstDraw = false;
         }
@@ -428,16 +371,11 @@
             updateDailyInfo();
             if (window._currentStick) {
                 showResult(window._currentStick);
-                // 更新 hint 文字
+                // 更新 hint 文字（签已抽出时）
                 var hint = document.getElementById('draw-hint');
                 if (hint) {
                     var en = isEnNow();
-                    if (hasDrewToday()) {
-                        hint.textContent = en ? '✨ Fortune revealed · One draw per day' : '✨ 签文已出 · 每日仅限一次';
-                        if (btn) btn.textContent = en ? 'Drawn Today' : '今日已抽';
-                    } else {
-                        hint.textContent = en ? '✨ Fortune revealed below' : '✨ 签文已出，请查看下方';
-                    }
+                    hint.textContent = en ? '✨ Fortune revealed below' : '✨ 签文已出，请查看下方';
                 }
             }
             initLeaderboard();

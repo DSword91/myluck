@@ -6,7 +6,6 @@
     var _sb = null;
     async function getSupabase() {
         if (_sb) return _sb;
-        // 优先使用共享客户端
         if (window.MyLuck && window.MyLuck.getSupabase) {
             _sb = await window.MyLuck.getSupabase();
             return _sb;
@@ -38,6 +37,61 @@
         return '#b2bec3';
     }
 
+    // 确定性随机(基于种子)
+    function seededRand(seed) {
+        var x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+    }
+
+    // ===== 虚拟用户生成 =====
+    var VIRTUAL_NAMES_ZH = [
+        '小明','星星','月亮','太阳','小鱼','花花','果果','糖糖','豆豆','小雪',
+        '阳光','微风','彩虹','云朵','蝴蝶','可乐','布丁','芒果','草莓','奶茶',
+        '棉花糖','巧克力','泡芙','年糕','开心果','小幸运','好运来','笑哈哈',
+        '大白','阿福','蜜糖','旺财','如意','吉祥','平安','喜乐','冰淇淋','麻薯'
+    ];
+    var VIRTUAL_NAMES_EN = [
+        'Lucky Cat','Star','Moon','Sunny','Rainbow','Cloud','Butterfly','Happy',
+        'Joy','Hope','Grace','Melody','Blossom','Cookie','Mochi','Bubble',
+        'Sparkle','Dream','Angel','Phoenix','Wish','Charm','Clover','Aurora',
+        'Berry','Candy','Latte','Maple','Petal','Luna','Sky','Ember','Frost','River'
+    ];
+
+    /**
+     * 生成虚拟排行榜条目
+     * @param {string} testType - 测试类型
+     * @param {number} count - 生成数量
+     * @param {object} [typeConfig] - 类型特定配置 { getEntry(rng, idx) => {name, score, character_emoji, character_title} }
+     */
+    function generateVirtualEntries(testType, count, typeConfig) {
+        var today = new Date().toISOString().slice(0, 10);
+        var baseSeed = 0;
+        for (var c = 0; c < today.length; c++) baseSeed += today.charCodeAt(c);
+        baseSeed = baseSeed * 31 + testType.length * 7;
+
+        var result = [];
+        var en = isEn();
+        var names = en ? VIRTUAL_NAMES_EN : VIRTUAL_NAMES_ZH;
+
+        for (var i = 0; i < count; i++) {
+            var seed = baseSeed + i * 137 + 42;
+            var nameIdx = Math.floor(seededRand(seed) * names.length);
+            var entry = { name: names[nameIdx], score: 50, character_emoji: '', character_title: '', is_virtual: true };
+
+            if (typeConfig && typeConfig.getEntry) {
+                var custom = typeConfig.getEntry(function(s) { return seededRand(seed + (s || 0)); }, i);
+                if (custom.name) entry.name = custom.name;
+                entry.score = custom.score || 50;
+                entry.character_emoji = custom.character_emoji || '';
+                entry.character_title = custom.character_title || '';
+            } else {
+                entry.score = Math.floor(seededRand(seed + 1) * 60 + 20);
+            }
+            result.push(entry);
+        }
+        return result;
+    }
+
     // 注入排行榜样式（只注入一次）
     var cssInjected = false;
     function injectCSS() {
@@ -60,95 +114,31 @@
             '.lb-submit-btn{background:linear-gradient(135deg,#e17055,#fdcb6e);color:#fff;border:none;padding:10px 24px;border-radius:25px;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .3s;box-shadow:0 3px 10px rgba(225,112,85,0.3)}',
             '.lb-submit-btn:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(225,112,85,0.4)}',
             '.lb-submit-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}',
-            '.lb-turnstile{display:flex;justify-content:center;margin:10px 0}',
-            '.lb-virtual .lb-name{color:#999}',
-            '.lb-virtual .lb-score{opacity:0.7}',
-            '.lb-count{text-align:center;font-size:.8rem;color:#aaa;margin-top:8px}'
+            '.lb-turnstile{display:flex;justify-content:center;margin:10px 0}'
         ].join('\n');
         document.head.appendChild(style);
     }
 
     var MEDALS = ['🥇', '🥈', '🥉'];
 
-    // ===== 虚拟排行榜数据（自然增长） =====
-    var VIRTUAL_NAMES_ZH = [
-        '小明','阿花','大白','星辰','小鱼','糖糖','果果','小雪','阳光','微风',
-        '彩虹','云朵','蝴蝶','旺财','如意','吉祥','平安','喜乐','奶茶','布丁',
-        '芒果','草莓','可乐','棉花糖','开心果','小幸运','好运来','福气满','笑哈哈',
-        '乐呵呵','美滋滋','甜蜜蜜','大聪明','铁蛋','翠花','天天','萌萌','豆包',
-        '饺子','汤圆','麻薯','年糕','泡芙','冰淇淋','西瓜','樱桃','蓝莓','柠檬',
-        '小太阳','月亮','星星','大力','小强','富贵','招财','进宝','金刚','小白',
-        '小黑','小灰','皮卡','咕噜','嘟嘟','叮当','花花','点点','球球','团团',
-        '圆圆','蛋蛋','毛毛','豆豆','丸子','果冻','薯条','披萨','拉面','寿司'
-    ];
-    var VIRTUAL_NAMES_EN = [
-        'Lucky Cat','Star','Moon','Sunny','Rainbow','Cloud','Butterfly','Happy','Joy','Hope',
-        'Grace','Melody','Blossom','Cookie','Mochi','Bubble','Sparkle','Dream','Angel','Phoenix',
-        'Wish','Charm','Clover','Aurora','Berry','Candy','Latte','Maple','Petal','River',
-        'Sky','Willow','Zen','Frost','Ember','Luna','Nova','Sage','Pearl','Ivy',
-        'Coral','Daisy','Finn','Leo','Max','Zoe','Aria','Jade','Ruby','Theo',
-        'Ollie','Milo','Cleo','Gigi','Felix','Oscar','Hugo','Remy','Taro','Kiwi',
-        'Cocoa','Mocha','Chai','Sunny','Breeze','Storm','Dawn','Dusk','Blaze','Echo'
-    ];
-
-    // RP 虚拟角色标题 (中文key，渲染时翻译)
-    var VIRTUAL_RP_TITLES = ['天选锦鲤','欧皇本皇','主角光环体','好运磁铁','猫系人格·橘座大人','社牛之王','热血追梦人','干饭之神','夜行猫头鹰','佛系大师','摸鱼大师','拖延症晚期','表情包大王','宅家至尊','打工人の觉醒','Bug终结者','选择困难户','诸葛猪','飞天猪'];
-    var VIRTUAL_RP_EMOJIS = ['🐠','👑','✨','🧲','🐱','🦁','🚀','🍜','🦉','🧘','🐟','🦥','😂','🏠','💼','🐛','🤔','🐷','🐷'];
-    var VIRTUAL_FORTUNE_LEVELS = ['上上签','上签','中上签','中签','上签','中上签','中签','上上签','中签','上签'];
-    var VIRTUAL_FORTUNE_EMOJIS = ['🎊','✨','🌟','📜','✨','🌟','📜','🎊','📜','✨'];
-    var VIRTUAL_FORTUNE_SCORES = [100, 85, 72, 55, 85, 72, 55, 100, 55, 85];
-
-    function simpleHash(seed) {
-        var x = Math.sin(seed) * 10000;
-        return x - Math.floor(x);
-    }
-
-    function generateVirtualEntries(testType, count, opts) {
-        var result = [];
-        var en = isEn();
-        var names = en ? VIRTUAL_NAMES_EN : VIRTUAL_NAMES_ZH;
-        var todaySeed = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-
-        for (var i = 0; i < count; i++) {
-            var seed = parseInt(todaySeed) + i * 17 + 7;
-            var nameIdx = Math.floor(simpleHash(seed) * names.length);
-            var entry = { name: names[nameIdx], is_virtual: true };
-
-            if (testType === 'rp') {
-                var rpIdx = Math.floor(simpleHash(seed + 3) * VIRTUAL_RP_TITLES.length);
-                var rpScore = Math.floor(simpleHash(seed + 5) * 60 + 30); // 30-90
-                entry.score = rpScore;
-                entry.character_emoji = VIRTUAL_RP_EMOJIS[rpIdx];
-                entry.character_title = VIRTUAL_RP_TITLES[rpIdx];
-            } else if (testType === 'fortune') {
-                var fIdx = Math.floor(simpleHash(seed + 3) * VIRTUAL_FORTUNE_LEVELS.length);
-                entry.score = VIRTUAL_FORTUNE_SCORES[fIdx];
-                entry.character_emoji = VIRTUAL_FORTUNE_EMOJIS[fIdx];
-                entry.character_title = VIRTUAL_FORTUNE_LEVELS[fIdx];
-            }
-            result.push(entry);
-        }
-        // 按分数降序
-        result.sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
-        return result;
-    }
-
     /**
-     * 加载并渲染排行榜
+     * 加载并渲染排行榜（真实 + 虚拟用户混合）
      * @param {string} containerId - DOM容器的id
      * @param {string} testType - 测试类型 'rp'|'fortune'|'mbti' 等
-     * @param {object} [opts] - 可选配置 { limit, formatEntry, titleMap }
+     * @param {object} [opts] - 可选配置 { limit, formatEntry, virtualCount, virtualConfig }
      */
     async function loadBoard(containerId, testType, opts) {
         injectCSS();
         opts = opts || {};
         var limit = opts.limit || 20;
         var formatEntry = opts.formatEntry || null;
+        var virtualCount = opts.virtualCount || 0;
+        var virtualConfig = opts.virtualConfig || null;
         var container = document.getElementById(containerId);
         if (!container) return;
 
-        var realData = [];
         try {
+            var realData = [];
             var sb = await getSupabase();
             if (sb) {
                 var today = new Date().toISOString().slice(0, 10);
@@ -158,42 +148,42 @@
                     realData = result.data;
                 }
             }
-        } catch (e) {
-            // Supabase不可用也继续显示虚拟数据
-        }
 
-        // 生成虚拟条目（填充到 limit 数量）
-        var virtualCount = Math.max(0, Math.min(12, limit - realData.length));
-        var virtualData = generateVirtualEntries(testType, virtualCount, opts);
+            // 生成虚拟用户
+            var virtualData = virtualCount > 0 ? generateVirtualEntries(testType, virtualCount, virtualConfig) : [];
 
-        // 合并：真实用户在前，虚拟在后
-        var allData = realData.concat(virtualData);
+            // 合并：真实用户优先（同分时），按分数降序
+            var allData = realData.map(function(d) { d.is_virtual = false; return d; }).concat(virtualData);
+            allData.sort(function(a, b) {
+                if (b.score !== a.score) return b.score - a.score;
+                return a.is_virtual ? 1 : -1; // 同分真人优先
+            });
+            allData = allData.slice(0, limit);
 
-        if (allData.length === 0) {
-            container.innerHTML = '<p class="lb-empty">' + t('lb.empty', '还没有人上榜，来当第一个！') + '</p>';
-            return;
-        }
-
-        container.innerHTML = '';
-        var en = isEn();
-        for (var i = 0; i < allData.length; i++) {
-            var entry = allData[i];
-            var div = document.createElement('div');
-            div.className = 'lb-row' + (entry.is_virtual ? ' lb-virtual' : '');
-
-            var medal = i < 3 ? '<span class="lb-medal">' + MEDALS[i] + '</span>' : '<span class="lb-medal" style="opacity:0.3">#' + (i + 1) + '</span>';
-
-            if (formatEntry) {
-                div.innerHTML = formatEntry(entry, i, medal);
-            } else {
-                var emoji = entry.character_emoji ? escapeHtml(entry.character_emoji) + ' ' : '';
-                // 翻译 character_title（数据库存中文key，通过 opts.titleMap 翻译）
-                var titleRaw = entry.character_title || '';
-                var titleDisplay = (en && opts.titleMap) ? (opts.titleMap[titleRaw] || titleRaw) : titleRaw;
-                var detail = titleDisplay ? '<span class="lb-detail">' + escapeHtml(titleDisplay) + '</span>' : '';
-                div.innerHTML = '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + escapeHtml(entry.name || (en ? 'Anonymous' : '匿名')) + '</span>' + detail + '</div><span class="lb-score" style="color:' + getColor(entry.score) + '">' + entry.score + '</span>';
+            if (allData.length === 0) {
+                container.innerHTML = '<p class="lb-empty">' + t('lb.empty', '还没有人上榜，来当第一个！') + '</p>';
+                return;
             }
-            container.appendChild(div);
+
+            container.innerHTML = '';
+            for (var i = 0; i < allData.length; i++) {
+                var entry = allData[i];
+                var div = document.createElement('div');
+                div.className = 'lb-row';
+
+                var medal = i < 3 ? '<span class="lb-medal">' + MEDALS[i] + '</span>' : '<span class="lb-medal" style="opacity:0.3">#' + (i + 1) + '</span>';
+
+                if (formatEntry) {
+                    div.innerHTML = formatEntry(entry, i, medal);
+                } else {
+                    var emoji = entry.character_emoji ? escapeHtml(entry.character_emoji) + ' ' : '';
+                    var detail = entry.character_title ? '<span class="lb-detail">' + escapeHtml(entry.character_title) + '</span>' : '';
+                    div.innerHTML = '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + escapeHtml(entry.name || '匿名') + '</span>' + detail + '</div><span class="lb-score" style="color:' + getColor(entry.score) + '">' + entry.score + '</span>';
+                }
+                container.appendChild(div);
+            }
+        } catch (e) {
+            container.innerHTML = '<p class="lb-empty">' + t('lb.fail', '排行榜加载失败') + '</p>';
         }
     }
 
@@ -251,30 +241,17 @@
         }
     }
 
-    // ===== 自然增长参与人数 =====
-    var LB_GROWTH_START = new Date('2026-02-01T00:00:00Z').getTime();
-    var LB_GROWTH_BASE = 856;
-
-    function getLBGrowth() {
-        var elapsed = Date.now() - LB_GROWTH_START;
-        if (elapsed < 0) return 0;
-        return Math.floor(elapsed / 120000); // 每2分钟+1
-    }
-
     /**
-     * 创建排行榜HTML结构（含标题、列表容器、参与人数）
+     * 创建排行榜HTML结构（含标题、列表容器、Turnstile、提交按钮）
      * @param {object} opts - { boardId, turnstileId, testType, titleZh, titleEn }
      * @returns {string} HTML字符串
      */
     function createBoardHTML(opts) {
         injectCSS();
         var en = isEn();
-        var totalParticipants = LB_GROWTH_BASE + getLBGrowth();
-        var countText = en ? totalParticipants.toLocaleString() + ' participants today' : '今日 ' + totalParticipants.toLocaleString() + ' 人参与';
         return '<div class="lb-board">' +
             '<h3>' + (en ? (opts.titleEn || 'Leaderboard') : (opts.titleZh || '🏆 今日排行榜')) + '</h3>' +
             '<div id="' + opts.boardId + '"><p class="lb-empty">' + (en ? 'Loading...' : '加载中...') + '</p></div>' +
-            '<p class="lb-count">' + countText + '</p>' +
             '</div>';
     }
 
@@ -284,6 +261,7 @@
         load: loadBoard,
         submit: submitScore,
         createHTML: createBoardHTML,
-        getSupabase: getSupabase
+        getSupabase: getSupabase,
+        generateVirtual: generateVirtualEntries
     };
 })();

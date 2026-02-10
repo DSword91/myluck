@@ -59,7 +59,6 @@
         'lr.death.infant': '先天体质不佳',
         'lr.death.short_lived': '短命体质的宿命已至',
         'lr.death.isekai': '在异世界完成了使命，灵魂归于安宁',
-        'lr.loading': '加载中...',
     };
     const en = {
         'lr.title': '🔄 Life Restart Simulator',
@@ -116,7 +115,6 @@
         'lr.death.infant': 'Born with a weak constitution',
         'lr.death.short_lived': 'Short-lived constitution reached its limit',
         'lr.death.isekai': 'Fulfilled the mission in another world, soul at peace',
-        'lr.loading': 'Loading...',
     };
     I18n.add('zh', zh);
     I18n.add('en', en);
@@ -1159,7 +1157,10 @@
 
     // ===== 第一步：天赋抽取 =====
     function showTalentDraw() {
+        currentPhase = 'talent';
         game.reset();
+        // 重置属性分配
+        window._lrAlloc = { chr: 0, int: 0, str: 0, mny: 0, spr: 0 };
         const poolSize = 10;
         // 按稀有度权重抽取
         const pool = [];
@@ -1230,8 +1231,11 @@
 
     // ===== 第二步：属性分配 =====
     function showAttributeAlloc() {
+        currentPhase = 'attr';
         const total = game.getTotalPoints();
-        const alloc = { chr: 0, int: 0, str: 0, mny: 0, spr: 0 };
+        // 保留之前的分配状态（语言切换时不丢失）
+        if (!window._lrAlloc) window._lrAlloc = { chr: 0, int: 0, str: 0, mny: 0, spr: 0 };
+        const alloc = window._lrAlloc;
         const keys = ['chr', 'int', 'str', 'mny', 'spr'];
         const labels = { chr: 'lr.attr.chr', int: 'lr.attr.int', str: 'lr.attr.str', mny: 'lr.attr.mny', spr: 'lr.attr.spr' };
 
@@ -1306,6 +1310,7 @@
 
     // ===== 第三步：人生轨迹 =====
     function showLifeTrajectory() {
+        currentPhase = 'life';
         container.innerHTML = `
             <h3 class="lr-phase-title">${t('lr.life.title')}</h3>
             <div class="lr-speed-control">
@@ -1394,6 +1399,7 @@
 
     // ===== 第四步：人生总结 =====
     function showSummary() {
+        currentPhase = 'summary';
         const ending = game.getEnding();
         const s = game.stats;
         const gradeKeys = ['chr', 'int', 'str', 'mny', 'spr'];
@@ -1495,23 +1501,27 @@
     }
 
     // ===== 初始化 =====
+    // 跟踪当前阶段，用于语言切换时重新渲染
+    let currentPhase = 'talent'; // 'talent' | 'attr' | 'life' | 'summary'
+
     function init() {
         mergeTalentEvents();
+        currentPhase = 'talent';
         showTalentDraw();
     }
 
-    // 语言切换时重新渲染
+    // 语言切换时重新渲染当前阶段
     document.addEventListener('langchange', () => {
-        // 更新页面标题
-        document.title = I18n.lang === 'en' ? 'Life Restart Simulator - MyLuck' : '人生重开模拟器 - MyLuck';
-        // 如果在游戏中，只更新标题
         I18n.apply();
+        // 天赋选择和属性分配阶段：重新进入该阶段
+        // 人生轨迹和总结阶段保持不变（I18n.apply 会更新 data-i18n）
+        if (currentPhase === 'talent') {
+            showTalentDraw();
+        } else if (currentPhase === 'attr') {
+            showAttributeAlloc();
+        }
+        // life 和 summary 阶段不重新渲染（会丢失进度/状态）
     });
-
-    // 初始化时也设置标题
-    if (I18n.lang === 'en') {
-        document.title = 'Life Restart Simulator - MyLuck';
-    }
 
     document.addEventListener('DOMContentLoaded', init);
 })();

@@ -50,14 +50,18 @@
     ];
 
     function getNameSeed(name) {
-        let hash = 0;
-        for (let i = 0; i < name.length; i++) {
-            hash = ((hash << 5) - hash) + name.charCodeAt(i);
-            hash = hash & hash;
-        }
         const d = new Date();
         const daySeed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
-        return Math.abs(hash ^ daySeed);
+        if (name && name.length > 0) {
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) {
+                hash = ((hash << 5) - hash) + name.charCodeAt(i);
+                hash = hash & hash;
+            }
+            return Math.abs(hash ^ daySeed);
+        }
+        // 随机模式：每次不同
+        return Math.floor(Math.random() * 1000000) + daySeed;
     }
 
     function seededRandom(seed) {
@@ -109,8 +113,7 @@
     }
 
     function showResult(name) {
-        if (!name.trim()) return;
-        name = name.trim();
+        name = (name || '').trim();
         const { score, character } = calcCharacter(name);
         const isEn = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
 
@@ -144,8 +147,7 @@
             tagsEl.appendChild(span);
         });
 
-        saveHistory(name, score, isEn ? character.titleEn : character.title, character.emoji);
-        currentResult = { name: name, score: score, character: character };
+        currentResult = { name: name || (isEn ? 'Anonymous' : '匿名'), score: score, character: character };
         // 重置上榜按钮
         var rankBtn = document.getElementById('rp-rank');
         if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = (window.MyLuck && window.MyLuck.I18n) ? window.MyLuck.I18n.t('rp.rank') : '🏆 上榜'; }
@@ -157,31 +159,6 @@
         }
     }
 
-    function saveHistory(name, score, title, emoji) {
-        const key = 'myluck_rp_history';
-        let history = [];
-        try { history = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) { }
-        const existing = history.findIndex(function (h) { return h.name === name; });
-        if (existing >= 0) history.splice(existing, 1);
-        history.unshift({ name: name, score: score, title: title, emoji: emoji, time: Date.now() });
-        if (history.length > 10) history = history.slice(0, 10);
-        localStorage.setItem(key, JSON.stringify(history));
-        renderHistory(history);
-    }
-
-    function renderHistory(history) {
-        var container = document.getElementById('rp-history');
-        if (!container || !history.length) return;
-        var isEn = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
-        container.innerHTML = '';
-        history.forEach(function (h) {
-            var div = document.createElement('div');
-            div.className = 'rp-history-item';
-            div.innerHTML = '<span class="rp-history-name">' + h.emoji + ' ' + escapeHtml(h.name) + '</span><span class="rp-history-score" style="color:' + getColor(h.score) + '">' + h.score + (isEn ? '% · ' : '分 · ') + escapeHtml(h.title) + '</span>';
-            container.appendChild(div);
-        });
-    }
-
     function escapeHtml(str) {
         var d = document.createElement('div');
         d.textContent = str;
@@ -191,14 +168,28 @@
     // ========== 排行榜（统一模块） ==========
     var currentResult = null;
 
-    // 构建中文title→英文title的映射表
-    var RP_TITLE_MAP = {};
-    CHARACTERS.forEach(function (c) { RP_TITLE_MAP[c.title] = c.titleEn; });
-
     async function loadLeaderboard() {
         var LB = window.MyLuck && window.MyLuck.Leaderboard;
         if (!LB) return;
-        await LB.load('rp-global-list', 'rp', { titleMap: RP_TITLE_MAP });
+
+        // RP角色数据用于虚拟用户
+        var rpChars = CHARACTERS;
+        var en = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
+
+        await LB.load('rp-global-list', 'rp', {
+            virtualCount: 12,
+            virtualConfig: {
+                getEntry: function(rng, idx) {
+                    var charIdx = Math.floor(rng(0) * rpChars.length);
+                    var ch = rpChars[charIdx];
+                    return {
+                        score: ch.stats.lucky,
+                        character_emoji: ch.emoji,
+                        character_title: en ? ch.titleEn : ch.title
+                    };
+                }
+            }
+        });
     }
 
     async function submitToLeaderboard() {
@@ -216,7 +207,7 @@
             score: currentResult.score,
             character_id: String(currentResult.character.id),
             character_emoji: currentResult.character.emoji,
-            character_title: currentResult.character.title  // 始终存中文key，渲染时按语言翻译
+            character_title: isEn ? currentResult.character.titleEn : currentResult.character.title
         }, {
             onSuccess: function () {
                 if (rankBtn) rankBtn.textContent = I18n ? I18n.t('rp.ranked') : '✅ 已上榜！';
@@ -258,16 +249,15 @@
         var retryBtn = document.getElementById('rp-retry');
         var rankBtn = document.getElementById('rp-rank');
 
-        if (submitBtn) submitBtn.addEventListener('click', function () { showResult(input.value); });
+        if (submitBtn) submitBtn.addEventListener('click', function () { showResult(input ? input.value : ''); });
         if (input) input.addEventListener('keydown', function (e) { if (e.key === 'Enter') showResult(input.value); });
         if (shareBtn) shareBtn.addEventListener('click', shareRP);
         if (rankBtn) rankBtn.addEventListener('click', submitToLeaderboard);
         if (retryBtn) retryBtn.addEventListener('click', function () {
-            input.value = ''; input.focus();
+            if (input) { input.value = ''; input.focus(); }
             document.getElementById('rp-result').style.display = 'none';
             currentResult = null;
         });
-        try { renderHistory(JSON.parse(localStorage.getItem('myluck_rp_history') || '[]')); } catch (e) { }
 
         // 加载全球排行榜
         loadLeaderboard();
@@ -279,7 +269,6 @@
             if (currentResult) {
                 showResult(currentResult.name);
             }
-            try { renderHistory(JSON.parse(localStorage.getItem('myluck_rp_history') || '[]')); } catch (e) { }
             loadLeaderboard();
         });
     }

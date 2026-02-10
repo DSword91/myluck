@@ -180,12 +180,12 @@
     const MBTI_STATS_KEY = 'myluck-mbti-stats';
     const MBTI_HISTORY_KEY = 'myluck-mbti-history';
 
-    // 基础分布数据（基于真实MBTI统计模拟 + 本站用户叠加）
+    // 基础分布数据（基于真实MBTI统计研究，更接近全球比例）
     const baseDistribution = {
-        ISTJ: 116, ISFJ: 138, INFJ: 87, INTJ: 82,
-        ISTP: 93, ISFP: 105, INFP: 123, INTP: 97,
-        ESTP: 78, ESFP: 96, ENFP: 134, ENTP: 88,
-        ESTJ: 107, ESFJ: 121, ENFJ: 95, ENTJ: 73,
+        ISTJ: 1160, ISFJ: 1380, INFJ: 150, INTJ: 210,
+        ISTP: 540, ISFP: 880, INFP: 440, INTP: 330,
+        ESTP: 430, ESFP: 850, ENFP: 810, ENTP: 320,
+        ESTJ: 870, ESFJ: 1200, ENFJ: 250, ENTJ: 180,
     };
 
     function getMBTIStats() {
@@ -223,33 +223,55 @@
         statsEl.style.animation = 'fadeInUp .5s ease';
 
         const stats = getMBTIStats();
-        const total = Object.values(stats).reduce((a, b) => a + b, 0);
-        const maxCount = Math.max(...Object.values(stats));
-        const lang = I18n.lang;
-
-        const grid = document.getElementById('mbti-stats-grid');
         const allTypes = ['ISTJ','ISFJ','INFJ','INTJ','ISTP','ISFP','INFP','INTP','ESTP','ESFP','ENFP','ENTP','ESTJ','ESFJ','ENFJ','ENTJ'];
 
-        grid.innerHTML = allTypes.map(type => {
-            const count = stats[type] || 0;
-            const pct = total > 0 ? (count / total * 100).toFixed(1) : 0;
-            const barWidth = maxCount > 0 ? (count / maxCount * 100) : 0;
-            const isMe = type === myType;
-            const youLabel = lang === 'zh' ? '← 你' : '← YOU';
-            return `<div class="mbti-stat-item ${isMe ? 'my-type' : ''}" ${isMe ? `data-you="${youLabel}"` : ''}>
-                <div class="mbti-stat-type">${type}</div>
-                <div class="mbti-stat-bar"><div class="mbti-stat-fill" style="width:0%;" data-w="${barWidth}"></div></div>
-                <div class="mbti-stat-pct">${pct}%</div>
-                <div class="mbti-stat-count">${count} ${lang === 'zh' ? '人' : 'ppl'}</div>
-            </div>`;
-        }).join('');
+        function renderStats() {
+            const total = Object.values(stats).reduce((a, b) => a + b, 0);
+            const maxCount = Math.max(...Object.values(stats));
+            const lang = I18n.lang;
+            const grid = document.getElementById('mbti-stats-grid');
+            if (!grid) return;
 
-        // 动画延迟填充
-        setTimeout(() => {
-            grid.querySelectorAll('.mbti-stat-fill').forEach(el => {
-                el.style.width = el.dataset.w + '%';
-            });
-        }, 200);
+            grid.innerHTML = allTypes.map(type => {
+                const count = stats[type] || 0;
+                const pct = total > 0 ? (count / total * 100).toFixed(1) : 0;
+                const barWidth = maxCount > 0 ? (count / maxCount * 100) : 0;
+                const isMe = type === myType;
+                const youLabel = lang === 'zh' ? '← 你' : '← YOU';
+                return `<div class="mbti-stat-item ${isMe ? 'my-type' : ''}" ${isMe ? `data-you="${youLabel}"` : ''}>
+                    <div class="mbti-stat-type">${type}</div>
+                    <div class="mbti-stat-bar"><div class="mbti-stat-fill" style="width:0%;" data-w="${barWidth}"></div></div>
+                    <div class="mbti-stat-pct">${pct}%</div>
+                    <div class="mbti-stat-count">${count.toLocaleString()} ${lang === 'zh' ? '人' : 'ppl'}</div>
+                </div>`;
+            }).join('');
+
+            // 动画延迟填充
+            setTimeout(() => {
+                grid.querySelectorAll('.mbti-stat-fill').forEach(el => {
+                    el.style.width = el.dataset.w + '%';
+                });
+            }, 200);
+        }
+
+        renderStats();
+
+        // 实时变更：每3-6秒随机增加某个类型的人数
+        if (window._mbtiStatsTimer) clearInterval(window._mbtiStatsTimer);
+        window._mbtiStatsTimer = setInterval(() => {
+            const rIdx = Math.floor(Math.random() * allTypes.length);
+            const rType = allTypes[rIdx];
+            stats[rType] = (stats[rType] || 0) + 1;
+            localStorage.setItem(MBTI_STATS_KEY, JSON.stringify(stats));
+            renderStats();
+            // 重新触发条形动画
+            const grid = document.getElementById('mbti-stats-grid');
+            if (grid) {
+                grid.querySelectorAll('.mbti-stat-fill').forEach(el => {
+                    el.style.width = el.dataset.w + '%';
+                });
+            }
+        }, Math.floor(Math.random() * 3000) + 3000);
 
         // 我的历史记录
         const history = JSON.parse(localStorage.getItem(MBTI_HISTORY_KEY) || '[]');
@@ -322,4 +344,111 @@
             : `My MBTI is ${type} (${name})! Take the test →`;
         window.MyLuck.Share.show(text, 'https://myluck.top/mbti.html');
     });
+
+    // ===== MBTI 排行榜 =====
+    let lastMBTIType = null;
+
+    const MBTI_TYPE_EMOJIS = {
+        ISTJ:'📋', ISFJ:'🛡️', INFJ:'🌙', INTJ:'🏗️',
+        ISTP:'🔧', ISFP:'🎨', INFP:'🦋', INTP:'🔬',
+        ESTP:'⚡', ESFP:'🎭', ENFP:'🌊', ENTP:'💡',
+        ESTJ:'👔', ESFJ:'❤️', ENFJ:'🌟', ENTJ:'🎖️'
+    };
+
+    async function loadMBTILeaderboard() {
+        const LB = window.MyLuck && window.MyLuck.Leaderboard;
+        if (!LB) return;
+
+        const allTypeKeys = Object.keys(types);
+
+        await LB.load('mbti-board-list', 'mbti', {
+            virtualCount: 10,
+            virtualConfig: {
+                getEntry: function(rng, idx) {
+                    const typeIdx = Math.floor(rng(1) * allTypeKeys.length);
+                    const tp = allTypeKeys[typeIdx];
+                    // MBTI分数：维度最大差异百分比
+                    return {
+                        score: Math.floor(rng(2) * 40 + 60),
+                        character_emoji: MBTI_TYPE_EMOJIS[tp] || '🧠',
+                        character_title: tp
+                    };
+                }
+            },
+            formatEntry: function(entry, i, medal) {
+                const esc = window.MyLuck.Security ? window.MyLuck.Security.escapeHtml : (s) => s;
+                const emoji = entry.character_emoji || '🧠';
+                const mbtiType = entry.character_title || '';
+                const scoreColor = entry.score >= 90 ? '#6c5ce7' : entry.score >= 70 ? '#a29bfe' : '#74b9ff';
+                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + ' ' + esc(entry.name || '匿名') + '</span><span class="lb-detail">' + esc(mbtiType) + '</span></div><span class="lb-score" style="color:' + scoreColor + '">' + entry.score + '</span>';
+            }
+        });
+    }
+
+    async function submitMBTIScore() {
+        if (!lastMBTIType) return;
+        const LB = window.MyLuck && window.MyLuck.Leaderboard;
+        if (!LB) return;
+
+        const rankBtn = document.getElementById('mbti-rank-btn');
+        if (rankBtn) { rankBtn.disabled = true; rankBtn.textContent = '...'; }
+
+        // 计算"得分"：四个维度中最大倾向百分比的平均值
+        const dims = [
+            [scores.E, scores.I],
+            [scores.S, scores.N],
+            [scores.T, scores.F],
+            [scores.J, scores.P]
+        ];
+        const dimScores = dims.map(([a, b]) => {
+            const total = a + b;
+            return total ? Math.round(Math.max(a, b) / total * 100) : 50;
+        });
+        const avgScore = Math.round(dimScores.reduce((a, b) => a + b, 0) / 4);
+
+        const typeName = types[lastMBTIType] ?
+            (I18n.lang === 'en' ? types[lastMBTIType].en.name : types[lastMBTIType].zh.name) : lastMBTIType;
+
+        await LB.submit('mbti', {
+            name: I18n.lang === 'en' ? 'Anonymous' : '匿名',
+            score: avgScore,
+            character_emoji: MBTI_TYPE_EMOJIS[lastMBTIType] || '🧠',
+            character_title: lastMBTIType
+        }, {
+            onSuccess: function() {
+                if (rankBtn) rankBtn.textContent = I18n.t('mbti.ranked');
+                loadMBTILeaderboard();
+            },
+            onFail: function() {
+                alert(I18n.t('mbti.rank_fail'));
+                if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = I18n.t('mbti.rank_btn'); }
+            }
+        });
+        if (rankBtn && !rankBtn.disabled) { rankBtn.disabled = false; rankBtn.textContent = I18n.t('mbti.rank_btn'); }
+    }
+
+    // 在showResult中记录结果类型
+    const origShowResult = showResult;
+    showResult = function() {
+        origShowResult();
+        lastMBTIType = (scores.E >= scores.I ? 'E' : 'I') +
+                       (scores.S >= scores.N ? 'S' : 'N') +
+                       (scores.T >= scores.F ? 'T' : 'F') +
+                       (scores.J >= scores.P ? 'J' : 'P');
+        const rankBtn = document.getElementById('mbti-rank-btn');
+        if (rankBtn) { rankBtn.style.display = 'inline-block'; rankBtn.disabled = false; rankBtn.textContent = I18n.t('mbti.rank_btn'); }
+        loadMBTILeaderboard();
+    };
+
+    // 绑定上榜按钮
+    const mbtiRankBtn = document.getElementById('mbti-rank-btn');
+    if (mbtiRankBtn) mbtiRankBtn.addEventListener('click', submitMBTIScore);
+
+    // 初始化排行榜
+    loadMBTILeaderboard();
+
+    // Turnstile
+    if (window.MyLuck.Turnstile && window.MyLuck.Turnstile.isEnabled()) {
+        window.MyLuck.Turnstile.render('turnstile-mbti');
+    }
 })();

@@ -103,6 +103,16 @@
                     <div class="disclaimer-badge" data-i18n="disclaimer.tag">仅供娱乐 · 算法随机生成</div>
                 </div>
             </div>
+
+            <!-- 每日运气排行榜 -->
+            <div class="rp-leaderboard" id="fortune-board-wrap" style="border-color:#e17055;margin-top:24px;">
+                <h3 data-i18n="fortune.leaderboard" style="color:#e17055;">🏆 今日运气排行榜</h3>
+                <div id="fortune-board-list"><p style="text-align:center;color:#bbb;font-size:0.9rem;" data-i18n="rp.board_loading">加载中...</p></div>
+                <div style="text-align:center;margin-top:12px;">
+                    <button class="rp-btn-share" id="fortune-rank-btn" style="background:#e17055;display:none;" data-i18n="fortune.rank">🏆 上榜</button>
+                </div>
+                <div id="turnstile-fortune" style="margin:10px 0;display:flex;justify-content:center;"></div>
+            </div>
         </div>
     </section>
 
@@ -121,7 +131,7 @@
                 <a href="rp-test.html" class="test-card">
                     <span class="test-card-icon">🧧</span>
                     <h3 data-i18n="card.rp_title">今日人设</h3>
-                    <p data-i18n="card.rp_desc">输入名字，测测今天你是什么搞笑人设！每天结果不同</p>
+                    <p data-i18n="card.rp_desc">点击随机生成你的搞笑人设！30种超有梳人设等你解锁</p>
                     <span class="card-tag" data-i18n="card.rp_tag">30种人设 · 全球排行榜</span>
                 </a>
                 <a href="mbti.html" class="test-card">
@@ -174,6 +184,7 @@
 
     <script src="js/common.js" defer></script>
     <script src="js/share.js" defer></script>
+    <script src="js/leaderboard.js" defer></script>
     <script src="js/fortune.js" defer></script>
     <noscript>
         <div style="text-align:center;padding:40px 20px;">

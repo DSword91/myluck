@@ -120,13 +120,13 @@
         <section class="section">
             <div class="container">
                 <h1 class="section-title" data-i18n="rp.title">🧧 今日人设测试</h1>
-                <p class="section-desc" data-i18n="rp.desc">输入你的名字，测测今天你是什么搞笑人设！每天结果不同 🎭</p>
+                <p class="section-desc" data-i18n="rp.desc">点击按钮，随机生成你的搞笑人设！也可输入名字 🎭</p>
 
                 <div class="rp-container">
                     <div class="card">
                         <div class="rp-input-area">
-                            <input type="text" id="rp-name" maxlength="20" data-i18n="rp.placeholder" placeholder="输入你的名字或昵称">
-                            <button id="rp-submit" data-i18n="rp.submit">测一测</button>
+                            <input type="text" id="rp-name" maxlength="20" data-i18n="rp.placeholder" placeholder="输入名字（可选）">
+                            <button id="rp-submit" data-i18n="rp.submit">随机人设</button>
                         </div>
 
                         <div class="rp-result" id="rp-result">
@@ -164,16 +164,11 @@
 
                             <div class="rp-actions">
                                 <button class="rp-btn-share" id="rp-share" data-i18n="rp.share">📤 分享人设</button>
-                                <button class="rp-btn-retry" id="rp-retry" data-i18n="rp.retry">🔄 换个名字</button>
+                                <button class="rp-btn-retry" id="rp-retry" data-i18n="rp.retry">🔄 再来一次</button>
                                 <button class="rp-btn-share" id="rp-rank" style="background:#00b894;" data-i18n="rp.rank">🏆 上榜</button>
                             </div>
                             <div id="turnstile-rp" style="margin:10px 0;display:flex;justify-content:center;"></div>
                         </div>
-                    </div>
-
-                    <div class="rp-leaderboard" id="rp-board">
-                        <h3 data-i18n="rp.history">📊 今日测试记录</h3>
-                        <div id="rp-history"></div>
                     </div>
 
                     <div class="rp-leaderboard" id="rp-global-board" style="border-color:#00b894;">
