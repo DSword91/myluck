@@ -239,9 +239,10 @@
                 <a href="index.html" class="logo" data-i18n="nav.home">🍀 首页</a>
                 <div class="nav-links">
                     <a href="index.html" class="nav-link ${isActive('index.html')}" data-i18n="nav.fortune">每日运气</a>
+                    <a href="fortune-draw.html" class="nav-link ${isActive('fortune-draw.html')}">🎋 求签</a>
+                    <a href="rp-test.html" class="nav-link ${isActive('rp-test.html')}">🧧 人品</a>
                     <a href="mbti.html" class="nav-link ${isActive('mbti.html')}" data-i18n="nav.mbti">MBTI测试</a>
-                    <a href="color.html" class="nav-link ${isActive('color.html')}" data-i18n="nav.color">幸运色彩</a>
-                    <a href="personality.html" class="nav-link ${isActive('personality.html')}" data-i18n="nav.personality">趣味性格</a>                    <a href="liferestart.html" class="nav-link ${isActive('liferestart.html')}" data-i18n="nav.liferestart">人生重开</a>                    <a href="guestbook.html" class="nav-link ${isActive('guestbook.html')}" data-i18n="nav.guestbook">留言板</a>
+                    <a href="liferestart.html" class="nav-link ${isActive('liferestart.html')}" data-i18n="nav.liferestart">人生重开</a>                    <a href="guestbook.html" class="nav-link ${isActive('guestbook.html')}" data-i18n="nav.guestbook">留言板</a>
                     <button class="lang-btn" id="lang-toggle" data-i18n="lang.switch">EN</button>
                 </div>
                 <button class="menu-toggle" aria-label="Menu">☰</button>
@@ -281,9 +282,9 @@
                     <div class="footer-links">
                         <h4 data-i18n="footer.tests">趣味测试</h4>
                         <a href="index.html" data-i18n="nav.fortune">每日运气</a>
+                        <a href="fortune-draw.html">在线求签</a>
+                        <a href="rp-test.html">今日人品</a>
                         <a href="mbti.html" data-i18n="nav.mbti">MBTI测试</a>
-                        <a href="color.html" data-i18n="nav.color">幸运色彩</a>
-                        <a href="personality.html" data-i18n="nav.personality">趣味性格</a>
                         <a href="liferestart.html" data-i18n="nav.liferestart">人生重开</a>
                     </div>
                     <div class="footer-links">
@@ -568,6 +569,8 @@
                 'personality.html': '趣味性格测试',
                 'guestbook.html': '许愿墙',
                 'liferestart.html': '人生重开模拟器',
+                'fortune-draw.html': '在线求签',
+                'rp-test.html': '今日人品测试',
                 'privacy.html': '隐私政策',
                 'terms.html': '使用条款',
                 'disclaimer.html': '免责声明'

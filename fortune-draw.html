@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="在线求签抽签 - 虔诚摇签，获取今日运势指引。观音灵签风格，每日一签，趣味娱乐">
+    <meta name="keywords" content="在线求签,抽签,每日一签,观音灵签,运势签,今日运签,求签问卦,MyLuck,myluck.top">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="index, follow">
+    <title>在线求签 - MyLuck | 每日一签测运势</title>
+    <link rel="canonical" href="https://myluck.top/fortune-draw.html">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎋</text></svg>">
+    <meta property="og:title" content="在线求签 - MyLuck">
+    <meta property="og:description" content="虔诚摇签，获取今日运势指引。每日一签，趣味娱乐">
+    <meta property="og:url" content="https://myluck.top/fortune-draw.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="MyLuck">
+    <meta property="og:locale" content="zh_CN">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="在线求签 - MyLuck">
+    <meta name="twitter:description" content="虔诚摇签，获取今日运势指引">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .draw-container { max-width: 500px; margin: 0 auto; text-align: center; }
+        .draw-scene {
+            position: relative; width: 220px; height: 320px; margin: 20px auto;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 40%, #8B4513 100%);
+            border-radius: 20px 20px 8px 8px; box-shadow: 0 8px 32px rgba(139,69,19,0.3);
+            overflow: hidden; cursor: pointer; transition: transform 0.3s;
+        }
+        .draw-scene:hover { transform: scale(1.03); }
+        .draw-scene::before {
+            content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 80px; height: 12px; background: #654321; border-radius: 0 0 10px 10px;
+        }
+        .bamboo-label {
+            position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+            background: #f5e6c8; color: #8B4513; padding: 6px 18px; border-radius: 4px;
+            font-size: 0.85rem; font-weight: 700; letter-spacing: 2px; border: 1px solid #d4a574;
+        }
+        .sticks-area {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: 160px; height: 200px;
+        }
+        .stick {
+            position: absolute; bottom: 0; width: 8px; border-radius: 3px 3px 1px 1px;
+            background: linear-gradient(180deg, #FFD700 0%, #DAA520 30%, #f5deb3 100%);
+            transition: transform 0.3s; transform-origin: bottom center;
+        }
+        .stick::after {
+            content: ''; position: absolute; top: -4px; left: 50%; transform: translateX(-50%);
+            width: 12px; height: 8px; background: #FF6347; border-radius: 3px 3px 0 0;
+        }
+        .draw-scene.shaking .stick { animation: shakeStick 0.15s infinite alternate; }
+        .draw-scene.shaking .stick:nth-child(odd) { animation-delay: 0.05s; }
+        .draw-scene.drawn .stick.chosen {
+            animation: riseUp 0.8s ease-out forwards;
+        }
+        @keyframes shakeStick {
+            from { transform: rotate(var(--base-rot, 0deg)) translateX(-2px); }
+            to { transform: rotate(var(--base-rot, 0deg)) translateX(2px); }
+        }
+        @keyframes riseUp {
+            0% { transform: rotate(0deg) translateY(0); }
+            100% { transform: rotate(0deg) translateY(-120px); opacity: 0; }
+        }
+        .draw-hint {
+            margin-top: 10px; color: #999; font-size: 0.9rem;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
+        .draw-btn {
+            display: inline-block; margin: 16px auto; padding: 14px 48px;
+            background: linear-gradient(135deg, #e17055, #d63031);
+            color: #fff; border: none; border-radius: 50px; font-size: 1.1rem;
+            font-weight: 700; cursor: pointer; letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(225,112,85,0.4); transition: all 0.3s;
+        }
+        .draw-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(225,112,85,0.5); }
+        .draw-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* 签文结果 */
+        .fortune-slip { display: none; margin: 24px auto; max-width: 420px; animation: fadeSlideUp 0.6s ease-out; }
+        @keyframes fadeSlideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+        .slip-card {
+            background: linear-gradient(135deg, #fffbf0, #f5e6c8);
+            border: 2px solid #d4a574; border-radius: 16px; padding: 28px 24px;
+            box-shadow: 0 8px 32px rgba(139,69,19,0.15); position: relative; overflow: hidden;
+        }
+        .slip-card::before {
+            content: '签'; position: absolute; top: 10px; right: 16px;
+            font-size: 5rem; color: rgba(139,69,19,0.06); font-weight: 900;
+        }
+        .slip-number { color: #8B4513; font-size: 0.85rem; margin-bottom: 8px; }
+        .slip-level {
+            display: inline-block; padding: 6px 20px; border-radius: 20px;
+            font-size: 1.2rem; font-weight: 700; margin-bottom: 16px; letter-spacing: 3px;
+        }
+        .slip-level.great { background: #fff3cd; color: #d4380d; border: 1px solid #ffc53d; }
+        .slip-level.good { background: #f6ffed; color: #389e0d; border: 1px solid #95de64; }
+        .slip-level.fair { background: #f0f5ff; color: #1d39c4; border: 1px solid #85a5ff; }
+        .slip-level.poor { background: #fff2f0; color: #cf1322; border: 1px solid #ffa39e; }
+        .slip-poem {
+            font-size: 1.05rem; line-height: 2; color: #5a3e28; margin: 16px 0;
+            font-style: italic; border-left: 3px solid #d4a574; padding-left: 16px;
+        }
+        .slip-interpret { color: #666; font-size: 0.95rem; line-height: 1.7; margin: 16px 0; }
+        .slip-aspects {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px;
+        }
+        .slip-aspect {
+            background: rgba(255,255,255,0.7); border-radius: 10px; padding: 10px;
+            text-align: center; border: 1px solid rgba(212,165,116,0.3);
+        }
+        .slip-aspect .label { display: block; font-size: 0.8rem; color: #999; margin-bottom: 4px; }
+        .slip-aspect .value { font-weight: 600; color: #5a3e28; }
+        .slip-actions { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
+        .slip-actions button {
+            padding: 10px 24px; border-radius: 25px; border: none; font-size: 0.9rem;
+            cursor: pointer; font-weight: 600; transition: all 0.2s;
+        }
+        .btn-share-slip { background: #e17055; color: #fff; }
+        .btn-share-slip:hover { background: #d63031; }
+        .btn-redraw { background: #f5e6c8; color: #8B4513; border: 1px solid #d4a574; }
+        .btn-redraw:hover { background: #eedcb3; }
+
+        .daily-info { margin-top: 12px; font-size: 0.85rem; color: #bbb; }
+        .disclaimer-text { margin-top: 20px; font-size: 0.8rem; color: #ccc; }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <section class="section">
+            <div class="container">
+                <h1 class="section-title">🎋 在线求签</h1>
+                <p class="section-desc" data-i18n="draw.desc">心诚则灵，点击签筒或按钮摇签，获取今日运势指引</p>
+
+                <div class="draw-container">
+                    <div class="draw-scene" id="draw-scene">
+                        <div class="bamboo-label">灵签</div>
+                        <div class="sticks-area" id="sticks-area"></div>
+                    </div>
+                    <p class="draw-hint" id="draw-hint">👆 点击签筒摇签</p>
+                    <button class="draw-btn" id="draw-btn">🙏 虔诚求签</button>
+                    <p class="daily-info" id="daily-info"></p>
+
+                    <div class="fortune-slip" id="fortune-slip">
+                        <div class="slip-card">
+                            <div class="slip-number" id="slip-number"></div>
+                            <div class="slip-level" id="slip-level"></div>
+                            <div class="slip-poem" id="slip-poem"></div>
+                            <div class="slip-interpret" id="slip-interpret"></div>
+                            <div class="slip-aspects">
+                                <div class="slip-aspect"><span class="label">💼 事业</span><span class="value" id="asp-career"></span></div>
+                                <div class="slip-aspect"><span class="label">💕 感情</span><span class="value" id="asp-love"></span></div>
+                                <div class="slip-aspect"><span class="label">💰 财运</span><span class="value" id="asp-wealth"></span></div>
+                                <div class="slip-aspect"><span class="label">🏥 健康</span><span class="value" id="asp-health"></span></div>
+                            </div>
+                            <div class="slip-actions">
+                                <button class="btn-share-slip" id="share-slip">📤 分享签文</button>
+                                <button class="btn-redraw" id="redraw-btn">🔄 再求一签</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="disclaimer-text">仅供娱乐参考 · 算法随机生成 · 请勿迷信</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/common.js" defer></script>
+    <script src="js/share.js" defer></script>
+    <script src="js/fortune-draw.js" defer></script>
+    <noscript>
+        <div style="text-align:center;padding:40px 20px;">
+            <h2>在线求签 - MyLuck | myluck.top</h2>
+            <p>MyLuck (myluck.top) 在线求签 - 虔诚摇签，获取今日运势指引。每日一签，观音灵签风格趣味娱乐。更多趣味测试：MBTI性格测试、每日运气测试、人生重开模拟器。</p>
+            <nav><a href="/">首页</a> | <a href="/mbti.html">MBTI测试</a> | <a href="/color.html">色彩测试</a> | <a href="/personality.html">性格测试</a> | <a href="/liferestart.html">人生重开</a> | <a href="/fortune-draw.html">在线求签</a></nav>
+        </div>
+    </noscript>
+</body>
+</html>
