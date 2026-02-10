@@ -79,10 +79,11 @@
             padding: 6px 16px; border-radius: 20px; font-size: 0.85rem;
             background: rgba(225,112,85,0.1); color: #e17055; border: 1px solid rgba(225,112,85,0.2);
         }
-        .rp-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+        .rp-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
         .rp-actions button {
-            padding: 10px 24px; border-radius: 25px; border: none; font-size: 0.9rem;
-            cursor: pointer; font-weight: 600; transition: all 0.2s;
+            padding: 10px 20px; border-radius: 25px; border: none; font-size: 0.9rem;
+            cursor: pointer; font-weight: 600; transition: all 0.2s; white-space: nowrap;
+            min-width: 100px; text-align: center;
         }
         .rp-btn-share { background: #e17055; color: #fff; }
         .rp-btn-share:hover { background: #d63031; }

@@ -1,327 +1,327 @@
-// ========== 许愿墙 + 评论区 ==========
+﻿// ========== 祝福墙（全球可见 · Supabase） ==========
 (function () {
     'use strict';
-    const { I18n, Security } = window.MyLuck;
+    var MyLuck = window.MyLuck || {};
+    var I18n = MyLuck.I18n;
+    var Security = MyLuck.Security;
 
+    // ===== i18n =====
     I18n.add('zh', {
-        'gb.title': '🌟 许愿墙',
-        'gb.desc': '写下你的心愿或今日好运感想，让好运传递给更多人',
-        'gb.info': '心愿保存在你的浏览器中，仅供个人回顾。请文明发言~',
-        'gb.placeholder': '写下你的心愿或感想...',
-        'gb.submit': '🍀 许愿',
-        'gb.empty': '还没有心愿，快来写下第一个吧~',
-        'gb.toomany': '发送太频繁了，休息一下吧~',
+        'gb.title': '🌟 祝福墙',
+        'gb.desc': '写下你的祝福，让好运传递给每一个人',
+        'gb.counter_pre': '已有',
+        'gb.counter_suf': '位小伙伴送出祝福 💕',
+        'gb.name_ph': '你的昵称 *',
+        'gb.text_ph': '写下你的祝福...',
+        'gb.submit': '🍀 送出祝福',
+        'gb.loading': '加载中...',
+        'gb.empty': '还没有祝福，快来送出第一个吧~',
+        'gb.toomany': '太频繁了，休息一下吧~',
         'gb.tooshort': '至少写几个字吧~',
         'gb.bad': '请文明发言哦~',
-        'gb.comment_title': '💬 评论区',
-        'gb.comment_desc': '和大家一起交流讨论，分享你的测试心得',
-        'gb.c_placeholder': '说点什么吧~',
-        'gb.c_name': '昵称 *',
-        'gb.c_email': '邮箱 *',
-        'gb.c_submit': '发表评论',
-        'gb.c_empty': '还没有评论，快来抢沙发~',
-        'gb.c_loading': '加载评论中...',
-        'gb.c_error': '评论加载失败，请稍后再试',
-        'gb.c_need_name': '请填写昵称',
-        'gb.c_need_email': '请填写有效的邮箱地址',
-        'gb.c_captcha_fail': '验证码错误，请重试',
-        'gb.c_captcha_q': '人机验证',
+        'gb.need_name': '请填写昵称',
+        'gb.need_verify': '请先完成人机验证',
+        'gb.success': '🎉 祝福已送出！',
+        'gb.fail': '发送失败，请稍后重试',
     });
     I18n.add('en', {
-        'gb.title': '🌟 Wishing Wall',
-        'gb.desc': 'Write your wish or thoughts, spread good luck to everyone',
-        'gb.info': 'Wishes are saved in your browser for personal review. Be kind~',
-        'gb.placeholder': 'Write your wish or thought...',
-        'gb.submit': '🍀 Make a Wish',
-        'gb.empty': 'No wishes yet. Be the first to make one~',
+        'gb.title': '🌟 Blessing Wall',
+        'gb.desc': 'Write your blessings, spread good luck to everyone',
+        'gb.counter_pre': '',
+        'gb.counter_suf': 'blessings sent so far 💕',
+        'gb.name_ph': 'Your nickname *',
+        'gb.text_ph': 'Write your blessing...',
+        'gb.submit': '🍀 Send Blessing',
+        'gb.loading': 'Loading...',
+        'gb.empty': 'No blessings yet. Be the first!',
         'gb.toomany': 'Too fast! Take a break~',
         'gb.tooshort': 'Write a bit more~',
         'gb.bad': 'Please keep it friendly~',
-        'gb.comment_title': '💬 Comments',
-        'gb.comment_desc': 'Discuss and share your test experiences with everyone',
-        'gb.c_placeholder': 'Say something~',
-        'gb.c_name': 'Nickname *',
-        'gb.c_email': 'Email *',
-        'gb.c_submit': 'Submit',
-        'gb.c_empty': 'No comments yet. Be the first!',
-        'gb.c_loading': 'Loading comments...',
-        'gb.c_error': 'Failed to load comments, try later',
-        'gb.c_need_name': 'Please enter a nickname',
-        'gb.c_need_email': 'Please enter a valid email',
-        'gb.c_captcha_fail': 'Wrong answer, try again',
-        'gb.c_captcha_q': 'Verify',
+        'gb.need_name': 'Please enter a nickname',
+        'gb.need_verify': 'Please complete verification first',
+        'gb.success': '🎉 Blessing sent!',
+        'gb.fail': 'Failed to send, try later',
     });
     I18n.apply();
 
-    // 预设心愿（让页面不那么空）
-    const presetWishes = {
-        zh: [
-            { text: '希望今天考试顺利通过！🎓', time: '2026-02-08' },
-            { text: '愿家人身体健康，万事如意 ❤️', time: '2026-02-07' },
-            { text: '希望新的一年工作顺利，升职加薪！', time: '2026-02-06' },
-            { text: '许个愿：希望暑假能去旅行 ✈️', time: '2026-02-05' },
-            { text: '今天测到了88%的好运，开心！', time: '2026-02-04' },
-            { text: '愿世界和平，每个人都能快乐 🌍', time: '2026-02-03' },
-        ],
-        en: [
-            { text: 'Hope my exam goes well today! 🎓', time: '2026-02-08' },
-            { text: 'Wishing health and happiness to my family ❤️', time: '2026-02-07' },
-            { text: 'May this year bring great career success!', time: '2026-02-06' },
-            { text: 'Wish: a wonderful vacation trip ✈️', time: '2026-02-05' },
-            { text: 'Got 88% luck today, so happy!', time: '2026-02-04' },
-            { text: 'May there be peace and joy for everyone 🌍', time: '2026-02-03' },
-        ]
-    };
+    // ===== Supabase 配置 =====
+    var SUPABASE_URL = 'https://qerajxnmtwyjtokhaonq.supabase.co';
+    var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlcmFqeG5tdHd5anRva2hhb25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MTA1MjksImV4cCI6MjA4NjE4NjUyOX0.sUMZ_RIu9zLjMOB3nnruJezlQL0i-GrunDIkahWcF5E';
+    var supabaseClient = null;
 
-    function getWishes() {
+    async function getSupabase() {
+        if (supabaseClient) return supabaseClient;
         try {
-            return JSON.parse(localStorage.getItem('myluck-wishes')) || [];
-        } catch { return []; }
+            var mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+            supabaseClient = mod.createClient(SUPABASE_URL, SUPABASE_KEY);
+            return supabaseClient;
+        } catch (e) { return null; }
     }
 
-    function saveWishes(list) {
-        localStorage.setItem('myluck-wishes', JSON.stringify(list.slice(0, 50)));
+    // ===== 随机祝福生成（自然增长） =====
+    var RANDOM_NAMES_ZH = [
+        '小明','小红','大白','阿福','蜜糖','星星','月亮','太阳',
+        '小鱼','小熊','花花','果果','糖糖','豆豆','小雪','小雨',
+        '阳光','微风','彩虹','云朵','小草','大树','蝴蝶','蜻蜓',
+        '翠花','铁蛋','旺财','来福','如意','吉祥','平安','喜乐',
+        '小丸子','哆啦','皮卡','奶茶','布丁','芒果','西瓜','草莓',
+        '可乐','雪碧','棉花糖','巧克力','冰淇淋','泡芙','麻薯','年糕',
+        '开心果','小幸运','好运来','福气满','笑哈哈','乐呵呵','美滋滋','甜蜜蜜'
+    ];
+    var RANDOM_NAMES_EN = [
+        'Lucky Cat','Star','Moon','Sunny','Rainbow','Cloud',
+        'Butterfly','Happy','Joy','Hope','Grace','Melody',
+        'Blossom','Cookie','Mochi','Bubble','Sparkle','Dream',
+        'Angel','Phoenix','Wish','Charm','Clover','Aurora',
+        'Berry','Candy','Latte','Maple','Petal','River',
+        'Sky','Willow','Zen','Frost','Ember','Luna'
+    ];
+    var BLESSINGS_ZH = [
+        '愿你每天都有好心情 ☀️','祝所有人考试顺利 🎓',
+        '愿家人身体健康，万事如意 ❤️','希望世界和平 🕊️',
+        '新的一天，新的好运 🍀','愿你的梦想都能实现 ✨',
+        '开心每一天！😊','送你一朵好运花 🌸',
+        '愿所有的努力都能得到回报 💪','祝大家心想事成 🎊',
+        '今天也要加油呀 💫','好运正在路上 🚀',
+        '愿你被温柔以待 🌷','希望你能遇到美好的事 🌈',
+        '笑口常开，幸福常在 😄','祝你前程似锦 🌟',
+        '愿生活处处有惊喜 🎁','好的事情正在发生 🌻',
+        '你很棒，继续加油 👏','愿你拥有甜甜的生活 🍰',
+        '今天也是幸运的一天 🎋','祝你心情愉快，万事顺遂 🙏',
+        '愿好运永远伴随你 🌠','送你满满的正能量 ⚡',
+        '愿你的世界充满阳光 🌞','祝所有小伙伴都开心 🎈',
+        '每天进步一点点 📈','愿你找到属于自己的幸福 💝',
+        '祝一切顺利 🍀','好运连连，喜事多多 🧧',
+    ];
+    var BLESSINGS_EN = [
+        'Wishing everyone great luck today ☀️','Good luck on your exams 🎓',
+        'May your family be healthy and happy ❤️','Peace and love to all 🕊️',
+        'New day, new blessings 🍀','May your dreams come true ✨',
+        'Be happy every day! 😊','Sending you a lucky flower 🌸',
+        'Hard work always pays off 💪','May all your wishes come true 🎊',
+        'Keep going, you are doing great 💫','Good fortune is on its way 🚀',
+        'May kindness follow you everywhere 🌷','Beautiful things are coming 🌈',
+        'Smile and the world smiles back 😄','Bright future ahead 🌟',
+        'Life is full of wonderful surprises 🎁','Good things are happening 🌻',
+        'You are amazing, keep it up 👏','Wishing you a sweet life 🍰',
+        'Today is your lucky day 🎋','May everything go smoothly 🙏',
+        'Good luck be with you always 🌠','Sending positive vibes ⚡',
+    ];
+
+    function seededRand(seed) {
+        var x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
     }
 
-    function formatDate(d) {
-        const date = new Date(d);
-        return date.toLocaleDateString(I18n.lang === 'zh' ? 'zh-CN' : 'en', { month: 'short', day: 'numeric' });
+    var GROWTH_START = new Date('2026-02-01T00:00:00Z').getTime();
+    var GROWTH_BASE = 1288;
+
+    function getNaturalGrowth() {
+        var elapsed = Date.now() - GROWTH_START;
+        if (elapsed < 0) return 0;
+        return Math.floor(elapsed / 60000);
     }
 
-    function renderWishes() {
-        const wall = document.getElementById('wish-wall');
-        const userWishes = getWishes();
-        const lang = I18n.lang;
-        const presets = presetWishes[lang] || presetWishes.zh;
-        const all = [...userWishes, ...presets];
+    function generateVirtualBlessings(count) {
+        var result = [];
+        var isEn = I18n.lang === 'en';
+        var names = isEn ? RANDOM_NAMES_EN : RANDOM_NAMES_ZH;
+        var msgs = isEn ? BLESSINGS_EN : BLESSINGS_ZH;
+        var now = Date.now();
+
+        for (var i = 0; i < count; i++) {
+            var minuteOffset = i * 3 + Math.floor(seededRand(i * 7 + 42) * 5);
+            var ts = now - minuteOffset * 60000;
+            var nameIdx = Math.floor(seededRand(ts / 60000 + i * 13) * names.length);
+            var msgIdx = Math.floor(seededRand(ts / 60000 + i * 31 + 7) * msgs.length);
+            result.push({
+                nickname: names[nameIdx],
+                content: msgs[msgIdx],
+                created_at: new Date(ts).toISOString(),
+                is_system: true
+            });
+        }
+        return result;
+    }
+
+    // ===== 祝福计数器 =====
+    var realCount = 0;
+
+    function updateCounter() {
+        var el = document.getElementById('bless-count');
+        if (!el) return;
+        var total = GROWTH_BASE + getNaturalGrowth() + realCount;
+        el.textContent = total.toLocaleString();
+    }
+
+    setInterval(updateCounter, 30000);
+
+    // ===== 渲染 =====
+    function esc(str) {
+        if (Security && Security.escapeHtml) return Security.escapeHtml(str);
+        var d = document.createElement('div');
+        d.textContent = str;
+        return d.innerHTML;
+    }
+
+    function formatTime(iso) {
+        var d = new Date(iso);
+        var now = new Date();
+        var diff = now - d;
+        var isEn = I18n.lang === 'en';
+        if (diff < 60000) return isEn ? 'just now' : '刚刚';
+        if (diff < 3600000) return Math.floor(diff / 60000) + (isEn ? ' min ago' : ' 分钟前');
+        if (diff < 86400000) return Math.floor(diff / 3600000) + (isEn ? ' hr ago' : ' 小时前');
+        return d.toLocaleDateString(isEn ? 'en-US' : 'zh-CN', { month: 'short', day: 'numeric' });
+    }
+
+    function renderBlessings(realData) {
+        var wall = document.getElementById('bless-wall');
+        if (!wall) return;
+        var virtual = generateVirtualBlessings(8);
+        var all = (realData || []).concat(virtual);
+        all.sort(function (a, b) { return new Date(b.created_at) - new Date(a.created_at); });
+        all = all.slice(0, 50);
 
         if (all.length === 0) {
-            wall.innerHTML = `<p class="wish-empty">${I18n.t('gb.empty')}</p>`;
+            wall.innerHTML = '<p class="bless-empty">' + I18n.t('gb.empty') + '</p>';
             return;
         }
 
-        wall.innerHTML = all.map(w => `
-            <div class="wish-note">
-                ${Security.escapeHtml(w.text)}
-                <span class="wish-time">${formatDate(w.time)}</span>
-            </div>
-        `).join('');
+        wall.innerHTML = all.map(function (b) {
+            var sysClass = b.is_system ? ' system-card' : '';
+            return '<div class="bless-card' + sysClass + '">' +
+                '<div class="bless-author">🍀 ' + esc(b.nickname || '匿名') + '</div>' +
+                '<div class="bless-text">' + esc(b.content) + '</div>' +
+                '<span class="bless-time">' + formatTime(b.created_at) + '</span>' +
+                '</div>';
+        }).join('');
     }
 
-    document.getElementById('wish-submit').addEventListener('click', () => {
-        const input = document.getElementById('wish-input');
-        const text = input.value.trim();
+    // ===== 加载真实祝福 =====
+    async function loadBlessings() {
+        try {
+            var sb = await getSupabase();
+            if (!sb) { renderBlessings([]); updateCounter(); return; }
 
-        if (text.length < 2) { alert(I18n.t('gb.tooshort')); return; }
-        if (!Security.rateLimit('wish', 5)) { alert(I18n.t('gb.toomany')); return; }
-        if (Security.containsBadWords(text)) { alert(I18n.t('gb.bad')); return; }
+            var resp = await sb.from('comments')
+                .select('*')
+                .eq('page', 'blessings')
+                .order('created_at', { ascending: false })
+                .limit(50);
 
-        const wishes = getWishes();
-        wishes.unshift({ text: Security.escapeHtml(text), time: new Date().toISOString() });
-        saveWishes(wishes);
-        input.value = '';
-        renderWishes();
-    });
+            var data = (resp.data || []);
+            realCount = data.length;
 
-    document.getElementById('wish-input').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') document.getElementById('wish-submit').click();
-    });
+            var countResp = await sb.from('comments')
+                .select('id', { count: 'exact', head: true })
+                .eq('page', 'blessings');
+            if (countResp.count != null) realCount = countResp.count;
 
-    document.addEventListener('langchange', renderWishes);
-    renderWishes();
+            renderBlessings(data);
+            updateCounter();
+        } catch (e) {
+            renderBlessings([]);
+            updateCounter();
+        }
+    }
 
-    // ========== Supabase 评论系统（免费、无需部署服务器） ==========
-    // 配置说明：
-    // 1. 注册 https://supabase.com （免费）
-    // 2. 创建项目，运行以下 SQL：
-    //    CREATE TABLE comments (
-    //      id BIGSERIAL PRIMARY KEY,
-    //      nickname TEXT DEFAULT '匿名',
-    //      content TEXT NOT NULL,
-    //      page TEXT DEFAULT 'guestbook',
-    //      created_at TIMESTAMPTZ DEFAULT NOW()
-    //    );
-    //    ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
-    //    CREATE POLICY "Anyone can read" ON comments FOR SELECT USING (true);
-    //    CREATE POLICY "Anyone can insert" ON comments FOR INSERT WITH CHECK (
-    //      length(content) > 0 AND length(content) < 500
-    //    );
-    // 3. 将下面的 URL 和 KEY 替换为你的项目值
-    //    （Settings → API → Project URL 和 anon/public key）
+    // ===== 提交祝福 =====
+    var loadTime = Date.now();
 
-    const SUPABASE_URL = 'https://qerajxnmtwyjtokhaonq.supabase.co';   // 填入你的 Supabase 项目 URL
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlcmFqeG5tdHd5anRva2hhb25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MTA1MjksImV4cCI6MjA4NjE4NjUyOX0.sUMZ_RIu9zLjMOB3nnruJezlQL0i-GrunDIkahWcF5E';   // 填入你的 anon (public) key
+    async function submitBlessing() {
+        var hp = document.getElementById('bless-hp');
+        if (hp && hp.value) return;
+        if (Date.now() - loadTime < 3000) return;
 
-    async function initComments() {
-        const container = document.getElementById('comment-area');
-        if (!container) return;
+        var nameEl = document.getElementById('bless-name');
+        var textEl = document.getElementById('bless-text');
+        var btn = document.getElementById('bless-submit');
 
-        // 未配置 Supabase 时显示提示
-        if (!SUPABASE_URL || !SUPABASE_KEY) {
-            container.innerHTML = I18n.lang === 'zh'
-                ? '<p style="text-align:center;color:var(--text-light);padding:20px;">💬 评论区即将开放，敬请期待~</p>'
-                : '<p style="text-align:center;color:var(--text-light);padding:20px;">💬 Comments coming soon~</p>';
+        var name = (nameEl.value || '').trim();
+        var text = (textEl.value || '').trim();
+
+        if (!name || name.length < 1) { alert(I18n.t('gb.need_name')); nameEl.focus(); return; }
+        if (text.length < 2) { alert(I18n.t('gb.tooshort')); textEl.focus(); return; }
+        if (Security && Security.containsBadWords && Security.containsBadWords(text)) { alert(I18n.t('gb.bad')); return; }
+        if (Security && !Security.rateLimit('bless', 3)) { alert(I18n.t('gb.toomany')); return; }
+
+        var Turnstile = MyLuck.Turnstile;
+        if (Turnstile && Turnstile.isEnabled && Turnstile.isEnabled() && !Turnstile.isVerified()) {
+            alert(I18n.t('gb.need_verify'));
             return;
         }
 
-        // 动态加载 Supabase JS SDK
+        btn.disabled = true;
+        btn.textContent = '...';
+
         try {
-            const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-            const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-            const loadTime = Date.now();
+            var sb = await getSupabase();
+            if (!sb) throw new Error('Supabase unavailable');
 
-            // 生成数学验证码
-            const captchaA = Math.floor(Math.random() * 9) + 1;
-            const captchaB = Math.floor(Math.random() * 9) + 1;
-            const captchaAnswer = captchaA + captchaB;
-
-            // 渲染评论输入框（必填昵称 + 邮箱 + 数学验证码 + 蜜罐）
-            container.innerHTML = `
-                <div class="comment-form">
-                    <div class="comment-row">
-                        <input type="text" id="comment-nick" maxlength="20" required
-                            placeholder="${I18n.t('gb.c_name')}" class="comment-nick-input"
-                            aria-label="${I18n.lang === 'zh' ? '昵称' : 'Nickname'}">
-                        <input type="email" id="comment-email" maxlength="100" required
-                            placeholder="${I18n.t('gb.c_email')}" class="comment-nick-input"
-                            aria-label="${I18n.lang === 'zh' ? '邮箱' : 'Email'}">
-                    </div>
-                    <textarea id="comment-text" maxlength="500" rows="3" required
-                        placeholder="${I18n.t('gb.c_placeholder')}" class="comment-textarea"
-                        aria-label="${I18n.lang === 'zh' ? '评论内容' : 'Comment'}"></textarea>
-                    <div class="comment-row">
-                        <div class="captcha-box">
-                            <label for="comment-captcha" class="captcha-label">${I18n.t('gb.c_captcha_q')}：${captchaA} + ${captchaB} = </label>
-                            <input type="number" id="comment-captcha" class="captcha-input" autocomplete="off">
-                        </div>
-                        <button id="comment-submit" class="cta-btn">${I18n.t('gb.c_submit')}</button>
-                    </div>
-                    <input type="text" id="comment-hp" style="position:absolute;left:-9999px;opacity:0;height:0;" tabindex="-1" autocomplete="off" aria-hidden="true">
-                    <div id="turnstile-widget" style="margin:10px 0;display:flex;justify-content:center;"></div>
-                </div>
-                <div id="comment-list" class="comment-list">
-                    <p style="text-align:center;color:var(--text-light);">${I18n.t('gb.c_loading')}</p>
-                </div>`;
-
-            // 加载评论
-            await loadComments(supabase);
-
-            // 初始化 Turnstile 反垃圾验证（如已配置）
-            if (window.MyLuck && window.MyLuck.Turnstile && window.MyLuck.Turnstile.isEnabled()) {
-                window.MyLuck.Turnstile.render('turnstile-widget');
-            }
-
-            // 提交评论
-            document.getElementById('comment-submit').addEventListener('click', async () => {
-                // 反机器人检查
-                const hp = document.getElementById('comment-hp');
-                if (hp && hp.value) return;
-                if (Date.now() - loadTime < 3000) return;
-
-                // Turnstile 验证
-                if (window.MyLuck && window.MyLuck.Turnstile && !window.MyLuck.Turnstile.isVerified()) {
-                    alert(I18n.lang === 'zh' ? '请完成人机验证' : 'Please complete the verification');
-                    return;
-                }
-
-                const nick = document.getElementById('comment-nick').value.trim();
-                const email = document.getElementById('comment-email').value.trim();
-                const text = document.getElementById('comment-text').value.trim();
-                const captchaVal = parseInt(document.getElementById('comment-captcha').value);
-
-                // 必填验证
-                if (!nick || nick.length < 1) { alert(I18n.t('gb.c_need_name')); return; }
-                if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert(I18n.t('gb.c_need_email')); return; }
-                if (text.length < 2) { alert(I18n.t('gb.tooshort')); return; }
-                if (captchaVal !== captchaAnswer) { alert(I18n.t('gb.c_captcha_fail')); document.getElementById('comment-captcha').value = ''; return; }
-                if (!Security.rateLimit('comment', 3)) { alert(I18n.t('gb.toomany')); return; }
-                if (Security.containsBadWords(text)) { alert(I18n.t('gb.bad')); return; }
-
-                const btn = document.getElementById('comment-submit');
-                btn.disabled = true;
-                btn.textContent = '...';
-
-                const { error } = await supabase.from('comments').insert({
-                    nickname: Security.escapeHtml(nick),
-                    email: Security.escapeHtml(email),
-                    content: Security.escapeHtml(text),
-                    page: 'guestbook'
-                });
-
-                if (error) {
-                    alert(I18n.t('gb.c_error'));
-                    btn.disabled = false;
-                    btn.textContent = I18n.t('gb.c_submit');
-                    return;
-                }
-
-                document.getElementById('comment-nick').value = '';
-                document.getElementById('comment-email').value = '';
-                document.getElementById('comment-text').value = '';
-                document.getElementById('comment-captcha').value = '';
-                btn.disabled = false;
-                btn.textContent = I18n.t('gb.c_submit');
-                // 重置 Turnstile
-                if (window.MyLuck && window.MyLuck.Turnstile) window.MyLuck.Turnstile.reset();
-                await loadComments(supabase);
+            var resp = await sb.from('comments').insert({
+                nickname: esc(name),
+                content: esc(text),
+                page: 'blessings'
             });
 
+            if (resp.error) throw resp.error;
+
+            nameEl.value = '';
+            textEl.value = '';
+            btn.disabled = false;
+            btn.textContent = I18n.t('gb.submit');
+            if (Turnstile && Turnstile.reset) Turnstile.reset();
+
+            realCount++;
+            updateCounter();
+            await loadBlessings();
+
+            var successMsg = document.createElement('div');
+            successMsg.style.cssText = 'text-align:center;color:#00b894;font-weight:600;padding:8px;';
+            successMsg.textContent = I18n.t('gb.success');
+            var wall = document.getElementById('bless-wall');
+            if (wall) wall.parentNode.insertBefore(successMsg, wall);
+            setTimeout(function () { if (successMsg.parentNode) successMsg.remove(); }, 3000);
+
         } catch (e) {
-            container.innerHTML = `<p style="text-align:center;color:var(--text-light);padding:20px;">${I18n.t('gb.c_error')}</p>`;
+            alert(I18n.t('gb.fail'));
+            btn.disabled = false;
+            btn.textContent = I18n.t('gb.submit');
         }
     }
 
-    // 语言切换时更新评论区表单文字
-    document.addEventListener('langchange', () => {
-        const nickEl = document.getElementById('comment-nick');
-        if (nickEl) nickEl.placeholder = I18n.t('gb.c_name');
-        const emailEl = document.getElementById('comment-email');
-        if (emailEl) emailEl.placeholder = I18n.t('gb.c_email');
-        const textEl = document.getElementById('comment-text');
-        if (textEl) textEl.placeholder = I18n.t('gb.c_placeholder');
-        const submitEl = document.getElementById('comment-submit');
-        if (submitEl && !submitEl.disabled) submitEl.textContent = I18n.t('gb.c_submit');
-        const captchaLabel = document.querySelector('.captcha-label');
-        if (captchaLabel) {
-            const labelText = captchaLabel.textContent;
-            const mathPart = labelText.replace(/^[^：:]*[：:]/, '');
-            captchaLabel.textContent = I18n.t('gb.c_captcha_q') + '：' + mathPart;
-        }
-    });
+    // ===== 初始化 =====
+    function init() {
+        var submitBtn = document.getElementById('bless-submit');
+        var textEl = document.getElementById('bless-text');
 
-    async function loadComments(supabase) {
-        const list = document.getElementById('comment-list');
-        if (!list) return;
+        if (submitBtn) submitBtn.addEventListener('click', submitBlessing);
+        if (textEl) textEl.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitBlessing(); }
+        });
 
-        const { data, error } = await supabase
-            .from('comments')
-            .select('*')
-            .eq('page', 'guestbook')
-            .order('created_at', { ascending: false })
-            .limit(50);
-
-        if (error || !data) {
-            list.innerHTML = `<p style="text-align:center;color:var(--text-light);">${I18n.t('gb.c_error')}</p>`;
-            return;
+        if (MyLuck.Turnstile && MyLuck.Turnstile.isEnabled()) {
+            MyLuck.Turnstile.render('turnstile-bless');
         }
 
-        if (data.length === 0) {
-            list.innerHTML = `<p style="text-align:center;color:var(--text-light);">${I18n.t('gb.c_empty')}</p>`;
-            return;
-        }
+        loadBlessings();
 
-        list.innerHTML = data.map(c => `
-            <div class="comment-item">
-                <div class="comment-header">
-                    <span class="comment-author">${Security.escapeHtml(c.nickname || '匿名')}</span>
-                    <span class="comment-time">${formatDate(c.created_at)}</span>
-                </div>
-                <div class="comment-body">${Security.escapeHtml(c.content)}</div>
-            </div>
-        `).join('');
+        document.addEventListener('langchange', function () {
+            var nameEl = document.getElementById('bless-name');
+            var textEl2 = document.getElementById('bless-text');
+            var btn = document.getElementById('bless-submit');
+            if (nameEl) nameEl.placeholder = I18n.t('gb.name_ph');
+            if (textEl2) textEl2.placeholder = I18n.t('gb.text_ph');
+            if (btn && !btn.disabled) btn.textContent = I18n.t('gb.submit');
+            loadBlessings();
+            updateCounter();
+        });
     }
 
-    if (document.getElementById('comment-area')) {
-        setTimeout(initComments, 300);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
     }
 })();

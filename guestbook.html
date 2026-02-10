@@ -3,61 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MyLuck 许愿墙 & 评论区 - 写下你的心愿，和大家互动">
-    <meta name="keywords" content="许愿墙,愿望墙,留言板,互动社区,MyLuck">
+    <meta name="description" content="MyLuck 祝福墙 - 写下你的祝福，和大家一起分享美好心愿">
+    <meta name="keywords" content="祝福墙,许愿墙,评论区,互动社区,MyLuck,myluck.top">
     <meta name="referrer" content="no-referrer">
     <meta name="robots" content="index, follow">
-    <title>许愿墙 - MyLuck | 写下你的心愿和好运感想</title>
+    <title>祝福墙 - MyLuck | 写下祝福，传递好运</title>
     <link rel="canonical" href="https://myluck.top/guestbook.html">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌟</text></svg>">
-    <meta property="og:title" content="许愿墙 - MyLuck">
-    <meta property="og:description" content="写下你的心愿，和大家互动，让好运传递给更多人">
+    <meta property="og:title" content="祝福墙 - MyLuck">
+    <meta property="og:description" content="写下祝福，和大家一起传递好运与美好心愿">
     <meta property="og:url" content="https://myluck.top/guestbook.html">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="MyLuck">
     <meta property="og:locale" content="zh_CN">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="许愿墙 - MyLuck">
-    <meta name="twitter:description" content="写下你的心愿，和大家互动">
+    <meta name="twitter:title" content="祝福墙 - MyLuck">
+    <meta name="twitter:description" content="和大家一起分享祝福，传递好运">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .bless-counter {
+            text-align:center; margin:20px 0; font-size:1.1rem; color:#e17055; font-weight:600;
+        }
+        .bless-counter .count-num {
+            display:inline-block; font-size:1.6rem; color:#00b894; margin:0 6px;
+            font-weight:700; min-width:40px;
+        }
+        .bless-form {
+            display:flex; flex-direction:column; gap:12px; margin-bottom:20px;
+        }
+        .bless-form .form-row {
+            display:flex; gap:10px; flex-wrap:wrap;
+        }
+        .bless-form input[type="text"],
+        .bless-form textarea {
+            flex:1; padding:10px 14px; border-radius:12px; border:1px solid #e0d5c3;
+            font-size:0.95rem; background:#fffbf5; transition:border-color 0.2s;
+            font-family:inherit;
+        }
+        .bless-form input[type="text"]:focus,
+        .bless-form textarea:focus {
+            border-color:#e17055; outline:none;
+        }
+        .bless-form textarea { min-height:60px; resize:vertical; }
+        .bless-form .bless-submit {
+            padding:10px 28px; border-radius:25px; border:none; background:#e17055;
+            color:#fff; font-size:0.95rem; font-weight:600; cursor:pointer;
+            transition:all 0.2s; white-space:nowrap; align-self:flex-end;
+        }
+        .bless-form .bless-submit:hover { background:#d63031; }
+        .bless-form .bless-submit:disabled { opacity:0.6; cursor:not-allowed; }
+        .bless-wall {
+            display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+            gap:12px; margin-top:16px;
+        }
+        .bless-card {
+            background:linear-gradient(135deg, #fff9f0, #fff5e6);
+            border:1px solid rgba(212,165,116,0.3); border-radius:14px; padding:14px 16px;
+            position:relative; transition:transform 0.2s;
+        }
+        .bless-card:hover { transform:translateY(-2px); }
+        .bless-card .bless-author {
+            font-weight:600; color:#e17055; font-size:0.9rem; margin-bottom:6px;
+        }
+        .bless-card .bless-text {
+            color:#5a3e28; font-size:0.95rem; line-height:1.5; word-break:break-word;
+        }
+        .bless-card .bless-time {
+            display:block; text-align:right; font-size:0.75rem; color:#bbb; margin-top:8px;
+        }
+        .bless-card.system-card { border-left:3px solid #fdcb6e; }
+        .bless-empty { text-align:center; color:#bbb; padding:30px 0; }
+        @media(max-width:480px){
+            .bless-wall { grid-template-columns:1fr; }
+            .bless-form .form-row { flex-direction:column; }
+        }
+    </style>
 </head>
 <body>
     <div class="page-wrapper">
-        <!-- 许愿墙 -->
         <section class="section">
             <div class="container">
-                <h1 class="section-title" data-i18n="gb.title">🌟 许愿墙</h1>
-                <p class="section-desc" data-i18n="gb.desc">写下你的心愿或今日好运感想，让好运传递给更多人</p>
+                <h1 class="section-title" data-i18n="gb.title">🌟 祝福墙</h1>
+                <p class="section-desc" data-i18n="gb.desc">写下你的祝福，让好运传递给每一个人</p>
 
-                <div class="card">
-                    <div class="wish-input-area">
-                        <label for="wish-input" class="sr-only">许愿</label>
-                        <input type="text" id="wish-input" maxlength="80" data-i18n="gb.placeholder" placeholder="写下你的心愿或感想...">
-                        <button id="wish-submit" data-i18n="gb.submit">🍀 许愿</button>
-                    </div>
-                    <p class="guestbook-info" data-i18n="gb.info">心愿保存在你的浏览器中，仅供个人回顾。请文明发言~</p>
-                    <div class="wish-wall" id="wish-wall"></div>
+                <!-- 祝福计数器 -->
+                <div class="bless-counter">
+                    <span data-i18n="gb.counter_pre">已有</span>
+                    <span class="count-num" id="bless-count">0</span>
+                    <span data-i18n="gb.counter_suf">位小伙伴送出祝福 💕</span>
                 </div>
-            </div>
-        </section>
 
-        <!-- 评论区 -->
-        <section class="section section-alt">
-            <div class="container">
-                <h2 class="section-title" data-i18n="gb.comment_title">💬 评论区</h2>
-                <p class="section-desc" data-i18n="gb.comment_desc">和大家一起交流讨论，分享你的测试心得</p>
                 <div class="card">
-                    <div id="comment-area"></div>
+                    <!-- 提交表单 -->
+                    <div class="bless-form">
+                        <div class="form-row">
+                            <input type="text" id="bless-name" maxlength="20" required data-i18n="gb.name_ph" placeholder="你的昵称 *">
+                            <input type="text" id="bless-text" maxlength="120" required data-i18n="gb.text_ph" placeholder="写下你的祝福...">
+                        </div>
+                        <div class="form-row" style="align-items:center;justify-content:space-between;">
+                            <div id="turnstile-bless" style="display:flex;justify-content:center;"></div>
+                            <button class="bless-submit" id="bless-submit" data-i18n="gb.submit">🍀 送出祝福</button>
+                        </div>
+                        <input type="text" id="bless-hp" style="position:absolute;left:-9999px;opacity:0;height:0;" tabindex="-1" autocomplete="off" aria-hidden="true">
+                    </div>
+
+                    <!-- 祝福列表 -->
+                    <div class="bless-wall" id="bless-wall">
+                        <p class="bless-empty" data-i18n="gb.loading">加载中...</p>
+                    </div>
                 </div>
             </div>
         </section>
     </div>
-    <div class="ad-slot"><div class="container"><div class="ad-placeholder"><span class="ad-label">AD</span></div></div></div>
     <script src="js/common.js" defer></script>
     <script src="js/guestbook.js" defer></script>
     <noscript>
         <div style="text-align:center;padding:40px 20px;">
-            <h2>许愿墙 - MyLuck | myluck.top</h2>
+            <h2>祝福墙 - MyLuck | myluck.top</h2>
+            <p>请启用 JavaScript 以使用祝福墙功能</p>
+        </div>
+    </noscript>
+</body>
+</html>
             <p>MyLuck (myluck.top) 许愿墙 - 写下你的心愿和好运感想，和大家互动。更多趣味测试：MBTI性格测试、每日运气测试、幸运色彩测试、人生重开模拟器。</p>
             <nav><a href="/">首页</a> | <a href="/mbti.html">MBTI测试</a> | <a href="/color.html">色彩测试</a> | <a href="/personality.html">性格测试</a> | <a href="/liferestart.html">人生重开</a> | <a href="/guestbook.html">许愿墙</a></nav>
         </div>

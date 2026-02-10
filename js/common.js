@@ -76,7 +76,7 @@
         'nav.color': '幸运色彩',
         'nav.personality': '趣味性格',
         'nav.liferestart': '人生重开',
-        'nav.guestbook': '许愿墙',
+        'nav.guestbook': '祝福墙',
         'lang.switch': 'EN',
         'footer.desc': '趣味互动娱乐平台 · 仅供娱乐参考',
         'footer.tests': '趣味测试',
@@ -84,6 +84,7 @@
         'footer.privacy': '隐私政策',
         'footer.terms': '使用条款',
         'footer.disclaimer': '免责声明',
+        'footer.feedback': '💬 意见反馈',
         'footer.copy': '© 2026 MyLuck.top · 所有测试结果均由算法随机生成，仅供娱乐',
         'share.title': '分享结果',
         'share.copy': '复制链接',
@@ -152,7 +153,7 @@
         'nav.color': 'Lucky Color',
         'nav.personality': 'Personality',
         'nav.liferestart': 'Life Restart',
-        'nav.guestbook': 'Wish Wall',
+        'nav.guestbook': 'Blessings',
         'lang.switch': '中文',
         'footer.desc': 'Fun & Interactive Entertainment · For Amusement Only',
         'footer.tests': 'Fun Tests',
@@ -160,6 +161,7 @@
         'footer.privacy': 'Privacy Policy',
         'footer.terms': 'Terms of Use',
         'footer.disclaimer': 'Disclaimer',
+        'footer.feedback': '💬 Feedback',
         'footer.copy': '© 2026 MyLuck.top · All results are randomly generated for entertainment only',
         'share.title': 'Share Result',
         'share.copy': 'Copy Link',
@@ -442,13 +444,76 @@
                         <a href="privacy.html" data-i18n="footer.privacy">隐私政策</a>
                         <a href="terms.html" data-i18n="footer.terms">使用条款</a>
                         <a href="disclaimer.html" data-i18n="footer.disclaimer">免责声明</a>
+                        <a href="guestbook.html" data-i18n="nav.guestbook">祝福墙</a>
                     </div>
+                </div>
+                <div class="footer-feedback" style="text-align:center;padding:12px 0;border-top:1px solid rgba(255,255,255,0.1);">
+                    <a href="#" id="footer-feedback-btn" style="color:#fdcb6e;font-size:0.85rem;text-decoration:none;" data-i18n="footer.feedback">💬 意见反馈</a>
                 </div>
                 <div class="footer-bottom">
                     <p data-i18n="footer.copy">© 2026 MyLuck.top · 所有测试结果均由算法随机生成，仅供娱乐</p>
                 </div>
             </div>`;
         document.body.appendChild(footer);
+
+        // 反馈弹窗
+        var fbBtn = document.getElementById('footer-feedback-btn');
+        if (fbBtn) {
+            fbBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                showFeedbackDialog();
+            });
+        }
+    }
+
+    // ========== 反馈弹窗 ==========
+    function showFeedbackDialog() {
+        if (document.getElementById('feedback-overlay')) return;
+        var isEn = I18n.lang === 'en';
+        var overlay = document.createElement('div');
+        overlay.id = 'feedback-overlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;display:flex;align-items:center;justify-content:center;';
+        overlay.innerHTML = '<div style="background:#fff;border-radius:16px;padding:24px;max-width:400px;width:90%;max-height:80vh;overflow-y:auto;position:relative;">' +
+            '<button id="feedback-close" style="position:absolute;top:10px;right:14px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#aaa;">✕</button>' +
+            '<h3 style="margin:0 0 12px;color:#e17055;">' + (isEn ? '💬 Feedback' : '💬 意见反馈') + '</h3>' +
+            '<p style="font-size:0.85rem;color:#888;margin-bottom:12px;">' + (isEn ? 'Your feedback helps us improve!' : '你的反馈是我们进步的动力！') + '</p>' +
+            '<input type="text" id="feedback-name" placeholder="' + (isEn ? 'Your name (optional)' : '你的名字（选填）') + '" maxlength="20" style="width:100%;padding:8px 12px;border:1px solid #e0d5c3;border-radius:10px;margin-bottom:8px;font-size:0.9rem;box-sizing:border-box;">' +
+            '<textarea id="feedback-text" placeholder="' + (isEn ? 'Tell us what you think...' : '告诉我们你的想法...') + '" maxlength="500" rows="4" style="width:100%;padding:8px 12px;border:1px solid #e0d5c3;border-radius:10px;margin-bottom:12px;font-size:0.9rem;resize:vertical;font-family:inherit;box-sizing:border-box;"></textarea>' +
+            '<button id="feedback-submit" style="width:100%;padding:10px;border:none;border-radius:25px;background:#e17055;color:#fff;font-size:0.95rem;font-weight:600;cursor:pointer;">' + (isEn ? 'Submit Feedback' : '提交反馈') + '</button>' +
+            '</div>';
+        document.body.appendChild(overlay);
+
+        document.getElementById('feedback-close').addEventListener('click', function () { overlay.remove(); });
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.remove(); });
+        document.addEventListener('keydown', function handler(e) {
+            if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', handler); }
+        });
+
+        document.getElementById('feedback-submit').addEventListener('click', async function () {
+            var text = (document.getElementById('feedback-text').value || '').trim();
+            var name = (document.getElementById('feedback-name').value || '').trim() || (isEn ? 'Anonymous' : '匿名');
+            if (text.length < 2) { alert(isEn ? 'Write a bit more' : '至少写几个字吧'); return; }
+            if (Security.containsBadWords(text)) { alert(isEn ? 'Please keep it friendly' : '请文明发言'); return; }
+            if (!Security.rateLimit('feedback', 2)) { alert(isEn ? 'Too frequent, try later' : '太频繁了，请稍后再试'); return; }
+
+            var btn = document.getElementById('feedback-submit');
+            btn.disabled = true; btn.textContent = '...';
+
+            try {
+                var mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+                var sb = mod.createClient('https://qerajxnmtwyjtokhaonq.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlcmFqeG5tdHd5anRva2hhb25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MTA1MjksImV4cCI6MjA4NjE4NjUyOX0.sUMZ_RIu9zLjMOB3nnruJezlQL0i-GrunDIkahWcF5E');
+                await sb.from('comments').insert({
+                    nickname: Security.escapeHtml(name),
+                    content: Security.escapeHtml(text),
+                    page: 'feedback'
+                });
+                alert(isEn ? '🎉 Thank you for your feedback!' : '🎉 感谢你的反馈！');
+                overlay.remove();
+            } catch (e) {
+                alert(isEn ? 'Failed to submit, try later' : '提交失败，请稍后重试');
+                btn.disabled = false; btn.textContent = isEn ? 'Submit Feedback' : '提交反馈';
+            }
+        });
     }
 
     // ========== 广告位注入 ==========
@@ -717,7 +782,7 @@
                 'mbti.html': 'MBTI 性格测试',
                 'color.html': '幸运色彩测试',
                 'personality.html': '趣味性格测试',
-                'guestbook.html': '许愿墙',
+                'guestbook.html': '祝福墙',
                 'liferestart.html': '人生重开模拟器',
                 'fortune-draw.html': '在线求签',
                 'rp-test.html': '今日人设测试',
@@ -729,7 +794,7 @@
                 'mbti.html': 'MBTI Personality Test',
                 'color.html': 'Lucky Color Test',
                 'personality.html': 'Fun Personality Test',
-                'guestbook.html': 'Wish Wall',
+                'guestbook.html': 'Blessings',
                 'liferestart.html': 'Life Restart Simulator',
                 'fortune-draw.html': 'Fortune Sticks',
                 'rp-test.html': 'Daily Persona Test',

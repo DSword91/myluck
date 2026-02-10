@@ -150,6 +150,11 @@
         var rankBtn = document.getElementById('rp-rank');
         if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = (window.MyLuck && window.MyLuck.I18n) ? window.MyLuck.I18n.t('rp.rank') : '🏆 上榜'; }
         resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // 结果显示后渲染 Turnstile（容器可见后才能正常显示）
+        if (window.MyLuck && window.MyLuck.Turnstile && window.MyLuck.Turnstile.isEnabled() && !window._turnstileRpRendered) {
+            window._turnstileRpRendered = true;
+            window.MyLuck.Turnstile.render('turnstile-rp');
+        }
     }
 
     function saveHistory(name, score, title, emoji) {
@@ -263,10 +268,7 @@
         // 加载全球排行榜
         loadLeaderboard();
 
-        // 初始化 Turnstile 人机验证
-        if (window.MyLuck && window.MyLuck.Turnstile && window.MyLuck.Turnstile.isEnabled()) {
-            window.MyLuck.Turnstile.render('turnstile-rp');
-        }
+        // Turnstile 延迟到结果显示后渲染（见 showResult）
 
         // 语言切换时刷新内容
         document.addEventListener('langchange', function () {

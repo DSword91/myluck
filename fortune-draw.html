@@ -114,10 +114,11 @@
         }
         .slip-aspect .label { display: block; font-size: 0.8rem; color: #999; margin-bottom: 4px; }
         .slip-aspect .value { font-weight: 600; color: #5a3e28; }
-        .slip-actions { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
+        .slip-actions { margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
         .slip-actions button {
-            padding: 10px 24px; border-radius: 25px; border: none; font-size: 0.9rem;
-            cursor: pointer; font-weight: 600; transition: all 0.2s;
+            padding: 10px 20px; border-radius: 25px; border: none; font-size: 0.9rem;
+            cursor: pointer; font-weight: 600; transition: all 0.2s; white-space: nowrap;
+            min-width: 100px; text-align: center;
         }
         .btn-share-slip { background: #e17055; color: #fff; }
         .btn-share-slip:hover { background: #d63031; }
@@ -159,7 +160,7 @@
                             <div class="slip-actions">
                                 <button class="btn-share-slip" id="share-slip" data-i18n="draw.share">📤 分享签文</button>
                                 <button class="btn-redraw" id="redraw-btn" data-i18n="draw.redraw">🔄 再求一签</button>
-                                <button class="btn-share-slip" id="fortune-rank" style="background:#fdcb6e;color:#333;">🏆 上榜</button>
+                                <button class="btn-share-slip" id="fortune-rank" style="background:#fdcb6e;color:#333;" data-i18n="draw.rank">🏆 上榜</button>
                             </div>
                             <div id="turnstile-fortune" style="margin:10px 0;display:flex;justify-content:center;"></div>
                         </div>

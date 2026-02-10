@@ -169,6 +169,11 @@
         slip.scrollIntoView({ behavior: 'smooth', block: 'center' });
         // 保存当前结果用于分享
         window._currentStick = stick;
+        // 结果显示后再渲染 Turnstile（容器可见后才能正常渲染）
+        if (window.MyLuck && window.MyLuck.Turnstile && !window._turnstileRendered) {
+            window._turnstileRendered = true;
+            window.MyLuck.Turnstile.render('turnstile-fortune');
+        }
     }
 
     // 摇签动画
@@ -356,10 +361,7 @@
         if (redrawBtn) redrawBtn.addEventListener('click', function () { doDraw(); });
         if (rankBtn) rankBtn.addEventListener('click', submitFortuneToLeaderboard);
 
-        // Turnstile
-        if (window.MyLuck && window.MyLuck.Turnstile) {
-            window.MyLuck.Turnstile.render('turnstile-fortune');
-        }
+        // Turnstile 延迟到结果显示后渲染（见 showResult）
 
         // 排行榜
         initLeaderboard();
@@ -369,6 +371,12 @@
             updateDailyInfo();
             if (window._currentStick) {
                 showResult(window._currentStick);
+                // 更新 hint 文字（签已抽出时）
+                var hint = document.getElementById('draw-hint');
+                if (hint) {
+                    var en = isEnNow();
+                    hint.textContent = en ? '✨ Fortune revealed below' : '✨ 签文已出，请查看下方';
+                }
             }
             initLeaderboard();
         });
