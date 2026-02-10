@@ -308,7 +308,8 @@
         if (!LB) return;
 
         await LB.load('fortune-board-list', 'fortune', {
-            virtualCount: 10,
+            limit: 10,
+            virtualCount: 8,
             virtualConfig: {
                 getEntry: function(rng, idx) {
                     return {

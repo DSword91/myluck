@@ -1508,6 +1508,8 @@
         mergeTalentEvents();
         currentPhase = 'talent';
         showTalentDraw();
+        // 确保页面标题/描述跟随当前语言（lr.* 翻译在 IIFE 体中已添加）
+        I18n.apply();
     }
 
     // 语言切换时重新渲染当前阶段

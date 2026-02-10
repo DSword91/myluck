@@ -159,12 +159,6 @@
         }
     }
 
-    function escapeHtml(str) {
-        var d = document.createElement('div');
-        d.textContent = str;
-        return d.innerHTML;
-    }
-
     // ========== 排行榜（统一模块） ==========
     var currentResult = null;
 
@@ -176,8 +170,15 @@
         var rpChars = CHARACTERS;
         var en = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
 
+        // 角色id→角色对象映射
+        var charMap = {};
+        for (var c = 0; c < rpChars.length; c++) {
+            charMap[rpChars[c].id] = rpChars[c];
+        }
+
         await LB.load('rp-global-list', 'rp', {
-            virtualCount: 12,
+            limit: 10,
+            virtualCount: 8,
             virtualConfig: {
                 getEntry: function(rng, idx) {
                     var charIdx = Math.floor(rng(0) * rpChars.length);
@@ -188,6 +189,18 @@
                         character_title: en ? ch.titleEn : ch.title
                     };
                 }
+            },
+            formatEntry: function(entry, i, medal) {
+                var esc = (window.MyLuck && window.MyLuck.Security) ? window.MyLuck.Security.escapeHtml : function(s) { return s; };
+                var emoji = entry.character_emoji ? esc(entry.character_emoji) + ' ' : '';
+                // 真实条目：根据 character_id 跟随当前语言
+                var title = entry.character_title || '';
+                if (entry.character_id && charMap[entry.character_id]) {
+                    title = en ? charMap[entry.character_id].titleEn : charMap[entry.character_id].title;
+                }
+                var detail = title ? '<span class="lb-detail">' + esc(title) + '</span>' : '';
+                var scoreColor = entry.score >= 80 ? '#e17055' : entry.score >= 60 ? '#fdcb6e' : entry.score >= 40 ? '#00b894' : '#b2bec3';
+                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + esc(entry.name || (en ? 'Anonymous' : '匿名')) + '</span>' + detail + '</div><span class="lb-score" style="color:' + scoreColor + '">' + entry.score + '</span>';
             }
         });
     }

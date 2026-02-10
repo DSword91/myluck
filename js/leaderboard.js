@@ -43,25 +43,101 @@
         return x - Math.floor(x);
     }
 
-    // ===== 虚拟用户生成 =====
-    var VIRTUAL_NAMES_ZH = [
-        '小明','星星','月亮','太阳','小鱼','花花','果果','糖糖','豆豆','小雪',
-        '阳光','微风','彩虹','云朵','蝴蝶','可乐','布丁','芒果','草莓','奶茶',
-        '棉花糖','巧克力','泡芙','年糕','开心果','小幸运','好运来','笑哈哈',
-        '大白','阿福','蜜糖','旺财','如意','吉祥','平安','喜乐','冰淇淋','麻薯'
+    // ===== 虚拟用户名生成（组合式 + API增强） =====
+    var SURNAMES_ZH = ['小','阿','大','老','萌','甜','酷','呆','乖'];
+    var GIVENS_ZH = [
+        '明','红','白','福','糖','星','月','鱼','熊','花','果','豆','雪','雨',
+        '阳','风','虹','云','草','树','蝶','鹿','兔','猫','狗','鸟','龙','凤',
+        '乐','喜','吉','祥','安','康','瑞','运','宝','玉','金','银','铜','铁',
+        '莉','薇','琳','瑶','静','婷','颖','霞','蕾','梅','兰','竹','菊','荷'
     ];
-    var VIRTUAL_NAMES_EN = [
-        'Lucky Cat','Star','Moon','Sunny','Rainbow','Cloud','Butterfly','Happy',
-        'Joy','Hope','Grace','Melody','Blossom','Cookie','Mochi','Bubble',
-        'Sparkle','Dream','Angel','Phoenix','Wish','Charm','Clover','Aurora',
-        'Berry','Candy','Latte','Maple','Petal','Luna','Sky','Ember','Frost','River'
+    var NICKNAMES_ZH = [
+        '棉花糖','巧克力','冰淇淋','泡芙','麻薯','年糕','布丁','奶茶',
+        '可乐','雪碧','芒果','草莓','西瓜','蓝莓','樱桃','柠檬',
+        '开心果','小幸运','好运来','笑哈哈','美滋滋','甜蜜蜜','旺财','如意',
+        '彩虹糖','棒棒糖','小饼干','蛋挞','抹茶','豆沙','椰奶','酸奶'
+    ];
+    var FIRST_EN = [
+        'Lucky','Happy','Sunny','Star','Moon','Sky','Storm','River',
+        'Cloud','Snow','Rain','Frost','Ember','Blaze','Dawn','Dusk',
+        'Coral','Pearl','Ruby','Jade','Sage','Fern','Ivy','Rose',
+        'Maple','Cedar','Aspen','Birch','Fox','Wolf','Hawk','Dove'
+    ];
+    var LAST_EN = [
+        'Cat','Star','Dream','Wish','Hope','Joy','Grace','Love',
+        'Light','Wind','Wave','Spark','Glow','Shine','Bloom','Song',
+        'Heart','Soul','Charm','Bliss','Fairy','Angel','Magic','Pixel',
+        'Echo','Zen','Mochi','Latte','Candy','Berry','Cookie','Bubble'
     ];
 
+    // API增强：尝试从 randomuser.me 获取名字并缓存
+    var _apiNamesCache = null;
+    var _apiNamesCacheKey = 'myluck-api-names-' + new Date().toISOString().slice(0, 10);
+
+    async function fetchAPINames() {
+        if (_apiNamesCache) return _apiNamesCache;
+        try {
+            var cached = sessionStorage.getItem(_apiNamesCacheKey);
+            if (cached) { _apiNamesCache = JSON.parse(cached); return _apiNamesCache; }
+        } catch (e) {}
+        try {
+            var today = new Date().toISOString().slice(0, 10);
+            var resp = await fetch('https://randomuser.me/api/?results=30&seed=' + today + '&inc=name&nat=us,gb,au,ca&noinfo');
+            if (resp.ok) {
+                var data = await resp.json();
+                var names = (data.results || []).map(function(r) {
+                    return r.name.first + ' ' + r.name.last.charAt(0) + '.';
+                });
+                if (names.length > 0) {
+                    _apiNamesCache = names;
+                    try { sessionStorage.setItem(_apiNamesCacheKey, JSON.stringify(names)); } catch (e) {}
+                    return names;
+                }
+            }
+        } catch (e) { console.warn('[leaderboard] API name fetch failed, using local pool'); }
+        return null;
+    }
+
+    // 预加载API名字（不阻塞）
+    fetchAPINames();
+
+    function getVirtualName(seed, usedNames, forEn) {
+        var maxTries = 50;
+        var name = '';
+        for (var attempt = 0; attempt < maxTries; attempt++) {
+            var s = seed + attempt * 31;
+            if (forEn) {
+                // 先尝试API名字
+                if (_apiNamesCache && _apiNamesCache.length > 0) {
+                    var apiIdx = Math.floor(seededRand(s) * _apiNamesCache.length);
+                    name = _apiNamesCache[apiIdx];
+                } else {
+                    var fIdx = Math.floor(seededRand(s) * FIRST_EN.length);
+                    var lIdx = Math.floor(seededRand(s + 7) * LAST_EN.length);
+                    name = FIRST_EN[fIdx] + ' ' + LAST_EN[lIdx];
+                }
+            } else {
+                // 中文：组合式或昵称
+                if (seededRand(s + 3) > 0.4) {
+                    var sIdx = Math.floor(seededRand(s) * SURNAMES_ZH.length);
+                    var gIdx = Math.floor(seededRand(s + 7) * GIVENS_ZH.length);
+                    name = SURNAMES_ZH[sIdx] + GIVENS_ZH[gIdx];
+                } else {
+                    var nIdx = Math.floor(seededRand(s) * NICKNAMES_ZH.length);
+                    name = NICKNAMES_ZH[nIdx];
+                }
+            }
+            if (!usedNames.has(name)) {
+                usedNames.add(name);
+                return name;
+            }
+        }
+        // 兜底：加数字后缀
+        return name + Math.floor(seededRand(seed + 999) * 99);
+    }
+
     /**
-     * 生成虚拟排行榜条目
-     * @param {string} testType - 测试类型
-     * @param {number} count - 生成数量
-     * @param {object} [typeConfig] - 类型特定配置 { getEntry(rng, idx) => {name, score, character_emoji, character_title} }
+     * 生成虚拟排行榜条目（去重名字）
      */
     function generateVirtualEntries(testType, count, typeConfig) {
         var today = new Date().toISOString().slice(0, 10);
@@ -71,12 +147,12 @@
 
         var result = [];
         var en = isEn();
-        var names = en ? VIRTUAL_NAMES_EN : VIRTUAL_NAMES_ZH;
+        var usedNames = new Set();
 
         for (var i = 0; i < count; i++) {
             var seed = baseSeed + i * 137 + 42;
-            var nameIdx = Math.floor(seededRand(seed) * names.length);
-            var entry = { name: names[nameIdx], score: 50, character_emoji: '', character_title: '', is_virtual: true };
+            var name = getVirtualName(seed, usedNames, en);
+            var entry = { name: name, score: 50, character_emoji: '', character_title: '', is_virtual: true };
 
             if (typeConfig && typeConfig.getEntry) {
                 var custom = typeConfig.getEntry(function(s) { return seededRand(seed + (s || 0)); }, i);
@@ -125,15 +201,16 @@
      * 加载并渲染排行榜（真实 + 虚拟用户混合）
      * @param {string} containerId - DOM容器的id
      * @param {string} testType - 测试类型 'rp'|'fortune'|'mbti' 等
-     * @param {object} [opts] - 可选配置 { limit, formatEntry, virtualCount, virtualConfig }
+     * @param {object} [opts] - 可选配置 { limit, formatEntry, virtualCount, virtualConfig, mode:'score'|'recent' }
      */
     async function loadBoard(containerId, testType, opts) {
         injectCSS();
         opts = opts || {};
-        var limit = opts.limit || 20;
+        var limit = opts.limit || 10;
         var formatEntry = opts.formatEntry || null;
         var virtualCount = opts.virtualCount || 0;
         var virtualConfig = opts.virtualConfig || null;
+        var mode = opts.mode || 'score'; // 'score'=按分数排名, 'recent'=按时间显示最近
         var container = document.getElementById(containerId);
         if (!container) return;
 
@@ -142,7 +219,8 @@
             var sb = await getSupabase();
             if (sb) {
                 var today = new Date().toISOString().slice(0, 10);
-                var query = sb.from('leaderboard').select('*').eq('test_date', today).eq('test_type', testType).eq('visible', true).order('score', { ascending: false }).limit(limit);
+                var orderField = mode === 'recent' ? 'created_at' : 'score';
+                var query = sb.from('leaderboard').select('*').eq('test_date', today).eq('test_type', testType).eq('visible', true).order(orderField, { ascending: false }).limit(limit);
                 var result = await query;
                 if (result.data && !result.error) {
                     realData = result.data;
@@ -152,12 +230,20 @@
             // 生成虚拟用户
             var virtualData = virtualCount > 0 ? generateVirtualEntries(testType, virtualCount, virtualConfig) : [];
 
-            // 合并：真实用户优先（同分时），按分数降序
+            // 合并
             var allData = realData.map(function(d) { d.is_virtual = false; return d; }).concat(virtualData);
-            allData.sort(function(a, b) {
-                if (b.score !== a.score) return b.score - a.score;
-                return a.is_virtual ? 1 : -1; // 同分真人优先
-            });
+            if (mode === 'recent') {
+                // 最近模式：真人优先，虚拟用户填充
+                var realItems = allData.filter(function(d) { return !d.is_virtual; });
+                var virtualItems = allData.filter(function(d) { return d.is_virtual; });
+                allData = realItems.concat(virtualItems);
+            } else {
+                // 分数模式：按分数降序，同分真人优先
+                allData.sort(function(a, b) {
+                    if (b.score !== a.score) return b.score - a.score;
+                    return a.is_virtual ? 1 : -1;
+                });
+            }
             allData = allData.slice(0, limit);
 
             if (allData.length === 0) {
@@ -171,7 +257,12 @@
                 var div = document.createElement('div');
                 div.className = 'lb-row';
 
-                var medal = i < 3 ? '<span class="lb-medal">' + MEDALS[i] + '</span>' : '<span class="lb-medal" style="opacity:0.3">#' + (i + 1) + '</span>';
+                var medal;
+                if (mode === 'recent') {
+                    medal = '<span class="lb-medal" style="opacity:0.4">' + (i + 1) + '</span>';
+                } else {
+                    medal = i < 3 ? '<span class="lb-medal">' + MEDALS[i] + '</span>' : '<span class="lb-medal" style="opacity:0.3">#' + (i + 1) + '</span>';
+                }
 
                 if (formatEntry) {
                     div.innerHTML = formatEntry(entry, i, medal);

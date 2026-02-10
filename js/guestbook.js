@@ -206,23 +206,30 @@
             var sb = await getSupabase();
             if (!sb) { renderBlessings([]); updateCounter(); return; }
 
-            var resp = await sb.from('comments')
+            // 设置超时，避免长时间等待
+            var timeout = new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 8000); });
+            var query = sb.from('comments')
                 .select('*')
                 .eq('page', 'blessings')
                 .order('created_at', { ascending: false })
                 .limit(50);
+            var resp = await Promise.race([query, timeout]);
 
-            var data = (resp.data || []);
+            var data = (resp && resp.data) || [];
             realCount = data.length;
 
-            var countResp = await sb.from('comments')
-                .select('id', { count: 'exact', head: true })
-                .eq('page', 'blessings');
-            if (countResp.count != null) realCount = countResp.count;
+            try {
+                var countResp = await Promise.race([
+                    sb.from('comments').select('id', { count: 'exact', head: true }).eq('page', 'blessings'),
+                    new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 5000); })
+                ]);
+                if (countResp && countResp.count != null) realCount = countResp.count;
+            } catch (e2) { /* ignore count error */ }
 
             renderBlessings(data);
             updateCounter();
         } catch (e) {
+            console.warn('[guestbook] Load failed:', e);
             renderBlessings([]);
             updateCounter();
         }

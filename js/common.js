@@ -148,8 +148,8 @@
         'rp.rank_fail': '上榜失败，请稍后重试',
         'rp.history': '📊 今日测试记录',
         // MBTI 排行榜
-        'mbti.leaderboard': '🏆 今日 MBTI 排行榜',
-        'mbti.rank_btn': '🏆 上榜',
+        'mbti.leaderboard': '🧠 最近谁测了 MBTI',
+        'mbti.rank_btn': '🧠 记录结果',
         'mbti.ranked': '✅ 已上榜！',
         'mbti.rank_fail': '上榜失败，请稍后重试',
     };
@@ -235,8 +235,8 @@
         'rp.rank_fail': 'Failed to rank, try again later',
         'rp.history': '📊 Today\'s Records',
         // MBTI leaderboard
-        'mbti.leaderboard': '🏆 Today\'s MBTI Ranking',
-        'mbti.rank_btn': '🏆 Rank Me!',
+        'mbti.leaderboard': '🧠 Recent MBTI Results',
+        'mbti.rank_btn': '🧠 Save Result',
         'mbti.ranked': '✅ Ranked!',
         'mbti.rank_fail': 'Failed to rank, try again later',
     };

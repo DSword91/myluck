@@ -109,6 +109,7 @@
     }
 
     function getTodaySeed() {
+        if (window.MyLuck && window.MyLuck.getTodaySeed) return window.MyLuck.getTodaySeed();
         const d = new Date();
         return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
     }
@@ -247,6 +248,8 @@
 
         // 自定义渲染签面排行
         LB.load('fortune-board-list', 'fortune', {
+            limit: 10,
+            virtualCount: 8,
             formatEntry: function (entry, i, medal) {
                 var emoji = entry.character_emoji ? escapeHtml(entry.character_emoji) + ' ' : '';
                 var detail = entry.character_title ? '<span class="lb-detail">' + escapeHtml(entry.character_title) + '</span>' : '';

@@ -360,27 +360,35 @@
         if (!LB) return;
 
         const allTypeKeys = Object.keys(types);
+        const lang = I18n.lang;
 
         await LB.load('mbti-board-list', 'mbti', {
-            virtualCount: 10,
+            mode: 'recent',
+            limit: 10,
+            virtualCount: 8,
             virtualConfig: {
                 getEntry: function(rng, idx) {
                     const typeIdx = Math.floor(rng(1) * allTypeKeys.length);
                     const tp = allTypeKeys[typeIdx];
-                    // MBTI分数：维度最大差异百分比
+                    var typeName = types[tp] ? (lang === 'en' ? types[tp].en.name : types[tp].zh.name) : tp;
                     return {
                         score: Math.floor(rng(2) * 40 + 60),
                         character_emoji: MBTI_TYPE_EMOJIS[tp] || '🧠',
-                        character_title: tp
+                        character_title: tp + ' ' + typeName
                     };
                 }
             },
             formatEntry: function(entry, i, medal) {
                 const esc = window.MyLuck.Security ? window.MyLuck.Security.escapeHtml : (s) => s;
                 const emoji = entry.character_emoji || '🧠';
-                const mbtiType = entry.character_title || '';
-                const scoreColor = entry.score >= 90 ? '#6c5ce7' : entry.score >= 70 ? '#a29bfe' : '#74b9ff';
-                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + ' ' + esc(entry.name || '匿名') + '</span><span class="lb-detail">' + esc(mbtiType) + '</span></div><span class="lb-score" style="color:' + scoreColor + '">' + entry.score + '</span>';
+                // 显示MBTI类型而非分数
+                var mbtiType = entry.character_title || '';
+                // 如果是从数据库来的，可能只有类型代码，尝试添加名称
+                if (mbtiType && mbtiType.length === 4 && types[mbtiType]) {
+                    var tName = lang === 'en' ? types[mbtiType].en.name : types[mbtiType].zh.name;
+                    mbtiType = mbtiType + ' ' + tName;
+                }
+                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + ' ' + esc(entry.name || '匿名') + '</span></div><span class="lb-detail" style="font-size:.85rem;color:#6c5ce7;font-weight:600;">' + esc(mbtiType) + '</span>';
             }
         });
     }
