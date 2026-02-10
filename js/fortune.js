@@ -150,6 +150,29 @@
         ],
     };
 
+    // 每日测试限制
+    var TEST_KEY = 'myluck-fortune-test';
+    function getTodayStr() {
+        var d = new Date();
+        return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+    }
+    function hasTestedToday() {
+        try {
+            var saved = JSON.parse(localStorage.getItem(TEST_KEY));
+            return saved && saved.date === getTodayStr();
+        } catch(e) { return false; }
+    }
+    function saveTodayTest(params) {
+        localStorage.setItem(TEST_KEY, JSON.stringify({ date: getTodayStr(), month: params.month, mood: params.mood, name: params.name }));
+    }
+    function getTodayTest() {
+        try {
+            var saved = JSON.parse(localStorage.getItem(TEST_KEY));
+            if (saved && saved.date === getTodayStr()) return saved;
+        } catch(e) {}
+        return null;
+    }
+
     // 生成运势
     function generate() {
         const month = parseInt(document.getElementById('fortune-month').value);
@@ -198,9 +221,37 @@
         setTimeout(() => { bar.style.width = luck + '%'; }, 100);
 
         result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // 保存今日已测试
+        saveTodayTest({ month: month, mood: mood, name: name });
+        var submitBtn = document.getElementById('fortune-submit');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = I18n.lang === 'zh' ? '今日已测试' : 'Tested Today';
+        }
     }
 
-    document.getElementById('fortune-submit').addEventListener('click', generate);
+    document.getElementById('fortune-submit').addEventListener('click', function () {
+        if (hasTestedToday()) {
+            alert(I18n.lang === 'zh' ? '今日已测试过运势，明天再来吧！' : 'Already tested today. Come back tomorrow!');
+            return;
+        }
+        generate();
+    });
+
+    // 页面加载时恢复今日已测试的结果
+    (function restoreIfTested() {
+        var saved = getTodayTest();
+        if (saved) {
+            var monthEl = document.getElementById('fortune-month');
+            var nameEl = document.getElementById('fortune-name');
+            var moodEl = document.getElementById('fortune-mood');
+            if (monthEl) monthEl.value = saved.month;
+            if (nameEl) nameEl.value = saved.name || '';
+            if (moodEl && saved.mood) moodEl.value = saved.mood;
+            generate();
+        }
+    })();
 
     // 分享
     document.getElementById('share-btn')?.addEventListener('click', () => {

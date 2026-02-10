@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="人生重开模拟器 - 分配属性，选择天赋，体验随机人生！数千种事件等你探索">
-    <meta name="keywords" content="人生重开模拟器,人生模拟器,人生重开,随机人生,模拟游戏,天赋模拟,MyLuck">
+    <meta name="description" content="人生重开模拟器 - 分配属性，选择天赋，体验随机人生！Life Restart Simulator - Allocate stats, pick talents, live a random life!">
+    <meta name="keywords" content="人生重开模拟器,人生模拟器,Life Restart Simulator,life simulator,人生重开,随机人生,模拟游戏,天赋模拟,MyLuck">
     <meta name="referrer" content="no-referrer">
     <meta name="robots" content="index, follow">
-    <title>人生重开模拟器 - MyLuck | 体验不一样的随机人生</title>
+    <title>人生重开模拟器 Life Restart - MyLuck</title>
     <link rel="canonical" href="https://myluck.top/liferestart.html">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔄</text></svg>">
-    <meta property="og:title" content="人生重开模拟器 - MyLuck">
-    <meta property="og:description" content="分配属性，选择天赋，体验随机人生！数千种事件等你探索">
+    <meta property="og:title" content="Life Restart Simulator - MyLuck">
+    <meta property="og:description" content="Allocate stats, pick talents, live a random life! Thousands of events to explore">
     <meta property="og:url" content="https://myluck.top/liferestart.html">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="MyLuck">
     <meta property="og:locale" content="zh_CN">
+    <meta property="og:locale:alternate" content="en_US">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="人生重开模拟器 - MyLuck">
-    <meta name="twitter:description" content="分配属性，选择天赋，体验随机人生">
+    <meta name="twitter:title" content="Life Restart Simulator - MyLuck">
+    <meta name="twitter:description" content="Allocate stats, pick talents, live a random life">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -30,7 +31,12 @@
 
                 <div class="card" id="lr-game">
                     <!-- 游戏内容由 JS 动态渲染 -->
-                    <div id="lr-content"></div>
+                    <div id="lr-content">
+                        <div style="text-align:center;padding:40px 20px;color:#888;">
+                            <div style="font-size:2rem;margin-bottom:12px;">🔄</div>
+                            <p data-i18n="lr.loading" style="font-size:.95rem;">加载中...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

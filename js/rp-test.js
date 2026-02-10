@@ -191,10 +191,14 @@
     // ========== 排行榜（统一模块） ==========
     var currentResult = null;
 
+    // 构建中文title→英文title的映射表
+    var RP_TITLE_MAP = {};
+    CHARACTERS.forEach(function (c) { RP_TITLE_MAP[c.title] = c.titleEn; });
+
     async function loadLeaderboard() {
         var LB = window.MyLuck && window.MyLuck.Leaderboard;
         if (!LB) return;
-        await LB.load('rp-global-list', 'rp');
+        await LB.load('rp-global-list', 'rp', { titleMap: RP_TITLE_MAP });
     }
 
     async function submitToLeaderboard() {
@@ -212,7 +216,7 @@
             score: currentResult.score,
             character_id: String(currentResult.character.id),
             character_emoji: currentResult.character.emoji,
-            character_title: isEn ? currentResult.character.titleEn : currentResult.character.title
+            character_title: currentResult.character.title  // 始终存中文key，渲染时按语言翻译
         }, {
             onSuccess: function () {
                 if (rankBtn) rankBtn.textContent = I18n ? I18n.t('rp.ranked') : '✅ 已上榜！';

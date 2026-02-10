@@ -59,6 +59,7 @@
         'lr.death.infant': '先天体质不佳',
         'lr.death.short_lived': '短命体质的宿命已至',
         'lr.death.isekai': '在异世界完成了使命，灵魂归于安宁',
+        'lr.loading': '加载中...',
     };
     const en = {
         'lr.title': '🔄 Life Restart Simulator',
@@ -115,6 +116,7 @@
         'lr.death.infant': 'Born with a weak constitution',
         'lr.death.short_lived': 'Short-lived constitution reached its limit',
         'lr.death.isekai': 'Fulfilled the mission in another world, soul at peace',
+        'lr.loading': 'Loading...',
     };
     I18n.add('zh', zh);
     I18n.add('en', en);
@@ -1500,9 +1502,16 @@
 
     // 语言切换时重新渲染
     document.addEventListener('langchange', () => {
+        // 更新页面标题
+        document.title = I18n.lang === 'en' ? 'Life Restart Simulator - MyLuck' : '人生重开模拟器 - MyLuck';
         // 如果在游戏中，只更新标题
         I18n.apply();
     });
+
+    // 初始化时也设置标题
+    if (I18n.lang === 'en') {
+        document.title = 'Life Restart Simulator - MyLuck';
+    }
 
     document.addEventListener('DOMContentLoaded', init);
 })();
