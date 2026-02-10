@@ -605,43 +605,6 @@
         { text: { zh: '', en: 'You tipped a barista and they spelled your name right for once.' }, cond: { minAge: 16, maxAge: 40, lang: 'en', chance: 0.05 }, effects: { spr: 1 } },
         { text: { zh: '', en: 'You drove across Route 66 — American dream vibes.' }, cond: { minAge: 20, maxAge: 50, lang: 'en', chance: 0.03 }, effects: { spr: 3 } },
 
-        // ===== 特殊天赋专属事件 =====
-
-        // -- 异世界转生 --
-        { text: { zh: '⚡ 你在18岁生日那天被神秘光芒笼罩，穿越到了异世界！', en: '⚡ On your 18th birthday, a mysterious light transported you to another world!' }, cond: { minAge: 18, maxAge: 18, hasTag: 'isekai' }, effects: { spr: 5, tag: 'in_isekai' } },
-        { text: { zh: '🗡️ 你在异世界觉醒了强大的力量，被封为勇者！', en: '🗡️ You awakened great power in the other world, hailed as a Hero!' }, cond: { minAge: 19, maxAge: 22, hasTag: 'in_isekai', minStr: 5, chance: 0.5 }, effects: { str: 3, chr: 3, tag: 'hero' } },
-        { text: { zh: '🏰 你在异世界建立了自己的领地，成为一方领主。', en: '🏰 You built your own territory, becoming a Lord.' }, cond: { minAge: 22, maxAge: 35, hasTag: 'in_isekai', chance: 0.3 }, effects: { mny: 5, chr: 2 } },
-        { text: { zh: '👑 你击败了魔王，拯救了异世界！名扬万世！', en: '👑 You defeated the Demon King and saved the world! Legendary!' }, cond: { minAge: 25, maxAge: 40, hasTag: 'in_isekai', minStr: 7, minInt: 6, chance: 0.2 }, effects: { chr: 5, spr: 5, str: 3 } },
-        { text: { zh: '💕 你在异世界遇到了命中注定的人。', en: '💕 You met your destiny in the other world.' }, cond: { minAge: 20, maxAge: 35, hasTag: 'in_isekai', minChr: 5, chance: 0.3 }, effects: { spr: 4, tag: 'partner' } },
-        { text: { zh: '📖 你利用前世的知识在异世界发明了许多东西。', en: '📖 Using your past life knowledge, you invented many things.' }, cond: { minAge: 19, maxAge: 40, hasTag: 'in_isekai', minInt: 6, chance: 0.3 }, effects: { int: 2, mny: 3 } },
-
-        // -- 女装大佬/男娘 --
-        { text: { zh: '👗 你在15岁时第一次尝试了女装，发现意外地好看。', en: '👗 At 15, you tried crossdressing — surprisingly stunning.' }, cond: { minAge: 15, maxAge: 15, hasTag: 'crossdress' }, effects: { chr: 4, spr: 2, tag: 'cd_awakened' } },
-        { text: { zh: '🌸 你的女装照在网上火了，粉丝暴涨！', en: '🌸 Your crossdress photos went viral online!' }, cond: { minAge: 16, maxAge: 25, hasTag: 'cd_awakened', minChr: 7, chance: 0.3 }, effects: { chr: 3, mny: 2, spr: 2 } },
-        { text: { zh: '💄 你成了知名的女装博主，收到了品牌代言。', en: '💄 You became a famous crossdress influencer with brand deals.' }, cond: { minAge: 18, maxAge: 30, hasTag: 'cd_awakened', minChr: 9, chance: 0.2 }, effects: { mny: 4, chr: 2, spr: 3 } },
-        { text: { zh: '😳 班上的男同学跟你表白了，你……', en: '😳 A male classmate confessed to you...' }, cond: { minAge: 16, maxAge: 18, hasTag: 'cd_awakened', minChr: 8, chance: 0.2 }, effects: { spr: 1 } },
-
-        // -- 穿越者（知晓未来）--
-        { text: { zh: '🔮 你利用"未来知识"精准预测了行业趋势，赚了一大笔。', en: '🔮 Using "future knowledge", you predicted trends and made a fortune.' }, cond: { minAge: 20, maxAge: 40, hasTag: 'time_traveler', chance: 0.3 }, effects: { mny: 5, int: 1 } },
-        { text: { zh: '🔮 你提前避开了一场大灾难。', en: '🔮 You avoided a major disaster thanks to foresight.' }, cond: { minAge: 15, maxAge: 60, hasTag: 'time_traveler', chance: 0.1 }, effects: { str: 2, spr: 2 } },
-        { text: { zh: '🔮 你试图改变一个人的命运，但发现有些事情无法改变。', en: '🔮 You tried to change someone\'s fate but discovered some things can\'t be changed.' }, cond: { minAge: 25, maxAge: 50, hasTag: 'time_traveler', chance: 0.15 }, effects: { spr: -3 } },
-
-        // -- 社恐专属 --
-        { text: { zh: '😰 你在公众场合被点名发言，紧张到手心冒汗。', en: '😰 You were called to speak publicly — palms sweating.' }, cond: { minAge: 12, maxAge: 35, hasTag: 'social_anxiety', chance: 0.15 }, effects: { spr: -2 } },
-        { text: { zh: '🏠 你发现了远程办公的工作，简直是社恐的天堂！', en: '🏠 You found a remote job — paradise for social anxiety!' }, cond: { minAge: 22, maxAge: 40, hasTag: 'social_anxiety', minInt: 6, chance: 0.2 }, effects: { spr: 3, mny: 1 } },
-        { text: { zh: '💪 你克服了社恐，第一次主动和陌生人聊天！', en: '💪 You overcame social anxiety and talked to a stranger!' }, cond: { minAge: 20, maxAge: 40, hasTag: 'social_anxiety', minSpr: 6, chance: 0.1 }, effects: { chr: 3, spr: 3 } },
-
-        // -- 氪金大佬 --
-        { text: { zh: '💳 你在游戏里氪了一万块，老婆/老公快气疯了。', en: '💳 You spent $1000 on a game. Your partner is furious.' }, cond: { minAge: 18, maxAge: 40, hasTag: 'whale', chance: 0.15 }, effects: { mny: -2, spr: -1 } },
-        { text: { zh: '🎮 你氪金出了全服第一的装备，成了服务器传说！', en: '🎮 Your spending got you the #1 gear on the server — legendary!' }, cond: { minAge: 18, maxAge: 35, hasTag: 'whale', minMny: 5, chance: 0.1 }, effects: { spr: 3, chr: 1, mny: -1, tag: 'gamer' } },
-
-        // -- 反派体质（30岁前倒霉事件）--
-        { text: { zh: '🌧️ 你又一次被命运捉弄了——出门就下雨，考试就忘带准考证。', en: '🌧️ Fate played tricks again — rain whenever you go out, forgot exam ID.' }, cond: { minAge: 10, maxAge: 29, hasTag: 'villain', chance: 0.2 }, effects: { spr: -2 } },
-        { text: { zh: '😈 别人的好运好像都被你吸走了，你简直是行走的霉运。', en: '😈 Others\' luck seems absorbed by you — you\'re a walking bad omen.' }, cond: { minAge: 15, maxAge: 29, hasTag: 'villain', chance: 0.15 }, effects: { spr: -1, chr: -1 } },
-
-        // -- 时间回溯（30岁返回起点）--
-        { text: { zh: '⏳ 你在30岁这天醒来，发现自己回到了婴儿时期！一切重新开始，但你的能力还在！', en: '⏳ At 30, you woke up as a baby! Starting over, but your abilities remain!' }, cond: { minAge: 30, maxAge: 30, hasTag: 'time_loop' }, effects: { spr: 3, tag: 'looped' } },
-
         // ===== 更多剧情弧线事件 =====
         { text: { zh: '你开始写一本小说，每天坚持写1000字。', en: 'You started writing a novel, 1000 words every day.' }, cond: { minAge: 18, maxAge: 50, minInt: 5, chance: 0.05 }, effects: { int: 1, tag: 'novelist' } },
         { text: { zh: '你的小说出版了！虽然销量一般，但你很满足。', en: 'Your novel was published! Sales were modest, but you felt fulfilled.' }, cond: { minAge: 20, maxAge: 55, hasTag: 'novelist', chance: 0.4 }, effects: { spr: 3, chr: 1 } },
@@ -751,12 +714,12 @@
 
     // ========== 结局数据 ==========
     const ENDINGS = [
-        { id: 'legend', name: { zh: '传奇人生', en: 'Legendary Life' }, desc: { zh: '你的人生堪称传奇，后人将铭记你的故事。', en: 'Your life was legendary, your story will be remembered.' }, cond: sum => sum >= 75 },
-        { id: 'brilliant', name: { zh: '辉煌一生', en: 'Brilliant Life' }, desc: { zh: '你度过了辉煌而充实的一生。', en: 'You lived a brilliant and fulfilling life.' }, cond: sum => sum >= 60 },
-        { id: 'wonderful', name: { zh: '精彩人生', en: 'Wonderful Life' }, desc: { zh: '你的人生精彩纷呈，没有遗憾。', en: 'Your life was wonderful, no regrets.' }, cond: sum => sum >= 48 },
-        { id: 'happy', name: { zh: '幸福生活', en: 'Happy Life' }, desc: { zh: '虽然平凡，但你过得很幸福。', en: 'Ordinary but happy.' }, cond: sum => sum >= 36 },
-        { id: 'normal', name: { zh: '平凡一生', en: 'Ordinary Life' }, desc: { zh: '你的人生平平无奇，但也算安稳。', en: 'Your life was ordinary but stable.' }, cond: sum => sum >= 24 },
-        { id: 'bitter', name: { zh: '苦涩人生', en: 'Bitter Life' }, desc: { zh: '你的人生充满坎坷，但你坚持了下来。', en: 'Your life was rough, but you persevered.' }, cond: sum => sum >= 12 },
+        { id: 'legend', name: { zh: '传奇人生', en: 'Legendary Life' }, desc: { zh: '你的人生堪称传奇，后人将铭记你的故事。', en: 'Your life was legendary, your story will be remembered.' }, cond: sum => sum >= 65 },
+        { id: 'brilliant', name: { zh: '辉煌一生', en: 'Brilliant Life' }, desc: { zh: '你度过了辉煌而充实的一生。', en: 'You lived a brilliant and fulfilling life.' }, cond: sum => sum >= 55 },
+        { id: 'wonderful', name: { zh: '精彩人生', en: 'Wonderful Life' }, desc: { zh: '你的人生精彩纷呈，没有遗憾。', en: 'Your life was wonderful, no regrets.' }, cond: sum => sum >= 45 },
+        { id: 'happy', name: { zh: '幸福生活', en: 'Happy Life' }, desc: { zh: '虽然平凡，但你过得很幸福。', en: 'Ordinary but happy.' }, cond: sum => sum >= 35 },
+        { id: 'normal', name: { zh: '平凡一生', en: 'Ordinary Life' }, desc: { zh: '你的人生平平无奇，但也算安稳。', en: 'Your life was ordinary but stable.' }, cond: sum => sum >= 22 },
+        { id: 'bitter', name: { zh: '苦涩人生', en: 'Bitter Life' }, desc: { zh: '你的人生充满坎坷，但你坚持了下来。', en: 'Your life was rough, but you persevered.' }, cond: sum => sum >= 10 },
         { id: 'tragic', name: { zh: '悲惨世界', en: 'Tragic Life' }, desc: { zh: '这一生……太难了。', en: 'This life... was too hard.' }, cond: () => true },
     ];
 
@@ -985,6 +948,32 @@
                 yearLog.push(evt);
             }
 
+            // ===== 自然衰老：属性随年龄下降 =====
+            if (this.age >= 35 && Math.random() < 0.3) {
+                this.stats.chr = Math.max(0, this.stats.chr - 1); // 颜值从35岁开始衰退
+            }
+            if (this.age >= 45 && Math.random() < 0.3) {
+                this.stats.str = Math.max(0, this.stats.str - 1); // 体质从45岁开始衰退
+            }
+            if (this.age >= 55 && Math.random() < 0.2) {
+                this.stats.int = Math.max(0, this.stats.int - 1); // 智力从55岁缓慢衰退
+            }
+            if (this.age >= 60 && Math.random() < 0.15) {
+                this.stats.spr = Math.max(0, this.stats.spr - 1); // 快乐从60岁缓慢衰退
+            }
+            // 中年危机随机事件
+            if (this.age >= 40 && this.age <= 55 && Math.random() < 0.08) {
+                const crisisTexts = [
+                    { zh: '你开始怀疑人生的意义……', en: 'You start questioning the meaning of life...' },
+                    { zh: '你感到中年的焦虑越来越重。', en: 'Midlife anxiety weighs on you more and more.' },
+                    { zh: '你发现自己的体力大不如前。', en: 'You notice your stamina isn\'t what it used to be.' },
+                    { zh: '你的记忆力开始衰退了。', en: 'Your memory is starting to fade.' },
+                ];
+                const crisis = crisisTexts[Math.floor(Math.random() * crisisTexts.length)];
+                yearLog.push({ text: crisis, effects: {} });
+                this.stats.spr = Math.max(0, this.stats.spr - 1);
+            }
+
             // ===== 特殊天赋效果 =====
             // 系统加持：每10年随机属性+2
             if (this.tags.has('system_cheat') && this.age > 0 && this.age % 10 === 0) {
@@ -1026,12 +1015,14 @@
             return { age: this.age, events: yearLog, alive: this.alive };
         }
 
-        // 获取结局 - 年龄大幅加权，短命不可能传奇
+        // 获取结局 - 综合评估：年龄+属性均值（考虑衰老后的最终属性）
         getEnding() {
             const s = this.stats;
             const statsSum = s.chr + s.int + s.str + s.mny + s.spr;
-            // 年龄占60%权重，属性占40%
-            const sum = Math.floor(this.age * 0.6 + statsSum * 0.4);
+            // 属性均值0-20，缩放到0-20分；年龄缩放到0-50分（100岁=50分）
+            // 总分 = 年龄分(0-50) + 属性分(0-20) = 0-70
+            // 传奇需要75: 基本上需要100岁+全属性满 → 极难达到
+            const sum = Math.floor(this.age * 0.5 + statsSum * 0.2);
             for (const ending of ENDINGS) {
                 if (ending.cond(sum)) return { ...ending, sum };
             }
@@ -1486,8 +1477,24 @@
         });
     }
 
+    // ===== 合并外部天赋事件 =====
+    function mergeTalentEvents() {
+        const sources = [
+            window.TALENT_EVENTS_1,
+            window.TALENT_EVENTS_2,
+            window.TALENT_EVENTS_3,
+            window.TALENT_EVENTS_4
+        ];
+        sources.forEach(src => {
+            if (Array.isArray(src)) {
+                src.forEach(e => EVENTS.push(e));
+            }
+        });
+    }
+
     // ===== 初始化 =====
     function init() {
+        mergeTalentEvents();
         showTalentDraw();
     }
 
