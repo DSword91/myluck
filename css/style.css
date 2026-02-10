@@ -343,7 +343,7 @@ a{text-decoration:none;color:inherit;}
 .daily-streak-bar .streak-dot.active{background:var(--primary);}
 .daily-streak-bar .streak-dot.today{background:var(--secondary);box-shadow:0 0 6px rgba(253,203,110,0.6);}
 
-/* ===== 许愿墙 ===== */
+/* ===== 祝福墙 ===== */
 .wish-wall{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:24px;min-height:120px;}
 .wish-note{background:linear-gradient(135deg,#fff9e6,#fff3cc);padding:14px 16px;border-radius:6px 6px 6px 20px;box-shadow:2px 3px 10px rgba(0,0,0,0.06);max-width:220px;min-width:160px;font-size:.88rem;line-height:1.55;color:#5a4a3a;position:relative;transform:rotate(var(--rot,0deg));transition:transform .3s ease;}
 .wish-note:nth-child(odd){--rot:-1.5deg;background:linear-gradient(135deg,#fff0f0,#ffe8e8);}

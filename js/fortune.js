@@ -32,8 +32,8 @@
         'card.color_tag': '8种色彩 · 秒出结果',
         'card.personality_title': '趣味性格标签', 'card.personality_desc': '8个生活场景问题，测出你的隐藏性格标签，准到你笑',
         'card.personality_tag': '8题 · 约2分钟',
-        'card.guestbook_title': '许愿墙', 'card.guestbook_desc': '写下你的心愿或今日好运感想，让好运传递给更多人',
-        'card.guestbook_tag': '自由许愿',
+        'card.guestbook_title': '祝福墙', 'card.guestbook_desc': '写下你的祝福，让好运传递给每一个人',
+        'card.guestbook_tag': '全球祝福',
     });
     I18n.add('en', {
         'home.title': 'Test Your Lucky Index Today',
@@ -63,8 +63,8 @@
         'card.color_tag': '8 Colors · Instant',
         'card.personality_title': 'Personality Tags', 'card.personality_desc': '8 fun scenario questions to uncover your hidden personality traits',
         'card.personality_tag': '8 Qs · ~2 min',
-        'card.guestbook_title': 'Wishing Wall', 'card.guestbook_desc': 'Write your wish or thoughts, spread good luck to everyone',
-        'card.guestbook_tag': 'Free Wishing',
+        'card.guestbook_title': 'Blessing Wall', 'card.guestbook_desc': 'Write your blessings, spread good luck to everyone',
+        'card.guestbook_tag': 'Global Blessings',
     });
     I18n.apply();
 

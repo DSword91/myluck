@@ -367,7 +367,7 @@
         initLeaderboard();
 
         // 语言切换监听
-        window.addEventListener('langchange', function () {
+        document.addEventListener('langchange', function () {
             updateDailyInfo();
             if (window._currentStick) {
                 showResult(window._currentStick);

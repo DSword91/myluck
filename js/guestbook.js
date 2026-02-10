@@ -44,18 +44,12 @@
     });
     I18n.apply();
 
-    // ===== Supabase 配置 =====
-    var SUPABASE_URL = 'https://qerajxnmtwyjtokhaonq.supabase.co';
-    var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlcmFqeG5tdHd5anRva2hhb25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MTA1MjksImV4cCI6MjA4NjE4NjUyOX0.sUMZ_RIu9zLjMOB3nnruJezlQL0i-GrunDIkahWcF5E';
-    var supabaseClient = null;
-
+    // ===== Supabase（使用共享客户端） =====
     async function getSupabase() {
-        if (supabaseClient) return supabaseClient;
-        try {
-            var mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-            supabaseClient = mod.createClient(SUPABASE_URL, SUPABASE_KEY);
-            return supabaseClient;
-        } catch (e) { return null; }
+        if (window.MyLuck && window.MyLuck.getSupabase) {
+            return await window.MyLuck.getSupabase();
+        }
+        return null;
     }
 
     // ===== 随机祝福生成（自然增长） =====

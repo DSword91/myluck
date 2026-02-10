@@ -290,13 +290,13 @@
     };
 
     // ========== Cloudflare Turnstile 反垃圾模块 ==========
-    // 使用方法：去 Cloudflare Dashboard → Turnstile → Add Site → 获取 site key
-    // 然后把下方 TURNSTILE_SITE_KEY 替换为你的 site key
-    const TURNSTILE_SITE_KEY = '0x4AAAAAACZ5cJF8duhs4a2v'; // 留空则禁用 Turnstile，填入 site key 启用
+    // 支持多组件渲染（祝福墙、反馈弹窗等同页面使用）
+    const TURNSTILE_SITE_KEY = '0x4AAAAAACZ5cJF8duhs4a2v';
     const Turnstile = {
         loaded: false,
-        token: null,
-        widgetId: null,
+        tokens: {},   // containerId → token
+        widgets: {},  // containerId → widgetId
+        _lastContainer: null,
 
         // 检查是否已配置
         isEnabled() { return !!TURNSTILE_SITE_KEY; },
@@ -321,32 +321,65 @@
                 await this.load();
                 const container = document.getElementById(containerId);
                 if (!container || !window.turnstile) return;
-                this.widgetId = window.turnstile.render(container, {
+                this._lastContainer = containerId;
+                this.widgets[containerId] = window.turnstile.render(container, {
                     sitekey: TURNSTILE_SITE_KEY,
                     theme: 'light',
-                    callback: (token) => { this.token = token; },
-                    'expired-callback': () => { this.token = null; },
-                    'error-callback': () => { this.token = null; }
+                    callback: (token) => { this.tokens[containerId] = token; },
+                    'expired-callback': () => { this.tokens[containerId] = null; },
+                    'error-callback': () => { this.tokens[containerId] = null; }
                 });
             } catch (e) { /* Turnstile unavailable, fail silently */ }
         },
 
-        // 获取当前 token（用于提交验证）
-        getToken() { return this.token; },
+        // 获取当前 token
+        getToken(containerId) {
+            if (containerId) return this.tokens[containerId] || null;
+            return this.tokens[this._lastContainer] || null;
+        },
 
-        // 重置小部件（提交后重新验证）
-        reset() {
-            this.token = null;
-            if (window.turnstile && this.widgetId !== null) {
-                window.turnstile.reset(this.widgetId);
+        // 重置小部件
+        reset(containerId) {
+            const cid = containerId || this._lastContainer;
+            if (cid) this.tokens[cid] = null;
+            if (window.turnstile && this.widgets[cid] !== undefined) {
+                window.turnstile.reset(this.widgets[cid]);
             }
         },
 
         // 验证是否已通过（未启用时直接放行）
-        isVerified() {
-            return !this.isEnabled() || !!this.token;
+        isVerified(containerId) {
+            if (!this.isEnabled()) return true;
+            if (containerId) return !!this.tokens[containerId];
+            // 检查是否有任意已验证的 token
+            return Object.values(this.tokens).some(t => !!t);
+        },
+
+        // 移除组件（弹窗关闭时清理）
+        remove(containerId) {
+            if (window.turnstile && this.widgets[containerId] !== undefined) {
+                try { window.turnstile.remove(this.widgets[containerId]); } catch (e) { }
+            }
+            delete this.tokens[containerId];
+            delete this.widgets[containerId];
         }
     };
+
+    // ========== 共享 Supabase 客户端（避免重复创建） ==========
+    const SUPABASE_URL = 'https://qerajxnmtwyjtokhaonq.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlcmFqeG5tdHd5anRva2hhb25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MTA1MjksImV4cCI6MjA4NjE4NjUyOX0.sUMZ_RIu9zLjMOB3nnruJezlQL0i-GrunDIkahWcF5E';
+    let _sharedSupabase = null;
+    async function getSupabase() {
+        if (_sharedSupabase) return _sharedSupabase;
+        try {
+            var mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+            _sharedSupabase = mod.createClient(SUPABASE_URL, SUPABASE_KEY);
+            return _sharedSupabase;
+        } catch (e) {
+            console.warn('[supabase] Load failed:', e);
+            return null;
+        }
+    }
 
     // ========== CSP + 安全 Meta Tag 注入 ==========
     function injectCSP() {
@@ -394,7 +427,7 @@
                     <a href="fortune-draw.html" class="nav-link ${isActive('fortune-draw.html')}" data-i18n="nav.draw">🎋 求签</a>
                     <a href="rp-test.html" class="nav-link ${isActive('rp-test.html')}" data-i18n="nav.rp">🧧 人设</a>
                     <a href="mbti.html" class="nav-link ${isActive('mbti.html')}" data-i18n="nav.mbti">MBTI测试</a>
-                    <a href="liferestart.html" class="nav-link ${isActive('liferestart.html')}" data-i18n="nav.liferestart">人生重开</a>                    <a href="guestbook.html" class="nav-link ${isActive('guestbook.html')}" data-i18n="nav.guestbook">留言板</a>
+                    <a href="liferestart.html" class="nav-link ${isActive('liferestart.html')}" data-i18n="nav.liferestart">人生重开</a>                    <a href="guestbook.html" class="nav-link ${isActive('guestbook.html')}" data-i18n="nav.guestbook">祝福墙</a>
                     <button class="lang-btn" id="lang-toggle" data-i18n="lang.switch">EN</button>
                 </div>
                 <button class="menu-toggle" aria-label="Menu">☰</button>
@@ -479,14 +512,25 @@
             '<p style="font-size:0.85rem;color:#888;margin-bottom:12px;">' + (isEn ? 'Your feedback helps us improve!' : '你的反馈是我们进步的动力！') + '</p>' +
             '<input type="text" id="feedback-name" placeholder="' + (isEn ? 'Your name (optional)' : '你的名字（选填）') + '" maxlength="20" style="width:100%;padding:8px 12px;border:1px solid #e0d5c3;border-radius:10px;margin-bottom:8px;font-size:0.9rem;box-sizing:border-box;">' +
             '<textarea id="feedback-text" placeholder="' + (isEn ? 'Tell us what you think...' : '告诉我们你的想法...') + '" maxlength="500" rows="4" style="width:100%;padding:8px 12px;border:1px solid #e0d5c3;border-radius:10px;margin-bottom:12px;font-size:0.9rem;resize:vertical;font-family:inherit;box-sizing:border-box;"></textarea>' +
+            '<div id="turnstile-feedback" style="display:flex;justify-content:center;margin-bottom:12px;"></div>' +
             '<button id="feedback-submit" style="width:100%;padding:10px;border:none;border-radius:25px;background:#e17055;color:#fff;font-size:0.95rem;font-weight:600;cursor:pointer;">' + (isEn ? 'Submit Feedback' : '提交反馈') + '</button>' +
             '</div>';
         document.body.appendChild(overlay);
 
-        document.getElementById('feedback-close').addEventListener('click', function () { overlay.remove(); });
-        overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.remove(); });
+        // 渲染 Turnstile 人机验证
+        if (Turnstile.isEnabled()) {
+            Turnstile.render('turnstile-feedback');
+        }
+
+        function closeFeedback() {
+            Turnstile.remove('turnstile-feedback');
+            overlay.remove();
+        }
+
+        document.getElementById('feedback-close').addEventListener('click', closeFeedback);
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) closeFeedback(); });
         document.addEventListener('keydown', function handler(e) {
-            if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', handler); }
+            if (e.key === 'Escape') { closeFeedback(); document.removeEventListener('keydown', handler); }
         });
 
         document.getElementById('feedback-submit').addEventListener('click', async function () {
@@ -496,19 +540,26 @@
             if (Security.containsBadWords(text)) { alert(isEn ? 'Please keep it friendly' : '请文明发言'); return; }
             if (!Security.rateLimit('feedback', 2)) { alert(isEn ? 'Too frequent, try later' : '太频繁了，请稍后再试'); return; }
 
+            // Turnstile 验证
+            if (Turnstile.isEnabled() && !Turnstile.isVerified('turnstile-feedback')) {
+                alert(isEn ? 'Please complete verification first' : '请先完成人机验证');
+                return;
+            }
+
             var btn = document.getElementById('feedback-submit');
             btn.disabled = true; btn.textContent = '...';
 
             try {
-                var mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-                var sb = mod.createClient('https://qerajxnmtwyjtokhaonq.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlcmFqeG5tdHd5anRva2hhb25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MTA1MjksImV4cCI6MjA4NjE4NjUyOX0.sUMZ_RIu9zLjMOB3nnruJezlQL0i-GrunDIkahWcF5E');
+                var sb = await getSupabase();
+                if (!sb) throw new Error('Supabase unavailable');
                 await sb.from('comments').insert({
                     nickname: Security.escapeHtml(name),
                     content: Security.escapeHtml(text),
                     page: 'feedback'
                 });
+                Turnstile.reset('turnstile-feedback');
                 alert(isEn ? '🎉 Thank you for your feedback!' : '🎉 感谢你的反馈！');
-                overlay.remove();
+                closeFeedback();
             } catch (e) {
                 alert(isEn ? 'Failed to submit, try later' : '提交失败，请稍后重试');
                 btn.disabled = false; btn.textContent = isEn ? 'Submit Feedback' : '提交反馈';
@@ -844,5 +895,5 @@
     }
 
     // ========== 全局导出 ==========
-    window.MyLuck = { I18n, Security, Turnstile, seededRandom, getTodaySeed, getStars, animateCounter, createAdSlot, Streak, injectVisitorCount };
+    window.MyLuck = { I18n, Security, Turnstile, getSupabase, seededRandom, getTodaySeed, getStars, animateCounter, createAdSlot, Streak, injectVisitorCount };
 })();

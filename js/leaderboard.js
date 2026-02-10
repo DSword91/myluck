@@ -2,20 +2,16 @@
 (function () {
     'use strict';
 
-    var SUPABASE_URL = 'https://qerajxnmtwyjtokhaonq.supabase.co';
-    var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlcmFqeG5tdHd5anRva2hhb25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2MTA1MjksImV4cCI6MjA4NjE4NjUyOX0.sUMZ_RIu9zLjMOB3nnruJezlQL0i-GrunDIkahWcF5E';
-
+    // 使用共享 Supabase 客户端（从 common.js MyLuck.getSupabase）
     var _sb = null;
     async function getSupabase() {
         if (_sb) return _sb;
-        try {
-            var mod = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-            _sb = mod.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // 优先使用共享客户端
+        if (window.MyLuck && window.MyLuck.getSupabase) {
+            _sb = await window.MyLuck.getSupabase();
             return _sb;
-        } catch (e) {
-            console.warn('[leaderboard] Supabase load failed:', e);
-            return null;
         }
+        return null;
     }
 
     function escapeHtml(str) {
