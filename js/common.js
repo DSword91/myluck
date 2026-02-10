@@ -535,29 +535,75 @@
 
     // ========== SEO 结构化数据 ==========
     function injectSEO() {
-        // JSON-LD 结构化数据
+        const page = location.pathname.split('/').pop() || 'index.html';
+        const pageUrl = 'https://myluck.top/' + (page === 'index.html' ? '' : page);
+        const isZh = I18n.lang === 'zh';
+
+        // JSON-LD WebSite 结构化数据
         const ld = document.createElement('script');
         ld.type = 'application/ld+json';
         ld.textContent = JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebSite",
             "name": "MyLuck",
+            "alternateName": "MyLuck 每日好运测试",
             "url": "https://myluck.top",
-            "description": I18n.lang === 'zh' ? "MyLuck 趣味互动娱乐平台 - 每日运气测试、MBTI性格测试、幸运色彩测试" : "MyLuck Fun Interactive Entertainment - Daily Luck Test, MBTI Personality Test, Lucky Color Test",
+            "description": isZh
+                ? "MyLuck 趣味互动娱乐平台 - 每日运气测试、MBTI性格测试、幸运色彩测试、人生重开模拟器"
+                : "MyLuck Fun Interactive Entertainment - Daily Luck Test, MBTI Personality Test, Lucky Color Test, Life Restart Simulator",
             "inLanguage": ["zh-CN", "en"],
-            "potentialAction": {
-                "@type": "SearchAction",
-                "target": "https://myluck.top"
+            "publisher": {
+                "@type": "Organization",
+                "name": "MyLuck",
+                "url": "https://myluck.top"
             }
         });
         document.head.appendChild(ld);
 
-        // Canonical URL
-        const canonical = document.createElement('link');
-        canonical.rel = 'canonical';
-        const page = location.pathname.split('/').pop() || 'index.html';
-        canonical.href = 'https://myluck.top/' + (page === 'index.html' ? '' : page);
-        document.head.appendChild(canonical);
+        // JSON-LD BreadcrumbList（面包屑导航）
+        if (page !== 'index.html') {
+            const pageTitles = {
+                'mbti.html': 'MBTI 性格测试',
+                'color.html': '幸运色彩测试',
+                'personality.html': '趣味性格测试',
+                'guestbook.html': '许愿墙',
+                'liferestart.html': '人生重开模拟器',
+                'privacy.html': '隐私政策',
+                'terms.html': '使用条款',
+                'disclaimer.html': '免责声明'
+            };
+            const bc = document.createElement('script');
+            bc.type = 'application/ld+json';
+            bc.textContent = JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://myluck.top/" },
+                    { "@type": "ListItem", "position": 2, "name": pageTitles[page] || document.title, "item": pageUrl }
+                ]
+            });
+            document.head.appendChild(bc);
+        }
+
+        // 如果 HTML 中已经有 canonical，不重复添加
+        if (!document.querySelector('link[rel="canonical"]')) {
+            const canonical = document.createElement('link');
+            canonical.rel = 'canonical';
+            canonical.href = pageUrl;
+            document.head.appendChild(canonical);
+        }
+
+        // hreflang 标签（帮助搜索引擎识别多语言）
+        const addHreflang = (lang, href) => {
+            const link = document.createElement('link');
+            link.rel = 'alternate';
+            link.hreflang = lang;
+            link.href = href;
+            document.head.appendChild(link);
+        };
+        addHreflang('zh-CN', pageUrl);
+        addHreflang('en', pageUrl);
+        addHreflang('x-default', pageUrl);
     }
 
     if (document.readyState === 'loading') {
