@@ -1,10 +1,22 @@
-# MyLuck.top Robots
+# https://myluck.top robots.txt
+
+# 主流搜索引擎 - 全站允许
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+# 默认规则 - 允许抓取页面，禁止抓取资源目录
 User-agent: *
 Allow: /
 Disallow: /js/
 Disallow: /css/
 
-# 常见爬虫限制
+# 屏蔽 SEO/AI 爬虫
 User-agent: AhrefsBot
 Disallow: /
 
@@ -37,15 +49,5 @@ Disallow: /
 
 User-agent: Bytespider
 Disallow: /
-
-# 允许主流搜索引擎
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Baiduspider
-Allow: /
 
 Sitemap: https://myluck.top/sitemap.xml
