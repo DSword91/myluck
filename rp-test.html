@@ -3,28 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="今日人品测试 RP值 - 输入你的名字，测测今天的人品运气值！趣味娱乐，每日不同">
-    <meta name="keywords" content="今日人品,RP值,人品测试,运气值,每日人品,人品打分,今天运气,MyLuck,myluck.top">
+    <meta name="description" content="今日人设测试 - 输入名字，测测你今天是什么搞笑人设！诸葛猪？飞天猪？社牛之王？佛系大师？30种趣味人设等你解锁">
+    <meta name="keywords" content="今日人设,人品测试,RP值,搞笑测试,你是哪种猪,趣味人设,每日测试,MyLuck,myluck.top">
     <meta name="referrer" content="no-referrer">
     <meta name="robots" content="index, follow">
-    <title>今日人品测试 - MyLuck | 测测今天的RP值</title>
+    <title>今日人设测试 - MyLuck | 你今天是什么搞笑人设？</title>
     <link rel="canonical" href="https://myluck.top/rp-test.html">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧧</text></svg>">
-    <meta property="og:title" content="今日人品测试 - MyLuck">
-    <meta property="og:description" content="输入你的名字，测测今天的人品RP值！趣味娱乐">
+    <meta property="og:title" content="今日人设测试 - MyLuck">
+    <meta property="og:description" content="输入名字测测你今天是什么搞笑人设！30种趣味人设等你解锁">
     <meta property="og:url" content="https://myluck.top/rp-test.html">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="MyLuck">
     <meta property="og:locale" content="zh_CN">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="今日人品测试 - MyLuck">
-    <meta name="twitter:description" content="输入你的名字，测测今天的人品RP值！">
+    <meta name="twitter:title" content="今日人设测试 - MyLuck">
+    <meta name="twitter:description" content="你今天是什么搞笑人设？30种人设等你解锁">
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .rp-container { max-width: 480px; margin: 0 auto; text-align: center; }
-        .rp-input-area {
-            display: flex; gap: 10px; margin: 20px 0;
-        }
+        .rp-container { max-width: 500px; margin: 0 auto; text-align: center; }
+        .rp-input-area { display: flex; gap: 10px; margin: 20px 0; }
         .rp-input-area input {
             flex: 1; padding: 14px 18px; border: 2px solid #e0d5c5; border-radius: 12px;
             font-size: 1.05rem; background: #fffbf5; outline: none; transition: border 0.3s;
@@ -37,30 +35,45 @@
         }
         .rp-input-area button:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(225,112,85,0.4); }
 
+        /* 角色卡片 */
         .rp-result { display: none; animation: fadeSlideUp 0.6s ease-out; }
         @keyframes fadeSlideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
-        .rp-score-ring {
-            width: 200px; height: 200px; margin: 20px auto; position: relative;
+        .char-card {
+            background: linear-gradient(135deg, #fffbf0, #fef3e2);
+            border: 2px solid #f0d9b5; border-radius: 20px; padding: 30px 24px;
+            box-shadow: 0 8px 32px rgba(225,112,85,0.12); position: relative; overflow: hidden;
         }
-        .rp-score-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-        .rp-score-ring .bg { fill: none; stroke: #f0e6d9; stroke-width: 10; }
-        .rp-score-ring .fg { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1.5s ease-out, stroke 0.5s; }
-        .rp-score-text {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            text-align: center;
+        .char-card::before {
+            content: ''; position: absolute; top: -40px; right: -40px;
+            width: 120px; height: 120px; background: rgba(225,112,85,0.06);
+            border-radius: 50%;
         }
-        .rp-score-num { font-size: 3.5rem; font-weight: 900; line-height: 1; }
-        .rp-score-label { font-size: 0.85rem; color: #999; margin-top: 4px; }
-        .rp-level {
-            display: inline-block; padding: 8px 28px; border-radius: 25px;
-            font-size: 1.3rem; font-weight: 700; margin: 16px 0; letter-spacing: 2px;
+        .char-emoji { font-size: 5rem; line-height: 1.2; margin-bottom: 8px; display: block; }
+        .char-title { font-size: 1.6rem; font-weight: 900; color: #5a3e28; margin-bottom: 4px; }
+        .char-score-badge {
+            display: inline-block; padding: 4px 16px; border-radius: 15px;
+            background: rgba(225,112,85,0.1); font-size: 0.9rem; margin-bottom: 16px;
         }
-        .rp-level.epic { background: linear-gradient(135deg, #fff3cd, #ffeaa7); color: #d4380d; border: 2px solid #ffc53d; }
-        .rp-level.great { background: #f6ffed; color: #389e0d; border: 2px solid #95de64; }
-        .rp-level.good { background: #e6f7ff; color: #096dd9; border: 2px solid #69c0ff; }
-        .rp-level.normal { background: #f0f5ff; color: #1d39c4; border: 2px solid #85a5ff; }
-        .rp-level.low { background: #fff2f0; color: #cf1322; border: 2px solid #ffa39e; }
-        .rp-desc { color: #666; line-height: 1.8; font-size: 0.95rem; margin: 12px 0 20px; }
+        .char-score-badge span { font-weight: 900; font-size: 1.1rem; }
+        .char-desc {
+            color: #666; font-size: 0.95rem; line-height: 1.8; margin: 12px 0 20px;
+            padding: 0 8px; text-align: left;
+        }
+
+        /* 四维属性 */
+        .char-stats { margin: 20px 0; text-align: left; }
+        .stat-row { display: flex; align-items: center; margin-bottom: 10px; gap: 8px; }
+        .stat-label { width: 60px; font-size: 0.85rem; color: #888; text-align: right; flex-shrink: 0; }
+        .stat-bar-bg {
+            flex: 1; height: 14px; background: #f0e6d9; border-radius: 7px; overflow: hidden;
+        }
+        .stat-bar {
+            height: 100%; border-radius: 7px; transition: width 1s ease-out;
+            width: 0;
+        }
+        .stat-val { width: 32px; font-size: 0.85rem; font-weight: 700; text-align: right; flex-shrink: 0; }
+
+        /* 标签 */
         .rp-tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 16px 0; }
         .rp-tag {
             padding: 6px 16px; border-radius: 20px; font-size: 0.85rem;
@@ -75,6 +88,8 @@
         .rp-btn-share:hover { background: #d63031; }
         .rp-btn-retry { background: #f5e6c8; color: #8B4513; border: 1px solid #d4a574; }
         .rp-btn-retry:hover { background: #eedcb3; }
+
+        /* 历史记录 */
         .rp-leaderboard {
             margin-top: 30px; background: rgba(255,255,255,0.7); border-radius: 16px;
             padding: 20px; border: 1px solid #e0d5c5; text-align: left;
@@ -82,11 +97,20 @@
         .rp-leaderboard h3 { text-align: center; margin-bottom: 12px; font-size: 1rem; color: #8B4513; }
         .rp-history-item {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 12px; border-radius: 8px; margin-bottom: 6px;
+            padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; font-size: 0.9rem;
         }
         .rp-history-item:nth-child(odd) { background: rgba(245,230,200,0.3); }
         .rp-history-name { font-weight: 600; color: #5a3e28; }
-        .rp-history-score { font-weight: 700; }
+        .rp-history-score { font-weight: 700; font-size: 0.85rem; }
+        .rp-rank-medal { font-size: 1.1rem; margin-right: 4px; }
+        .rp-rank-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-radius: 8px; margin-bottom: 4px; }
+        .rp-rank-row:nth-child(1) { background: rgba(255,215,0,0.1); }
+        .rp-rank-row:nth-child(2) { background: rgba(192,192,192,0.1); }
+        .rp-rank-row:nth-child(3) { background: rgba(205,127,50,0.1); }
+        .rp-rank-left { display: flex; align-items: center; gap: 6px; }
+        .rp-rank-name { font-weight: 600; color: #5a3e28; font-size: 0.9rem; }
+        .rp-rank-char { font-size: 0.8rem; color: #999; }
+        .rp-rank-score { font-weight: 700; font-size: 0.9rem; }
         .disclaimer-text { margin-top: 20px; font-size: 0.8rem; color: #ccc; }
     </style>
 </head>
@@ -94,43 +118,68 @@
     <div class="page-wrapper">
         <section class="section">
             <div class="container">
-                <h1 class="section-title">🧧 今日人品测试</h1>
-                <p class="section-desc">输入你的名字，测测今天的人品 RP 值！每天结果不同哦~</p>
+                <h1 class="section-title" data-i18n="rp.title">🧧 今日人设测试</h1>
+                <p class="section-desc" data-i18n="rp.desc">输入你的名字，测测今天你是什么搞笑人设！每天结果不同 🎭</p>
 
                 <div class="rp-container">
                     <div class="card">
                         <div class="rp-input-area">
-                            <input type="text" id="rp-name" maxlength="20" placeholder="输入你的名字或昵称">
-                            <button id="rp-submit">测一测</button>
+                            <input type="text" id="rp-name" maxlength="20" data-i18n="rp.placeholder" placeholder="输入你的名字或昵称">
+                            <button id="rp-submit" data-i18n="rp.submit">测一测</button>
                         </div>
 
                         <div class="rp-result" id="rp-result">
-                            <div class="rp-score-ring" id="rp-ring">
-                                <svg viewBox="0 0 120 120">
-                                    <circle class="bg" cx="60" cy="60" r="50"/>
-                                    <circle class="fg" id="rp-ring-fg" cx="60" cy="60" r="50"/>
-                                </svg>
-                                <div class="rp-score-text">
-                                    <div class="rp-score-num" id="rp-score">0</div>
-                                    <div class="rp-score-label">RP值</div>
+                            <div class="char-card">
+                                <span class="char-emoji" id="char-emoji">🐱</span>
+                                <div class="char-title" id="char-title"></div>
+                                <div class="char-score-badge" data-i18n="rp.score_label">人设匹配度 <span id="char-score">0</span>%</div>
+                                <div class="char-desc" id="char-desc"></div>
+
+                                <div class="char-stats">
+                                    <div class="stat-row">
+                                        <span class="stat-label" data-i18n="rp.stat_lucky">🍀 运气</span>
+                                        <div class="stat-bar-bg"><div class="stat-bar" id="stat-lucky"></div></div>
+                                        <span class="stat-val" id="stat-lucky-val">0</span>
+                                    </div>
+                                    <div class="stat-row">
+                                        <span class="stat-label" data-i18n="rp.stat_charm">💕 魅力</span>
+                                        <div class="stat-bar-bg"><div class="stat-bar" id="stat-charm"></div></div>
+                                        <span class="stat-val" id="stat-charm-val">0</span>
+                                    </div>
+                                    <div class="stat-row">
+                                        <span class="stat-label" data-i18n="rp.stat_energy">⚡ 精力</span>
+                                        <div class="stat-bar-bg"><div class="stat-bar" id="stat-energy"></div></div>
+                                        <span class="stat-val" id="stat-energy-val">0</span>
+                                    </div>
+                                    <div class="stat-row">
+                                        <span class="stat-label" data-i18n="rp.stat_brain">🧠 智力</span>
+                                        <div class="stat-bar-bg"><div class="stat-bar" id="stat-brain"></div></div>
+                                        <span class="stat-val" id="stat-brain-val">0</span>
+                                    </div>
                                 </div>
+
+                                <div class="rp-tags" id="char-tags"></div>
                             </div>
-                            <div class="rp-level" id="rp-level"></div>
-                            <div class="rp-desc" id="rp-desc"></div>
-                            <div class="rp-tags" id="rp-tags"></div>
+
                             <div class="rp-actions">
-                                <button class="rp-btn-share" id="rp-share">📤 分享结果</button>
-                                <button class="rp-btn-retry" id="rp-retry">🔄 换个名字</button>
+                                <button class="rp-btn-share" id="rp-share" data-i18n="rp.share">📤 分享人设</button>
+                                <button class="rp-btn-retry" id="rp-retry" data-i18n="rp.retry">🔄 换个名字</button>
+                                <button class="rp-btn-share" id="rp-rank" style="background:#00b894;" data-i18n="rp.rank">🏆 上榜</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="rp-leaderboard" id="rp-board">
-                        <h3>📊 今日测试记录</h3>
+                        <h3 data-i18n="rp.history">📊 今日测试记录</h3>
                         <div id="rp-history"></div>
                     </div>
 
-                    <p class="disclaimer-text">仅供娱乐参考 · 算法随机生成 · 请勿当真</p>
+                    <div class="rp-leaderboard" id="rp-global-board" style="border-color:#00b894;">
+                        <h3 data-i18n="rp.leaderboard" style="color:#00b894;">🏆 全球人设排行榜</h3>
+                        <div id="rp-global-list"><p style="text-align:center;color:#bbb;font-size:0.9rem;" data-i18n="rp.board_loading">加载中...</p></div>
+                    </div>
+
+                    <p class="disclaimer-text" data-i18n="disclaimer.tag">仅供娱乐参考 · 算法随机生成 · 请勿当真</p>
                 </div>
             </div>
         </section>
@@ -141,9 +190,9 @@
     <script src="js/rp-test.js" defer></script>
     <noscript>
         <div style="text-align:center;padding:40px 20px;">
-            <h2>今日人品测试 - MyLuck | myluck.top</h2>
-            <p>MyLuck (myluck.top) 今日人品RP值测试 - 输入你的名字，测测今天的人品运气值！每天结果不同。更多趣味测试：在线求签、MBTI性格测试、人生重开模拟器。</p>
-            <nav><a href="/">首页</a> | <a href="/fortune-draw.html">在线求签</a> | <a href="/rp-test.html">今日人品</a> | <a href="/mbti.html">MBTI测试</a> | <a href="/liferestart.html">人生重开</a></nav>
+            <h2>今日人设测试 - MyLuck | myluck.top</h2>
+            <p>MyLuck (myluck.top) 今日人设测试 - 输入你的名字，测测今天你是什么搞笑人设！诸葛猪？飞天猪？社牛之王？佛系大师？30种趣味人设等你解锁。更多趣味测试：在线求签、MBTI性格测试、人生重开模拟器。</p>
+            <nav><a href="/">首页</a> | <a href="/fortune-draw.html">在线求签</a> | <a href="/rp-test.html">今日人设</a> | <a href="/mbti.html">MBTI测试</a> | <a href="/liferestart.html">人生重开</a></nav>
         </div>
     </noscript>
 </body>

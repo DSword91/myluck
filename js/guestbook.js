@@ -197,6 +197,7 @@
                         <button id="comment-submit" class="cta-btn">${I18n.t('gb.c_submit')}</button>
                     </div>
                     <input type="text" id="comment-hp" style="position:absolute;left:-9999px;opacity:0;height:0;" tabindex="-1" autocomplete="off" aria-hidden="true">
+                    <div id="turnstile-widget" style="margin:10px 0;display:flex;justify-content:center;"></div>
                 </div>
                 <div id="comment-list" class="comment-list">
                     <p style="text-align:center;color:var(--text-light);">${I18n.t('gb.c_loading')}</p>
@@ -205,12 +206,23 @@
             // 加载评论
             await loadComments(supabase);
 
+            // 初始化 Turnstile 反垃圾验证（如已配置）
+            if (window.MyLuck && window.MyLuck.Turnstile && window.MyLuck.Turnstile.isEnabled()) {
+                window.MyLuck.Turnstile.render('turnstile-widget');
+            }
+
             // 提交评论
             document.getElementById('comment-submit').addEventListener('click', async () => {
                 // 反机器人检查
                 const hp = document.getElementById('comment-hp');
                 if (hp && hp.value) return;
                 if (Date.now() - loadTime < 3000) return;
+
+                // Turnstile 验证
+                if (window.MyLuck && window.MyLuck.Turnstile && !window.MyLuck.Turnstile.isVerified()) {
+                    alert(I18n.lang === 'zh' ? '请完成人机验证' : 'Please complete the verification');
+                    return;
+                }
 
                 const nick = document.getElementById('comment-nick').value.trim();
                 const email = document.getElementById('comment-email').value.trim();
@@ -222,7 +234,7 @@
                 if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert(I18n.t('gb.c_need_email')); return; }
                 if (text.length < 2) { alert(I18n.t('gb.tooshort')); return; }
                 if (captchaVal !== captchaAnswer) { alert(I18n.t('gb.c_captcha_fail')); document.getElementById('comment-captcha').value = ''; return; }
-                if (!Security.rateLimit('comment', 10)) { alert(I18n.t('gb.toomany')); return; }
+                if (!Security.rateLimit('comment', 3)) { alert(I18n.t('gb.toomany')); return; }
                 if (Security.containsBadWords(text)) { alert(I18n.t('gb.bad')); return; }
 
                 const btn = document.getElementById('comment-submit');
@@ -249,6 +261,8 @@
                 document.getElementById('comment-captcha').value = '';
                 btn.disabled = false;
                 btn.textContent = I18n.t('gb.c_submit');
+                // 重置 Turnstile
+                if (window.MyLuck && window.MyLuck.Turnstile) window.MyLuck.Turnstile.reset();
                 await loadComments(supabase);
             });
 

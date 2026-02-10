@@ -121,12 +121,13 @@
     // 显示签文结果
     function showResult(stick) {
         const slip = document.getElementById('fortune-slip');
-        document.getElementById('slip-number').textContent = '第 ' + stick.id + ' 签';
+        const isEn = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
+        document.getElementById('slip-number').textContent = isEn ? 'Stick #' + stick.id : '第 ' + stick.id + ' 签';
         const levelEl = document.getElementById('slip-level');
         levelEl.textContent = stick.level;
         levelEl.className = 'slip-level ' + stick.cls;
         document.getElementById('slip-poem').innerHTML = stick.poem.replace(/\n/g, '<br>');
-        document.getElementById('slip-interpret').textContent = '📜 解签：' + stick.interpret;
+        document.getElementById('slip-interpret').textContent = (isEn ? '📜 Interpretation: ' : '📜 解签：') + stick.interpret;
         document.getElementById('asp-career').textContent = stick.career;
         document.getElementById('asp-love').textContent = stick.love;
         document.getElementById('asp-wealth').textContent = stick.wealth;
@@ -146,7 +147,8 @@
         slip.style.display = 'none';
         scene.classList.remove('drawn');
         scene.classList.add('shaking');
-        hint.textContent = '🙏 虔诚摇签中...';
+        const isEn1 = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
+        hint.textContent = isEn1 ? '🙏 Drawing fortune...' : '🙏 虔诚摇签中...';
         hint.style.animation = 'none';
 
         // 摇签1.5秒
@@ -164,7 +166,8 @@
                 const stick = drawFortune(isDaily);
                 showResult(stick);
                 btn.disabled = false;
-                hint.textContent = '✨ 签文已出，请查看下方';
+                const isEn2 = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
+                hint.textContent = isEn2 ? '✨ Fortune revealed below' : '✨ 签文已出，请查看下方';
                 hint.style.animation = '';
 
                 // 重新初始化签棍
@@ -206,7 +209,12 @@
 
         if (dailyInfo) {
             const d = new Date();
-            dailyInfo.textContent = '📅 ' + d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日 · 首次为每日专属签';
+            const isEnInit = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
+            if (isEnInit) {
+                dailyInfo.textContent = '📅 ' + d.toLocaleDateString('en-US') + ' · First draw is your daily fortune';
+            } else {
+                dailyInfo.textContent = '📅 ' + d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日 · 首次为每日专属签';
+            }
         }
 
         function doDraw() {

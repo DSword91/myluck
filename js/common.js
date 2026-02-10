@@ -70,6 +70,8 @@
     const sharedZh = {
         'nav.home': '🍀 首页',
         'nav.fortune': '每日运气',
+        'nav.draw': '🎋 求签',
+        'nav.rp': '🧧 人设',
         'nav.mbti': 'MBTI测试',
         'nav.color': '幸运色彩',
         'nav.personality': '趣味性格',
@@ -82,7 +84,7 @@
         'footer.privacy': '隐私政策',
         'footer.terms': '使用条款',
         'footer.disclaimer': '免责声明',
-        'footer.copy': '© 2026 MyLuck.top · 所有测试结果均由算法随机生成，仅供娱乐',
+        'footer.copy': '© 2025 MyLuck.top · 所有测试结果均由算法随机生成，仅供娱乐',
         'share.title': '分享结果',
         'share.copy': '复制链接',
         'share.copied': '已复制！',
@@ -93,12 +95,55 @@
         'share.facebook': 'Facebook',
         'share.whatsapp': 'WhatsApp',
         'share.telegram': 'Telegram',
-        'disclaimer.tag': '仅供娱乐 · 算法随机生成'
+        'disclaimer.tag': '仅供娱乐 · 算法随机生成',
+        // 首页卡片
+        'card.draw_title': '在线求签',
+        'card.draw_desc': '虔诚摇签，获取今日运势指引。观音灵签风格，每日一签',
+        'card.draw_tag': '一键摇签 · 秒出签文',
+        'card.rp_title': '今日人设',
+        'card.rp_desc': '输入名字，测测今天你是什么搞笑人设！每天不同',
+        'card.rp_tag': '30种人设 · 秒出结果',
+        'card.lr_title': '人生重开模拟器',
+        'card.lr_desc': '分配属性，选择天赋，体验数千种随机人生事件',
+        'card.lr_tag': '1000+事件 · 无限重开',
+        // 求签页
+        'draw.title': '🎋 在线求签',
+        'draw.desc': '心诚则灵，点击签筒或按钮摇签，获取今日运势指引',
+        'draw.label': '灵签',
+        'draw.hint': '👆 点击签筒摇签',
+        'draw.btn': '🙏 虔诚求签',
+        'draw.share': '📤 分享签文',
+        'draw.redraw': '🔄 再求一签',
+        'draw.career': '💼 事业',
+        'draw.love': '💕 感情',
+        'draw.wealth': '💰 财运',
+        'draw.health': '🏥 健康',
+        // 人设测试页
+        'rp.title': '🧧 今日人设测试',
+        'rp.desc': '输入你的名字，测测今天你是什么搞笑人设！每天结果不同 🎭',
+        'rp.placeholder': '输入你的名字或昵称',
+        'rp.submit': '测一测',
+        'rp.score_label': '人设匹配度',
+        'rp.stat_lucky': '🍀 运气',
+        'rp.stat_charm': '💕 魅力',
+        'rp.stat_energy': '⚡ 精力',
+        'rp.stat_brain': '🧠 智力',
+        'rp.share': '📤 分享人设',
+        'rp.retry': '🔄 换个名字',
+        'rp.rank': '🏆 上榜',
+        'rp.leaderboard': '🏆 全球人设排行榜',
+        'rp.board_loading': '加载中...',
+        'rp.board_empty': '还没有人上榜，来当第一个！',
+        'rp.ranked': '✅ 已上榜！',
+        'rp.rank_fail': '上榜失败，请稍后重试',
+        'rp.history': '📊 今日测试记录'
     };
 
     const sharedEn = {
         'nav.home': '🍀 Home',
         'nav.fortune': 'Daily Luck',
+        'nav.draw': '🎋 Fortune',
+        'nav.rp': '🧧 Persona',
         'nav.mbti': 'MBTI Test',
         'nav.color': 'Lucky Color',
         'nav.personality': 'Personality',
@@ -111,7 +156,7 @@
         'footer.privacy': 'Privacy Policy',
         'footer.terms': 'Terms of Use',
         'footer.disclaimer': 'Disclaimer',
-        'footer.copy': '© 2026 MyLuck.top · All results are randomly generated for entertainment only',
+        'footer.copy': '© 2025 MyLuck.top · All results are randomly generated for entertainment only',
         'share.title': 'Share Result',
         'share.copy': 'Copy Link',
         'share.copied': 'Copied!',
@@ -122,7 +167,48 @@
         'share.facebook': 'Facebook',
         'share.whatsapp': 'WhatsApp',
         'share.telegram': 'Telegram',
-        'disclaimer.tag': 'For Fun Only · Randomly Generated'
+        'disclaimer.tag': 'For Fun Only · Randomly Generated',
+        // Homepage cards
+        'card.draw_title': 'Fortune Sticks',
+        'card.draw_desc': 'Shake virtual sticks & get daily fortune guidance, traditional temple style',
+        'card.draw_tag': 'One-Click Draw · Instant Result',
+        'card.rp_title': 'Daily Persona',
+        'card.rp_desc': 'Enter your name and discover your funny persona of the day! Changes daily',
+        'card.rp_tag': '30 Persona Types · Instant Result',
+        'card.lr_title': 'Life Restart Simulator',
+        'card.lr_desc': 'Allocate stats, pick talents, experience thousands of random life events',
+        'card.lr_tag': '1000+ Events · Infinite Restart',
+        // Fortune draw page
+        'draw.title': '🎋 Fortune Sticks',
+        'draw.desc': 'Focus your mind, tap the bamboo container or button to draw, get daily guidance',
+        'draw.label': 'Fortune',
+        'draw.hint': '👆 Tap the container to draw',
+        'draw.btn': '🙏 Draw a Stick',
+        'draw.share': '📤 Share Fortune',
+        'draw.redraw': '🔄 Draw Again',
+        'draw.career': '💼 Career',
+        'draw.love': '💕 Love',
+        'draw.wealth': '💰 Wealth',
+        'draw.health': '🏥 Health',
+        // Persona test page
+        'rp.title': '🧧 Daily Persona Test',
+        'rp.desc': 'Enter your name and discover your hilarious persona today! Results change daily 🎭',
+        'rp.placeholder': 'Enter your name or nickname',
+        'rp.submit': 'Test Me!',
+        'rp.score_label': 'Persona Match',
+        'rp.stat_lucky': '🍀 Luck',
+        'rp.stat_charm': '💕 Charm',
+        'rp.stat_energy': '⚡ Energy',
+        'rp.stat_brain': '🧠 Brain',
+        'rp.share': '📤 Share Persona',
+        'rp.retry': '🔄 Try Another',
+        'rp.rank': '🏆 Rank Me!',
+        'rp.leaderboard': '🏆 Global Persona Leaderboard',
+        'rp.board_loading': 'Loading...',
+        'rp.board_empty': 'No entries yet. Be the first!',
+        'rp.ranked': '✅ Ranked!',
+        'rp.rank_fail': 'Failed to rank, try again later',
+        'rp.history': '📊 Today\'s Records'
     };
 
     // ========== 安全模块 ==========
@@ -186,9 +272,6 @@
 
         // 防 DevTools 检测（轻量级）
         initProtection() {
-            // 禁用右键菜单 (可选)
-            // document.addEventListener('contextmenu', e => e.preventDefault());
-
             // Anti-bot: 检查基本浏览器特征
             if (navigator.webdriver) {
                 document.body.innerHTML = '<p style="text-align:center;padding:50px;">Access denied</p>';
@@ -196,11 +279,70 @@
         }
     };
 
+    // ========== Cloudflare Turnstile 反垃圾模块 ==========
+    // 使用方法：去 Cloudflare Dashboard → Turnstile → Add Site → 获取 site key
+    // 然后把下方 TURNSTILE_SITE_KEY 替换为你的 site key
+    const TURNSTILE_SITE_KEY = ''; // 留空则禁用 Turnstile，填入 site key 启用
+    const Turnstile = {
+        loaded: false,
+        token: null,
+        widgetId: null,
+
+        // 检查是否已配置
+        isEnabled() { return !!TURNSTILE_SITE_KEY; },
+
+        // 动态加载 Turnstile 脚本
+        async load() {
+            if (this.loaded || !this.isEnabled()) return;
+            return new Promise((resolve, reject) => {
+                const s = document.createElement('script');
+                s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+                s.async = true;
+                s.onload = () => { this.loaded = true; resolve(); };
+                s.onerror = () => reject(new Error('Turnstile load failed'));
+                document.head.appendChild(s);
+            });
+        },
+
+        // 在指定容器内渲染 Turnstile 小部件
+        async render(containerId) {
+            if (!this.isEnabled()) return;
+            try {
+                await this.load();
+                const container = document.getElementById(containerId);
+                if (!container || !window.turnstile) return;
+                this.widgetId = window.turnstile.render(container, {
+                    sitekey: TURNSTILE_SITE_KEY,
+                    theme: 'light',
+                    callback: (token) => { this.token = token; },
+                    'expired-callback': () => { this.token = null; },
+                    'error-callback': () => { this.token = null; }
+                });
+            } catch (e) { /* Turnstile unavailable, fail silently */ }
+        },
+
+        // 获取当前 token（用于提交验证）
+        getToken() { return this.token; },
+
+        // 重置小部件（提交后重新验证）
+        reset() {
+            this.token = null;
+            if (window.turnstile && this.widgetId !== null) {
+                window.turnstile.reset(this.widgetId);
+            }
+        },
+
+        // 验证是否已通过（未启用时直接放行）
+        isVerified() {
+            return !this.isEnabled() || !!this.token;
+        }
+    };
+
     // ========== CSP + 安全 Meta Tag 注入 ==========
     function injectCSP() {
         const meta = document.createElement('meta');
         meta.httpEquiv = 'Content-Security-Policy';
-        meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://scripts.clarity.ms https://gc.zgo.at https://zz.bdstatic.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://v1.hitokoto.cn https://www.clarity.ms https://*.clarity.ms https://*.goatcounter.com https://*.supabase.co https:; frame-src 'self';";
+        meta.content = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://scripts.clarity.ms https://gc.zgo.at https://zz.bdstatic.com https://cdn.jsdelivr.net https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://v1.hitokoto.cn https://www.clarity.ms https://*.clarity.ms https://*.goatcounter.com https://*.supabase.co https://challenges.cloudflare.com https:; frame-src 'self' https://challenges.cloudflare.com;";
         document.head.prepend(meta);
 
         // 资源提示 - 加速第三方脚本连接
@@ -239,8 +381,8 @@
                 <a href="index.html" class="logo" data-i18n="nav.home">🍀 首页</a>
                 <div class="nav-links">
                     <a href="index.html" class="nav-link ${isActive('index.html')}" data-i18n="nav.fortune">每日运气</a>
-                    <a href="fortune-draw.html" class="nav-link ${isActive('fortune-draw.html')}">🎋 求签</a>
-                    <a href="rp-test.html" class="nav-link ${isActive('rp-test.html')}">🧧 人品</a>
+                    <a href="fortune-draw.html" class="nav-link ${isActive('fortune-draw.html')}" data-i18n="nav.draw">🎋 求签</a>
+                    <a href="rp-test.html" class="nav-link ${isActive('rp-test.html')}" data-i18n="nav.rp">🧧 人设</a>
                     <a href="mbti.html" class="nav-link ${isActive('mbti.html')}" data-i18n="nav.mbti">MBTI测试</a>
                     <a href="liferestart.html" class="nav-link ${isActive('liferestart.html')}" data-i18n="nav.liferestart">人生重开</a>                    <a href="guestbook.html" class="nav-link ${isActive('guestbook.html')}" data-i18n="nav.guestbook">留言板</a>
                     <button class="lang-btn" id="lang-toggle" data-i18n="lang.switch">EN</button>
@@ -282,8 +424,8 @@
                     <div class="footer-links">
                         <h4 data-i18n="footer.tests">趣味测试</h4>
                         <a href="index.html" data-i18n="nav.fortune">每日运气</a>
-                        <a href="fortune-draw.html">在线求签</a>
-                        <a href="rp-test.html">今日人品</a>
+                        <a href="fortune-draw.html" data-i18n="nav.draw">🎋 求签</a>
+                        <a href="rp-test.html" data-i18n="nav.rp">🧧 人设</a>
                         <a href="mbti.html" data-i18n="nav.mbti">MBTI测试</a>
                         <a href="liferestart.html" data-i18n="nav.liferestart">人生重开</a>
                     </div>
@@ -295,7 +437,7 @@
                     </div>
                 </div>
                 <div class="footer-bottom">
-                    <p data-i18n="footer.copy">© 2026 MyLuck.top · 所有测试结果均由算法随机生成，仅供娱乐</p>
+                    <p data-i18n="footer.copy">© 2025 MyLuck.top · 所有测试结果均由算法随机生成，仅供娱乐</p>
                 </div>
             </div>`;
         document.body.appendChild(footer);
@@ -616,5 +758,5 @@
     }
 
     // ========== 全局导出 ==========
-    window.MyLuck = { I18n, Security, seededRandom, getTodaySeed, getStars, animateCounter, createAdSlot, Streak, injectVisitorCount };
+    window.MyLuck = { I18n, Security, Turnstile, seededRandom, getTodaySeed, getStars, animateCounter, createAdSlot, Streak, injectVisitorCount };
 })();
