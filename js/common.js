@@ -152,6 +152,11 @@
         'mbti.rank_btn': '🧠 记录结果',
         'mbti.ranked': '✅ 已上榜！',
         'mbti.rank_fail': '上榜失败，请稍后重试',
+        // 人生重开排行榜
+        'lr.leaderboard': '🔄 人生重开排行榜',
+        'lr.rank_btn': '🏆 上榜',
+        'lr.ranked': '✅ 已上榜！',
+        'lr.rank_fail': '上榜失败，请稍后重试',
     };
 
     const sharedEn = {
@@ -239,6 +244,11 @@
         'mbti.rank_btn': '🧠 Save Result',
         'mbti.ranked': '✅ Ranked!',
         'mbti.rank_fail': 'Failed to rank, try again later',
+        // Life Restart leaderboard
+        'lr.leaderboard': '🔄 Life Restart Leaderboard',
+        'lr.rank_btn': '🏆 Rank Me!',
+        'lr.ranked': '✅ Ranked!',
+        'lr.rank_fail': 'Failed to rank, try again later',
     };
 
     // ========== 安全模块 ==========
@@ -435,15 +445,18 @@
     // ========== 导航栏注入 ==========
     function injectNav() {
         const currentPage = location.pathname.split('/').pop() || 'index.html';
-        const isActive = (page) => currentPage === page ? 'active' : '';
+        const isActive = (page) => {
+            if (page === 'index.html') return (currentPage === 'index.html' || currentPage === '' || currentPage === '/') ? 'active' : '';
+            return currentPage === page ? 'active' : '';
+        };
 
         const nav = document.createElement('nav');
         nav.className = 'navbar';
         nav.innerHTML = `
             <div class="container nav-content">
-                <a href="index.html" class="logo" data-i18n="nav.home">🍀 首页</a>
+                <a href="/" class="logo" data-i18n="nav.home">🍀 首页</a>
                 <div class="nav-links">
-                    <a href="index.html" class="nav-link ${isActive('index.html')}" data-i18n="nav.fortune">每日运气</a>
+                    <a href="/" class="nav-link ${isActive('index.html')}" data-i18n="nav.fortune">每日运气</a>
                     <a href="fortune-draw.html" class="nav-link ${isActive('fortune-draw.html')}" data-i18n="nav.draw">🎋 求签</a>
                     <a href="rp-test.html" class="nav-link ${isActive('rp-test.html')}" data-i18n="nav.rp">🧧 人设</a>
                     <a href="mbti.html" class="nav-link ${isActive('mbti.html')}" data-i18n="nav.mbti">MBTI测试</a>
@@ -486,7 +499,7 @@
                     </div>
                     <div class="footer-links">
                         <h4 data-i18n="footer.tests">趣味测试</h4>
-                        <a href="index.html" data-i18n="nav.fortune">每日运气</a>
+                        <a href="/" data-i18n="nav.fortune">每日运气</a>
                         <a href="fortune-draw.html" data-i18n="nav.draw">🎋 求签</a>
                         <a href="rp-test.html" data-i18n="nav.rp">🧧 人设</a>
                         <a href="mbti.html" data-i18n="nav.mbti">MBTI测试</a>

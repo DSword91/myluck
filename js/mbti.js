@@ -586,6 +586,10 @@
                        (scores.J >= scores.P ? 'J' : 'P');
         const rankBtn = document.getElementById('mbti-rank-btn');
         if (rankBtn) { rankBtn.style.display = 'inline-block'; rankBtn.disabled = false; rankBtn.textContent = I18n.t('mbti.rank_btn'); }
+        // 结果出来后渲染排行榜区域的 Turnstile（开始页面的 token 可能已过期）
+        if (window.MyLuck && window.MyLuck.Turnstile && window.MyLuck.Turnstile.isEnabled()) {
+            window.MyLuck.Turnstile.render('turnstile-mbti-rank');
+        }
         loadMBTILeaderboard();
     };
 

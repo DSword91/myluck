@@ -782,7 +782,7 @@
         }
 
         getTotalPoints() {
-            return 20 + this.extraPoints;
+            return 15 + this.extraPoints;
         }
 
         // 检查事件条件
@@ -1233,11 +1233,34 @@
     function showAttributeAlloc() {
         currentPhase = 'attr';
         const total = game.getTotalPoints();
+        // 天赋加成值（applyTalents 后 game.stats 里的值就是天赋提供的初始加成）
+        const talentBonus = {};
+        for (const k of ['chr', 'int', 'str', 'mny', 'spr']) {
+            talentBonus[k] = game.stats[k] || 0;
+        }
         // 保留之前的分配状态（语言切换时不丢失）
         if (!window._lrAlloc) window._lrAlloc = { chr: 0, int: 0, str: 0, mny: 0, spr: 0 };
         const alloc = window._lrAlloc;
         const keys = ['chr', 'int', 'str', 'mny', 'spr'];
         const labels = { chr: 'lr.attr.chr', int: 'lr.attr.int', str: 'lr.attr.str', mny: 'lr.attr.mny', spr: 'lr.attr.spr' };
+        const bonusLabels = { chr: '颜值', int: '智力', str: '体质', mny: '家境', spr: '快乐' };
+        const bonusLabelsEn = { chr: 'CHR', int: 'INT', str: 'STR', mny: 'MNY', spr: 'SPR' };
+
+        // 计算天赋加成提示
+        function getTalentBonusTip() {
+            const isEn = I18n.lang === 'en';
+            const items = [];
+            for (const k of keys) {
+                if (talentBonus[k] !== 0) {
+                    const label = isEn ? bonusLabelsEn[k] : bonusLabels[k];
+                    const sign = talentBonus[k] > 0 ? '+' : '';
+                    items.push(label + sign + talentBonus[k]);
+                }
+            }
+            if (items.length === 0) return '';
+            const prefix = isEn ? '🎁 Talent bonus: ' : '🎁 天赋加成：';
+            return '<div class="lr-talent-bonus-tip" style="background:rgba(253,203,110,0.15);border:1px solid rgba(253,203,110,0.4);border-radius:10px;padding:8px 14px;margin-bottom:12px;font-size:0.85rem;color:#8B6914;text-align:center;">' + prefix + items.join('、') + '</div>';
+        }
 
         function remaining() {
             return total - keys.reduce((s, k) => s + alloc[k], 0);
@@ -1245,16 +1268,23 @@
 
         function render() {
             const rem = remaining();
+            const bonusTip = getTalentBonusTip();
             container.innerHTML = `
                 <h3 class="lr-phase-title">${t('lr.attr.title')}</h3>
                 <p class="lr-phase-tip">${t('lr.attr.tip', { n: rem })}</p>
                 <div class="lr-talent-selected">
                     ${game.talents.map(tl => `<span class="lr-talent-badge" style="border-color:${gradeColor(tl.grade)};color:${gradeColor(tl.grade)}">${tObj(tl.name)}</span>`).join('')}
                 </div>
+                ${bonusTip}
                 <div class="lr-attr-grid">
-                    ${keys.map(k => `
+                    ${keys.map(k => {
+                        const bonus = talentBonus[k];
+                        const bonusTag = bonus !== 0
+                            ? `<span style="font-size:0.75rem;color:${bonus > 0 ? '#00b894' : '#e17055'};margin-left:4px;font-weight:600;">(${bonus > 0 ? '+' : ''}${bonus})</span>`
+                            : '';
+                        return `
                         <div class="lr-attr-row">
-                            <span class="lr-attr-label">${t(labels[k])}</span>
+                            <span class="lr-attr-label">${t(labels[k])}${bonusTag}</span>
                             <button class="lr-attr-btn minus" data-key="${k}" data-dir="-1" ${alloc[k] <= 0 ? 'disabled' : ''}>−</button>
                             <div class="lr-attr-bar-wrap">
                                 <div class="lr-attr-bar" style="width:${alloc[k] * 10}%"></div>
@@ -1262,7 +1292,7 @@
                             </div>
                             <button class="lr-attr-btn plus" data-key="${k}" data-dir="1" ${alloc[k] >= 10 || rem <= 0 ? 'disabled' : ''}>+</button>
                         </div>
-                    `).join('')}
+                    `;}).join('')}
                 </div>
                 <div class="lr-btn-group">
                     <button class="btn secondary lr-btn" id="lr-random">${t('lr.attr.random')}</button>
@@ -1402,6 +1432,13 @@
         currentPhase = 'summary';
         const ending = game.getEnding();
         const s = game.stats;
+
+        // 保存分数用于上榜
+        lastLRScore = ending.sum;
+        lastLREnding = tObj(ending.name);
+        var lrRankBtn = document.getElementById('lr-rank-btn');
+        if (lrRankBtn) { lrRankBtn.style.display = 'inline-block'; lrRankBtn.disabled = false; lrRankBtn.textContent = I18n.t('lr.rank_btn'); }
+
         const gradeKeys = ['chr', 'int', 'str', 'mny', 'spr'];
         const gradeLabels = {
             chr: 'lr.summary.chr',
@@ -1526,4 +1563,84 @@
     });
 
     document.addEventListener('DOMContentLoaded', init);
+
+    // ===== 人生重开排行榜 =====
+    let lastLRScore = 0;
+    let lastLREnding = '';
+
+    async function loadLRLeaderboard() {
+        const LB = window.MyLuck && window.MyLuck.Leaderboard;
+        if (!LB) return;
+
+        const ENDING_EMOJIS = {
+            0: '💀', 1: '😢', 2: '😐', 3: '😊',
+            4: '🌟', 5: '👑', 6: '🏆'
+        };
+
+        await LB.load('lr-board-list', 'liferestart', {
+            limit: 10,
+            virtualCount: 8,
+            virtualConfig: {
+                getEntry: function(rng, idx) {
+                    const score = Math.floor(rng(1) * 50 + 10);
+                    const endingIdx = Math.min(Math.floor(score / 15), 6);
+                    return {
+                        score: score,
+                        character_emoji: ENDING_EMOJIS[endingIdx] || '🔄',
+                        character_title: ''
+                    };
+                }
+            },
+            formatEntry: function(entry, i, medal) {
+                const esc = window.MyLuck.Security ? window.MyLuck.Security.escapeHtml : function(s) { return s; };
+                const emoji = entry.character_emoji || '🔄';
+                const scoreColor = entry.score >= 60 ? '#e17055' : entry.score >= 40 ? '#fdcb6e' : '#00b894';
+                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + ' ' + esc(entry.name || '匿名') + '</span></div><span class="lb-score" style="color:' + scoreColor + '">' + entry.score + '</span>';
+            }
+        });
+    }
+
+    async function submitLRScore() {
+        if (!lastLRScore) return;
+        const LB = window.MyLuck && window.MyLuck.Leaderboard;
+        if (!LB) return;
+
+        const rankBtn = document.getElementById('lr-rank-btn');
+        if (rankBtn) { rankBtn.disabled = true; rankBtn.textContent = '...'; }
+
+        const ENDING_EMOJIS_MAP = {
+            0: '💀', 1: '😢', 2: '😐', 3: '😊',
+            4: '🌟', 5: '👑', 6: '🏆'
+        };
+        const endingIdx = Math.min(Math.floor(lastLRScore / 15), 6);
+        const emoji = ENDING_EMOJIS_MAP[endingIdx] || '🔄';
+
+        await LB.submit('liferestart', {
+            name: I18n.lang === 'en' ? 'Anonymous' : '匿名',
+            score: lastLRScore,
+            character_emoji: emoji,
+            character_title: lastLREnding
+        }, {
+            onSuccess: function() {
+                if (rankBtn) rankBtn.textContent = I18n.t('lr.ranked');
+                loadLRLeaderboard();
+            },
+            onFail: function() {
+                alert(I18n.t('lr.rank_fail'));
+                if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = I18n.t('lr.rank_btn'); }
+            }
+        });
+        if (rankBtn && !rankBtn.disabled) { rankBtn.disabled = false; rankBtn.textContent = I18n.t('lr.rank_btn'); }
+    }
+
+    // 绑定上榜按钮
+    document.addEventListener('DOMContentLoaded', function() {
+        var lrRankBtn = document.getElementById('lr-rank-btn');
+        if (lrRankBtn) lrRankBtn.addEventListener('click', submitLRScore);
+        loadLRLeaderboard();
+        // Turnstile
+        if (window.MyLuck && window.MyLuck.Turnstile && window.MyLuck.Turnstile.isEnabled()) {
+            window.MyLuck.Turnstile.render('turnstile-lr');
+        }
+    });
 })();

@@ -35,12 +35,23 @@
                     <!-- 游戏内容由 JS 动态渲染 -->
                     <div id="lr-content"></div>
                 </div>
+
+                <!-- 人生重开排行榜 -->
+                <div class="rp-leaderboard" id="lr-board-wrap" style="border-color:#e17055;margin-top:24px;">
+                    <h3 data-i18n="lr.leaderboard" style="color:#e17055;">🔄 人生重开排行榜</h3>
+                    <div id="turnstile-lr" style="margin:10px 0;display:flex;justify-content:center;"></div>
+                    <div style="text-align:center;margin-bottom:12px;">
+                        <button class="btn-primary" id="lr-rank-btn" style="padding:12px 36px;font-size:1rem;display:none;" data-i18n="lr.rank_btn">🏆 上榜</button>
+                    </div>
+                    <div id="lr-board-list"><p style="text-align:center;color:#bbb;font-size:0.9rem;" data-i18n="rp.board_loading">加载中...</p></div>
+                </div>
             </div>
         </section>
     </div>
 
     <script src="js/common.js" defer></script>
     <script src="js/share.js" defer></script>
+    <script src="js/leaderboard.js" defer></script>
     <script src="js/talent-events.js" defer></script>
     <script src="js/talent-events-2.js" defer></script>
     <script src="js/talent-events-3.js" defer></script>

@@ -167,6 +167,12 @@
         document.getElementById('asp-wealth').textContent = isEn ? (ASPECT_EN[stick.wealth] || stick.wealth) : stick.wealth;
         document.getElementById('asp-health').textContent = isEn ? (ASPECT_EN[stick.health] || stick.health) : stick.health;
         slip.style.display = 'block';
+        // 隐藏签筒区域，结果覆盖显示
+        document.getElementById('draw-scene').style.display = 'none';
+        document.getElementById('draw-hint').style.display = 'none';
+        document.getElementById('draw-btn').style.display = 'none';
+        var turnstileEl = document.getElementById('turnstile-fortune');
+        if (turnstileEl) turnstileEl.style.display = 'none';
         slip.scrollIntoView({ behavior: 'smooth', block: 'center' });
         // 保存当前结果用于分享
         window._currentStick = stick;
@@ -181,6 +187,12 @@
 
         btn.disabled = true;
         slip.style.display = 'none';
+        // 重新显示签筒
+        scene.style.display = '';
+        hint.style.display = '';
+        btn.style.display = '';
+        var turnstileEl2 = document.getElementById('turnstile-fortune');
+        if (turnstileEl2) turnstileEl2.style.display = '';
         scene.classList.remove('drawn');
         scene.classList.add('shaking');
         const isEn1 = (window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en');
