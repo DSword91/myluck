@@ -166,8 +166,29 @@
     let current = 0;
     let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
 
+    // ========== 进度保存/恢复 ==========
+    function saveProgress() {
+        try {
+            sessionStorage.setItem('mbti-progress', JSON.stringify({ q: current, scores: scores }));
+        } catch (e) { /* 静默 */ }
+    }
+    function restoreProgress() {
+        try {
+            var saved = JSON.parse(sessionStorage.getItem('mbti-progress'));
+            if (saved && saved.q > 0 && saved.q < Q.length && saved.scores) {
+                current = saved.q;
+                scores = saved.scores;
+                return true;
+            }
+        } catch (e) { /* 无效数据 */ }
+        return false;
+    }
+    function clearProgress() {
+        try { sessionStorage.removeItem('mbti-progress'); } catch (e) {}
+    }
+
     function render() {
-        if (current >= Q.length) { showResult(); return; }
+        if (current >= Q.length) { clearProgress(); showResult(); return; }
 
         const q = Q[current];
         const lang = I18n.lang;
@@ -193,6 +214,7 @@
                 if (choice === 'A') scores[dim[0]]++;
                 else scores[dim[1]]++;
                 current++;
+                saveProgress();
                 render();
             });
         });
@@ -413,14 +435,30 @@
         }
     }
 
-    // 初始化 — 显示开始界面，等待用户点击开始
+    // 初始化 — 检查是否有已保存的进度
+    if (restoreProgress()) {
+        // 有保存的进度，直接跳到答题界面
+        var startEl = document.getElementById('mbti-start');
+        var quizEl = document.getElementById('mbti-quiz');
+        if (startEl) startEl.style.display = 'none';
+        if (quizEl) quizEl.style.display = 'block';
+        render();
+        var showToast = window.MyLuck && window.MyLuck.showToast;
+        if (showToast) showToast(I18n.lang === 'zh' ? '📝 已恢复上次答题进度' : '📝 Progress restored', 'success');
+    }
+
     document.getElementById('mbti-start-btn')?.addEventListener('click', () => {
         // 检查人机验证
         if (window.MyLuck && window.MyLuck.Turnstile && !window.MyLuck.Turnstile.isVerified()) {
             const lang = I18n.lang;
-            alert(I18n.t('common.verify_first'));
+            var showToast2 = window.MyLuck && window.MyLuck.showToast;
+            if (showToast2) showToast2(I18n.t('common.verify_first'), 'info');
+            else alert(I18n.t('common.verify_first'));
             return;
         }
+        clearProgress();
+        current = 0;
+        scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
         document.getElementById('mbti-start').style.display = 'none';
         document.getElementById('mbti-quiz').style.display = 'block';
         render();
@@ -570,7 +608,9 @@
                 loadMBTILeaderboard();
             },
             onFail: function() {
-                alert(I18n.t('mbti.rank_fail'));
+                var st3 = window.MyLuck && window.MyLuck.showToast;
+                if (st3) st3(I18n.t('mbti.rank_fail'), 'error');
+                else alert(I18n.t('mbti.rank_fail'));
                 if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = I18n.t('mbti.rank_btn'); }
             }
         });

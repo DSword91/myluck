@@ -10,11 +10,9 @@ Allow: /
 User-agent: Baiduspider
 Allow: /
 
-# 默认规则 - 允许抓取页面，禁止抓取资源目录
+# 默认规则 - 允许抓取
 User-agent: *
 Allow: /
-Disallow: /js/
-Disallow: /css/
 
 # 屏蔽 SEO/AI 爬虫
 User-agent: AhrefsBot

@@ -291,13 +291,17 @@
 
         // 频率限制
         if (Security && !Security.rateLimit('leaderboard_' + testType, 5)) {
-            alert(t('common.too_fast', '操作太频繁，请稍后再试'));
+            var st = window.MyLuck && window.MyLuck.showToast;
+            if (st) st(t('common.too_fast', '操作太频繁，请稍后再试'), 'info');
+            else alert(t('common.too_fast', '操作太频繁，请稍后再试'));
             return false;
         }
 
         // Turnstile验证
         if (Turnstile && Turnstile.isEnabled && Turnstile.isEnabled() && !Turnstile.isVerified()) {
-            alert(t('common.verify_first', '请先完成人机验证'));
+            var st = window.MyLuck && window.MyLuck.showToast;
+            if (st) st(t('common.verify_first', '请先完成人机验证'), 'info');
+            else alert(t('common.verify_first', '请先完成人机验证'));
             return false;
         }
 

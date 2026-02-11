@@ -357,7 +357,9 @@
                 loadFortuneLeaderboard();
             },
             onFail: function() {
-                alert(I18n.t('fortune.rank_fail'));
+                var st = window.MyLuck && window.MyLuck.showToast;
+                if (st) st(I18n.t('fortune.rank_fail'), 'error');
+                else alert(I18n.t('fortune.rank_fail'));
                 if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = I18n.t('fortune.rank'); }
             }
         });

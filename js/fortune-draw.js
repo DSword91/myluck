@@ -2,6 +2,16 @@
 (function () {
     'use strict';
 
+    // Toast 通知（复用 MyLuck.showToast 或自备）
+    function showToast(msg, type) {
+        if (window.MyLuck && window.MyLuck.showToast) { window.MyLuck.showToast(msg, type); return; }
+        var t = document.createElement('div');
+        t.className = 'achievement-toast';
+        t.innerHTML = '<span class="ach-icon">' + (type === 'error' ? '❌' : 'ℹ️') + '</span><div class="ach-text">' + msg + '</div>';
+        document.body.appendChild(t);
+        setTimeout(function() { t.remove(); }, 3500);
+    }
+
     // 签文等级英文映射
     const LEVEL_EN = { '上上签': 'Supreme Fortune', '上签': 'Great Fortune', '中上签': 'Good Fortune', '中签': 'Average Fortune', '中下签': 'Below Average', '下签': 'Poor Fortune', '下下签': 'Worst Fortune' };
 
@@ -235,7 +245,9 @@
             window.MyLuck.Share.show(text, 'https://myluck.top/fortune-draw.html', { title: title });
         } else if (navigator.clipboard) {
             navigator.clipboard.writeText(text + '\nhttps://myluck.top/fortune-draw.html').then(function () {
-                alert(isEn ? 'Fortune copied!' : '签文已复制！');
+                var st = window.MyLuck && window.MyLuck.showToast;
+                if (st) st(isEn ? 'Fortune copied!' : '签文已复制！', 'success');
+                else alert(isEn ? 'Fortune copied!' : '签文已复制！');
             });
         }
     }
@@ -254,7 +266,7 @@
         });
 
         // 自定义渲染签面排行
-        LB.load('fortune-board-list', 'fortune', {
+        LB.load('fortune-board-list', 'fortune_draw', {
             limit: 10,
             virtualCount: 8,
             formatEntry: function (entry, i, medal) {
@@ -288,7 +300,7 @@
 
     async function submitFortuneToLeaderboard() {
         if (!window._currentStick) {
-            alert(isEnNow() ? 'Draw first!' : '请先求签！');
+            showToast(isEnNow() ? 'Draw first!' : '请先求签！', 'info');
             return;
         }
         var stick = window._currentStick;
@@ -298,15 +310,13 @@
         var I18n = window.MyLuck && window.MyLuck.I18n;
         var t = function(k, fb) { return I18n ? I18n.t(k) : fb; };
         var en = isEnNow();
-        var name = prompt(en ? 'Enter your name for leaderboard:' : '输入你的名字上榜：');
-        if (!name || !name.trim()) return;
-        name = name.trim().substring(0, 20);
+        var name = I18n ? I18n.t('common.anonymous') : '匿名';
 
         var rankBtn = document.getElementById('fortune-rank');
         if (rankBtn) { rankBtn.disabled = true; rankBtn.textContent = '...'; }
 
         var score = levelScore(stick.level);
-        var success = await LB.submit('fortune', {
+        var success = await LB.submit('fortune_draw', {
             name: name,
             score: score,
             character_id: String(stick.id),
@@ -318,7 +328,7 @@
                 initLeaderboard();
             },
             onFail: function () {
-                alert(t('draw.rank_fail', '上榜失败，请稍后重试'));
+                showToast(t('draw.rank_fail', '上榜失败，请稍后重试'), 'error');
                 if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = t('draw.rank', '🏆 上榜'); }
             }
         });
@@ -364,7 +374,7 @@
             // 求签前验证 Turnstile
             var Turnstile = window.MyLuck && window.MyLuck.Turnstile;
             if (Turnstile && Turnstile.isEnabled && Turnstile.isEnabled() && !Turnstile.isVerified()) {
-                alert(window.MyLuck && window.MyLuck.I18n ? window.MyLuck.I18n.t('common.verify_first') : '请先完成人机验证');
+                showToast(window.MyLuck && window.MyLuck.I18n ? window.MyLuck.I18n.t('common.verify_first') : '请先完成人机验证', 'info');
                 return;
             }
             shakeAndDraw(firstDraw);

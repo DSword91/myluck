@@ -364,16 +364,27 @@
             try {
                 await this.load();
                 const container = document.getElementById(containerId);
-                if (!container || !window.turnstile) return;
+                if (!container || !window.turnstile) throw new Error('unavailable');
                 this._lastContainer = containerId;
                 this.widgets[containerId] = window.turnstile.render(container, {
                     sitekey: TURNSTILE_SITE_KEY,
                     theme: 'light',
                     callback: (token) => { this.tokens[containerId] = token; },
                     'expired-callback': () => { this.tokens[containerId] = null; },
-                    'error-callback': () => { this.tokens[containerId] = null; }
+                    'error-callback': () => {
+                        this.tokens[containerId] = null;
+                        // 错误时降级：显示提示并放行
+                        const c = document.getElementById(containerId);
+                        if (c) c.innerHTML = '<p style="font-size:.8rem;color:#999;text-align:center;">' + (I18n.lang === 'zh' ? '验证服务暂不可用' : 'Verification unavailable') + '</p>';
+                        this.tokens[containerId] = 'fallback';
+                    }
                 });
-            } catch (e) { /* Turnstile unavailable, fail silently */ }
+            } catch (e) {
+                // Turnstile 加载失败，降级放行
+                const container = document.getElementById(containerId);
+                if (container) container.innerHTML = '<p style="font-size:.8rem;color:#999;text-align:center;">' + (I18n.lang === 'zh' ? '验证服务暂不可用' : 'Verification unavailable') + '</p>';
+                this.tokens[containerId] = 'fallback';
+            }
         },
 
         // 获取当前 token
@@ -485,17 +496,27 @@
         document.body.prepend(nav);
 
         // 移动端菜单
-        nav.querySelector('.menu-toggle').addEventListener('click', (e) => {
+        const menuToggle = nav.querySelector('.menu-toggle');
+        const navLinks = nav.querySelector('.nav-links');
+        menuToggle.addEventListener('click', (e) => {
             e.stopPropagation();
-            nav.querySelector('.nav-links').classList.toggle('active');
+            const isOpen = navLinks.classList.toggle('active');
+            menuToggle.textContent = isOpen ? '✕' : '☰';
+            menuToggle.setAttribute('aria-expanded', isOpen);
         });
         nav.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => nav.querySelector('.nav-links').classList.remove('active'));
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                menuToggle.textContent = '☰';
+                menuToggle.setAttribute('aria-expanded', 'false');
+            });
         });
         // 点击外部关闭移动端菜单
         document.addEventListener('click', (e) => {
             if (!nav.contains(e.target)) {
-                nav.querySelector('.nav-links').classList.remove('active');
+                navLinks.classList.remove('active');
+                menuToggle.textContent = '☰';
+                menuToggle.setAttribute('aria-expanded', 'false');
             }
         });
 
@@ -504,9 +525,16 @@
             I18n.setLang(I18n.lang === 'zh' ? 'en' : 'zh');
         });
 
-        // 导航栏滚动效果
+        // 导航栏滚动效果（RAF 节流）
+        let scrollTicking = false;
         window.addEventListener('scroll', () => {
-            nav.style.boxShadow = window.scrollY > 50 ? '0 2px 20px rgba(0,0,0,0.1)' : 'none';
+            if (!scrollTicking) {
+                requestAnimationFrame(() => {
+                    nav.style.boxShadow = window.scrollY > 50 ? '0 2px 20px rgba(0,0,0,0.1)' : 'none';
+                    scrollTicking = false;
+                });
+                scrollTicking = true;
+            }
         });
     }
 
@@ -595,13 +623,13 @@
         document.getElementById('feedback-submit').addEventListener('click', async function () {
             var text = (document.getElementById('feedback-text').value || '').trim();
             var name = (document.getElementById('feedback-name').value || '').trim() || I18n.t('common.anonymous');
-            if (text.length < 2) { alert(isEn ? 'Write a bit more' : '至少写几个字吧'); return; }
-            if (Security.containsBadWords(text)) { alert(isEn ? 'Please keep it friendly' : '请文明发言'); return; }
-            if (!Security.rateLimit('feedback', 2)) { alert(isEn ? 'Too frequent, try later' : '太频繁了，请稍后再试'); return; }
+            if (text.length < 2) { showToast(isEn ? 'Write a bit more' : '至少写几个字吧', 'info'); return; }
+            if (Security.containsBadWords(text)) { showToast(isEn ? 'Please keep it friendly' : '请文明发言', 'error'); return; }
+            if (!Security.rateLimit('feedback', 2)) { showToast(isEn ? 'Too frequent, try later' : '太频繁了，请稍后再试', 'info'); return; }
 
             // Turnstile 验证
             if (Turnstile.isEnabled() && !Turnstile.isVerified('turnstile-feedback')) {
-                alert(I18n.t('common.verify_first'));
+                showToast(I18n.t('common.verify_first'), 'info');
                 return;
             }
 
@@ -617,10 +645,10 @@
                     page: 'feedback'
                 });
                 Turnstile.reset('turnstile-feedback');
-                alert(isEn ? '🎉 Thank you for your feedback!' : '🎉 感谢你的反馈！');
+                showToast(isEn ? '🎉 Thank you for your feedback!' : '🎉 感谢你的反馈！', 'success');
                 closeFeedback();
             } catch (e) {
-                alert(isEn ? 'Failed to submit, try later' : '提交失败，请稍后重试');
+                showToast(isEn ? 'Failed to submit, try later' : '提交失败，请稍后重试', 'error');
                 btn.disabled = false; btn.textContent = isEn ? 'Submit Feedback' : '提交反馈';
             }
         });
@@ -636,6 +664,27 @@
     }
 
     // ========== 工具函数 ==========
+
+    // 全局 Toast 通知（替代 alert）
+    function showToast(msg, type, duration) {
+        type = type || 'info';
+        duration = duration || 3000;
+        var toast = document.createElement('div');
+        toast.className = 'achievement-toast';
+        var colors = { error: '#e74c3c', success: '#00b894', info: '#fdcb6e' };
+        toast.style.borderLeftColor = colors[type] || colors.info;
+        var icons = { error: '❌', success: '✅', info: 'ℹ️' };
+        toast.innerHTML = '<span class="ach-icon">' + (icons[type] || icons.info) + '</span><div class="ach-text">' + msg + '</div>';
+        document.body.appendChild(toast);
+        setTimeout(function () { toast.classList.add('fade-out'); }, duration);
+        setTimeout(function () { toast.remove(); }, duration + 500);
+    }
+
+    // 安全 localStorage 操作
+    function safeSetItem(key, val) {
+        try { localStorage.setItem(key, val); } catch (e) { /* 静默处理配额溢出 */ }
+    }
+
     function seededRandom(seed) {
         const x = Math.sin(seed) * 10000;
         return x - Math.floor(x);
@@ -822,15 +871,15 @@
             base = Math.floor(seededRandom(testId.length * 7 + 99) * 5000 + 12000);
             localStorage.setItem(baseKey, base);
         }
-        // 统一：每10分钟增长1~10人
+        // 统一：每10分钟增长约5.5人（O(1)计算，避免随时间增长的O(n)循环）
         var GROWTH_START = new Date('2026-02-01T00:00:00Z').getTime();
         var elapsed = Date.now() - GROWTH_START;
         var growth = 0;
         if (elapsed > 0) {
             var intervals = Math.floor(elapsed / 600000);
-            for (var i = 0; i < intervals; i++) {
-                growth += Math.floor(seededRandom(i * 17 + testId.charCodeAt(0)) * 10) + 1;
-            }
+            // 用 seededRandom 生成确定性波动
+            var avgPerInterval = 5.5;
+            growth = Math.floor(intervals * avgPerInterval + seededRandom(intervals * 7 + testId.charCodeAt(0)) * intervals * 0.1);
         }
         const total = base + growth;
         const lang = I18n.lang;
@@ -850,6 +899,17 @@
         injectFooter();
         Security.initProtection();
         injectSEO();
+
+        // 页面淡入动画
+        document.body.style.animation = 'fadeIn 0.35s ease-out';
+
+        // 网络状态监测
+        window.addEventListener('offline', function () {
+            showToast(I18n.lang === 'zh' ? '📡 网络已断开，部分功能可能受限' : '📡 Offline — some features may be limited', 'error', 5000);
+        });
+        window.addEventListener('online', function () {
+            showToast(I18n.lang === 'zh' ? '✅ 网络已恢复' : '✅ Back online', 'success');
+        });
 
         // 延迟加载分析脚本，减少渲染阻塞
         if (typeof requestIdleCallback === 'function') {
@@ -990,5 +1050,5 @@
     }
 
     // ========== 全局导出 ==========
-    window.MyLuck = { I18n, Security, Turnstile, getSupabase, seededRandom, getTodaySeed, getStars, animateCounter, createAdSlot, Streak, injectVisitorCount };
+    window.MyLuck = { I18n, Security, Turnstile, getSupabase, seededRandom, getTodaySeed, getStars, animateCounter, createAdSlot, Streak, injectVisitorCount, showToast, safeSetItem };
 })();

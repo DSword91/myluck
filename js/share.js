@@ -108,13 +108,15 @@
         }).join('');
 
         var previewText = text.length > 150 ? text.substring(0, 150) + '...' : text;
+        // XSS 防护：先转义 HTML 再替换换行
+        var safePreview = (window.MyLuck && window.MyLuck.Security) ? window.MyLuck.Security.escapeHtml(previewText).replace(/\n/g, '<br>') : previewText.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
 
         overlay.innerHTML = '<div class="share-panel">' +
             '<div class="share-header">' +
             '<h3>' + (en ? '📤 Share Result' : '📤 分享结果') + '</h3>' +
             '<button class="share-close">✕</button>' +
             '</div>' +
-            '<div class="share-preview">' + previewText.replace(/\n/g, '<br>') + '</div>' +
+            '<div class="share-preview">' + safePreview + '</div>' +
             '<div class="share-buttons">' + buttonsHtml + '</div>' +
             '<div class="share-qr" style="display:none;">' +
             '<p>' + (en ? 'Scan QR code to share via WeChat' : '微信扫码分享') + '</p>' +

@@ -228,7 +228,9 @@
                 loadLeaderboard();
             },
             onFail: function () {
-                alert(I18n ? I18n.t('rp.rank_fail') : '上榜失败，请稍后重试');
+                var st = window.MyLuck && window.MyLuck.showToast;
+                if (st) st(I18n ? I18n.t('rp.rank_fail') : '上榜失败，请稍后重试', 'error');
+                else alert(I18n ? I18n.t('rp.rank_fail') : '上榜失败，请稍后重试');
                 if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = I18n ? I18n.t('rp.rank') : '🏆 上榜'; }
             }
         });
@@ -251,7 +253,9 @@
             window.MyLuck.Share.show(text, 'https://myluck.top/rp-test.html', { title: shareTitle });
         } else if (navigator.clipboard) {
             navigator.clipboard.writeText(text + '\nhttps://myluck.top/rp-test.html').then(function () {
-                alert(isEn ? 'Result copied!' : '结果已复制！');
+                var st = window.MyLuck && window.MyLuck.showToast;
+                if (st) st(isEn ? 'Result copied!' : '结果已复制！', 'success');
+                else alert(isEn ? 'Result copied!' : '结果已复制！');
             });
         }
     }

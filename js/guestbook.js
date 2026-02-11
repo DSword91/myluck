@@ -250,14 +250,15 @@
         var name = (nameEl.value || '').trim();
         var text = (textEl.value || '').trim();
 
-        if (!name || name.length < 1) { alert(I18n.t('gb.need_name')); nameEl.focus(); return; }
-        if (text.length < 2) { alert(I18n.t('gb.tooshort')); textEl.focus(); return; }
-        if (Security && Security.containsBadWords && Security.containsBadWords(text)) { alert(I18n.t('gb.bad')); return; }
-        if (Security && !Security.rateLimit('bless', 3)) { alert(I18n.t('gb.toomany')); return; }
+        var st = MyLuck.showToast || function(m) { alert(m); };
+        if (!name || name.length < 1) { st(I18n.t('gb.need_name'), 'info'); nameEl.focus(); return; }
+        if (text.length < 2) { st(I18n.t('gb.tooshort'), 'info'); textEl.focus(); return; }
+        if (Security && Security.containsBadWords && Security.containsBadWords(text)) { st(I18n.t('gb.bad'), 'error'); return; }
+        if (Security && !Security.rateLimit('bless', 3)) { st(I18n.t('gb.toomany'), 'info'); return; }
 
         var Turnstile = MyLuck.Turnstile;
         if (Turnstile && Turnstile.isEnabled && Turnstile.isEnabled() && !Turnstile.isVerified()) {
-            alert(I18n.t('gb.need_verify'));
+            st(I18n.t('gb.need_verify'), 'info');
             return;
         }
 
@@ -294,7 +295,7 @@
             setTimeout(function () { if (successMsg.parentNode) successMsg.remove(); }, 3000);
 
         } catch (e) {
-            alert(I18n.t('gb.fail'));
+            st(I18n.t('gb.fail'), 'error');
             btn.disabled = false;
             btn.textContent = I18n.t('gb.submit');
         }
