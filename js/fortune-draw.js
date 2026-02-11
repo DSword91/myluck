@@ -242,7 +242,7 @@
         var title = isEn ? 'MyLuck Fortune - ' + level : 'MyLuck 灵签 - ' + level;
 
         if (window.MyLuck && window.MyLuck.Share) {
-            window.MyLuck.Share.show(text, 'https://myluck.top/fortune-draw.html', { title: title });
+            window.MyLuck.Share.show(text, 'https://myluck.top/fortune-draw.html', { title: title, captureElement: document.getElementById('fortune-slip') });
         } else if (navigator.clipboard) {
             navigator.clipboard.writeText(text + '\nhttps://myluck.top/fortune-draw.html').then(function () {
                 var st = window.MyLuck && window.MyLuck.showToast;

@@ -1536,7 +1536,7 @@
             navigator.clipboard?.writeText(shareText + '\n' + shareUrl).catch(() => {});
             // 调用分享面板
             if (window.MyLuck.Share) {
-                window.MyLuck.Share.show(shareText, shareUrl);
+                window.MyLuck.Share.show(shareText, shareUrl, { captureElement: document.getElementById('lr-content') });
             }
         });
     }

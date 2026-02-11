@@ -522,7 +522,7 @@
         const text = I18n.lang === 'zh'
             ? `我的MBTI是 ${type}（${name}）！快来测测你的 →`
             : `My MBTI is ${type} (${name})! Take the test →`;
-        window.MyLuck.Share.show(text, 'https://myluck.top/mbti.html');
+        window.MyLuck.Share.show(text, 'https://myluck.top/mbti.html', { captureElement: document.getElementById('mbti-result') });
     });
 
     // ===== MBTI 排行榜 =====

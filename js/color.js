@@ -71,7 +71,7 @@
         const text = lang === 'zh'
             ? `我的幸运色彩是「${info.title}」！来测测你的 →`
             : `My lucky color personality is "${info.title}"! Try it →`;
-        window.MyLuck.Share.show(text, 'https://myluck.top/color.html');
+        window.MyLuck.Share.show(text, 'https://myluck.top/color.html', { captureElement: document.getElementById('color-result') });
     });
 
     // 语言切换时重新渲染已选颜色的结果

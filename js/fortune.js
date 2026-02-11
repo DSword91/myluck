@@ -221,7 +221,7 @@
         const text = I18n.lang === 'zh'
             ? `我在 MyLuck 测了${title}，结果是 ${luck}！快来试试 →`
             : `I got ${luck} on MyLuck's Daily Luck Test! Try it →`;
-        window.MyLuck.Share.show(text, 'https://myluck.top');
+        window.MyLuck.Share.show(text, 'https://myluck.top', { captureElement: document.getElementById('fortune-result') });
     });
 
     // 每日名言 — 优先从 Hitokoto API 拉取，失败则用本地

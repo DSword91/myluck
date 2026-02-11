@@ -50,6 +50,65 @@
         document.head.appendChild(style);
     }
 
+    // 动态加载 html2canvas
+    var _html2canvasLoaded = false;
+    function loadHtml2Canvas(cb) {
+        if (_html2canvasLoaded || window.html2canvas) { _html2canvasLoaded = true; cb(); return; }
+        var script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+        script.onload = function() { _html2canvasLoaded = true; cb(); };
+        script.onerror = function() {
+            var st = window.MyLuck && window.MyLuck.showToast;
+            if (st) st(isEn() ? 'Failed to load image library' : '图片库加载失败', 'error');
+        };
+        document.head.appendChild(script);
+    }
+
+    // 截图并下载/分享
+    function captureAndSave(element) {
+        if (!element) return;
+        var st = window.MyLuck && window.MyLuck.showToast;
+        loadHtml2Canvas(function() {
+            if (!window.html2canvas) return;
+            if (st) st(isEn() ? 'Generating image...' : '正在生成图片...', 'info', 2000);
+            window.html2canvas(element, {
+                backgroundColor: '#fffbf5',
+                scale: 2,
+                useCORS: true,
+                logging: false
+            }).then(function(canvas) {
+                // 移动端尝试分享(支持 share files API)
+                if (navigator.canShare) {
+                    canvas.toBlob(function(blob) {
+                        var file = new File([blob], 'myluck-result.png', { type: 'image/png' });
+                        if (navigator.canShare({ files: [file] })) {
+                            navigator.share({ files: [file], title: 'MyLuck' }).catch(function() {
+                                // 用户取消或不支持，降级下载
+                                downloadCanvas(canvas);
+                            });
+                        } else {
+                            downloadCanvas(canvas);
+                        }
+                    }, 'image/png');
+                } else {
+                    downloadCanvas(canvas);
+                }
+            }).catch(function(err) {
+                console.error('[share] html2canvas error:', err);
+                if (st) st(isEn() ? 'Image generation failed' : '图片生成失败', 'error');
+            });
+        });
+    }
+
+    function downloadCanvas(canvas) {
+        var link = document.createElement('a');
+        link.download = 'myluck-result.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        var st = window.MyLuck && window.MyLuck.showToast;
+        if (st) st(isEn() ? 'Image saved!' : '图片已保存！', 'success');
+    }
+
     /**
      * 弹出分享面板
      * @param {string} text 分享文本
@@ -61,21 +120,22 @@
         url = url || location.href;
         opts = opts || {};
         var shareTitle = opts.title || 'MyLuck';
+        var captureEl = opts.captureElement || null;
 
         // 在移动端先尝试原生分享
-        if (navigator.share) {
+        if (navigator.share && !captureEl) {
             navigator.share({ title: shareTitle, text: text, url: url }).then(function () {
                 // 原生分享成功，不弹窗
             }).catch(function () {
                 // 用户取消或不支持，弹出面板
-                _showPanel(text, url, shareTitle);
+                _showPanel(text, url, shareTitle, captureEl);
             });
             return;
         }
-        _showPanel(text, url, shareTitle);
+        _showPanel(text, url, shareTitle, captureEl);
     }
 
-    function _showPanel(text, url, shareTitle) {
+    function _showPanel(text, url, shareTitle, captureEl) {
         var encoded = encodeURIComponent(url);
         var encodedText = encodeURIComponent(text);
         var china = isChina();
@@ -88,12 +148,14 @@
             { key: 'qq', icon: '🐧', label: 'QQ', url: 'https://connect.qq.com/widget/shareqq/index.html?url=' + encoded + '&title=' + encodedText },
             { key: 'weibo', icon: '📢', label: en ? 'Weibo' : '微博', url: 'https://service.weibo.com/share/share.php?url=' + encoded + '&title=' + encodedText },
             { key: 'douyin', icon: '🎵', label: en ? 'TikTok' : '抖音', action: 'copy' },
+            { key: 'save_img', icon: '🖼️', label: en ? 'Save Image' : '保存图片', action: 'save_img' },
             { key: 'copy', icon: '📋', label: en ? 'Copy' : '复制', action: 'copy' }
         ] : [
             { key: 'twitter', icon: '𝕏', label: 'X/Twitter', url: 'https://twitter.com/intent/tweet?url=' + encoded + '&text=' + encodedText },
             { key: 'facebook', icon: '📘', label: 'Facebook', url: 'https://www.facebook.com/sharer/sharer.php?u=' + encoded },
             { key: 'whatsapp', icon: '📱', label: 'WhatsApp', url: 'https://api.whatsapp.com/send?text=' + encodedText + '%20' + encoded },
             { key: 'telegram', icon: '✈️', label: 'Telegram', url: 'https://t.me/share/url?url=' + encoded + '&text=' + encodedText },
+            { key: 'save_img', icon: '🖼️', label: en ? 'Save Image' : '保存图片', action: 'save_img' },
             { key: 'copy', icon: '📋', label: en ? 'Copy' : '复制', action: 'copy' }
         ];
 
@@ -139,6 +201,9 @@
                     if (action === 'qr') {
                         var qrDiv = overlay.querySelector('.share-qr');
                         qrDiv.style.display = qrDiv.style.display === 'none' ? 'block' : 'none';
+                    } else if (action === 'save_img') {
+                        overlay.remove();
+                        captureAndSave(captureEl);
                     } else if (action === 'copy') {
                         var copyText = text + '\n' + url;
                         if (navigator.clipboard) {
@@ -176,5 +241,5 @@
 
     // 挂载
     if (!window.MyLuck) window.MyLuck = {};
-    window.MyLuck.Share = { show: showSharePanel, isChina: isChina };
+    window.MyLuck.Share = { show: showSharePanel, isChina: isChina, saveAsImage: captureAndSave };
 })();

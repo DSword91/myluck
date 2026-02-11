@@ -253,7 +253,7 @@
         var shareTitle = isEn ? 'MyLuck Daily Persona - ' + title : 'MyLuck 今日人设 - ' + title;
 
         if (window.MyLuck && window.MyLuck.Share) {
-            window.MyLuck.Share.show(text, 'https://myluck.top/rp-test.html', { title: shareTitle });
+            window.MyLuck.Share.show(text, 'https://myluck.top/rp-test.html', { title: shareTitle, captureElement: document.getElementById('rp-result') });
         } else if (navigator.clipboard) {
             navigator.clipboard.writeText(text + '\nhttps://myluck.top/rp-test.html').then(function () {
                 var st = window.MyLuck && window.MyLuck.showToast;

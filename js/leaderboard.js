@@ -288,10 +288,20 @@
         opts = opts || {};
         var Security = window.MyLuck && window.MyLuck.Security;
         var Turnstile = window.MyLuck && window.MyLuck.Turnstile;
+        var st = window.MyLuck && window.MyLuck.showToast;
+
+        // 每日一次限制
+        var today = new Date().toISOString().slice(0, 10);
+        var lsKey = 'lb_submitted_' + testType;
+        try {
+            if (localStorage.getItem(lsKey) === today) {
+                if (st) st(isEn() ? 'You have already submitted today!' : '今天已经上榜过了，明天再来吧！', 'info');
+                return false;
+            }
+        } catch(e) {}
 
         // 频率限制
         if (Security && !Security.rateLimit('leaderboard_' + testType, 5)) {
-            var st = window.MyLuck && window.MyLuck.showToast;
             if (st) st(t('common.too_fast', '操作太频繁，请稍后再试'), 'info');
 
             return false;
@@ -299,7 +309,6 @@
 
         // Turnstile验证
         if (Turnstile && Turnstile.isEnabled && Turnstile.isEnabled() && !Turnstile.isVerified()) {
-            var st = window.MyLuck && window.MyLuck.showToast;
             if (st) st(t('common.verify_first', '请先完成人机验证'), 'info');
 
             return false;
@@ -323,6 +332,9 @@
 
             var result = await sb.from('leaderboard').insert(insertData);
             if (result.error) throw result.error;
+
+            // 记录今日已上榜
+            try { localStorage.setItem(lsKey, today); } catch(e) {}
 
             // 重置Turnstile
             if (Turnstile && Turnstile.reset) Turnstile.reset();
@@ -350,6 +362,16 @@
             '</div>';
     }
 
+    /**
+     * 检查今日是否已上榜
+     */
+    function hasSubmittedToday(testType) {
+        try {
+            var today = new Date().toISOString().slice(0, 10);
+            return localStorage.getItem('lb_submitted_' + testType) === today;
+        } catch(e) { return false; }
+    }
+
     // 挂载
     if (!window.MyLuck) window.MyLuck = {};
     window.MyLuck.Leaderboard = {
@@ -357,6 +379,7 @@
         submit: submitScore,
         createHTML: createBoardHTML,
         getSupabase: getSupabase,
-        generateVirtual: generateVirtualEntries
+        generateVirtual: generateVirtualEntries,
+        hasSubmittedToday: hasSubmittedToday
     };
 })();

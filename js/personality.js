@@ -185,7 +185,7 @@
         const text = I18n.lang === 'zh'
             ? `我的性格标签是「${title}」！快来测测你的 →`
             : `My personality tag is "${title}"! Try it →`;
-        window.MyLuck.Share.show(text, 'https://myluck.top/personality.html');
+        window.MyLuck.Share.show(text, 'https://myluck.top/personality.html', { captureElement: document.getElementById('ptest-result') });
     });
 
     // 语言切换时重新渲染
