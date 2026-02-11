@@ -1,6 +1,7 @@
 // ========== 今日人设测试 rp-test.js (玩梗版) ==========
 (function () {
     'use strict';
+    const I18n = window.MyLuck && window.MyLuck.I18n ? window.MyLuck.I18n : { t: function(k, f) { return f || k; }, lang: 'zh' };
 
     // ===== 30种搞笑人设角色 =====
     const CHARACTERS = [
@@ -147,7 +148,7 @@
             tagsEl.appendChild(span);
         });
 
-        currentResult = { name: name || (isEn ? 'Anonymous' : '匿名'), score: score, character: character };
+        currentResult = { name: name || I18n.t('common.anonymous'), score: score, character: character };
         // 重置上榜按钮
         var rankBtn = document.getElementById('rp-rank');
         if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = (window.MyLuck && window.MyLuck.I18n) ? window.MyLuck.I18n.t('rp.rank') : '🏆 上榜'; }
@@ -200,7 +201,7 @@
                 }
                 var detail = title ? '<span class="lb-detail">' + esc(title) + '</span>' : '';
                 var scoreColor = entry.score >= 80 ? '#e17055' : entry.score >= 60 ? '#fdcb6e' : entry.score >= 40 ? '#00b894' : '#b2bec3';
-                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + esc(entry.name || (en ? 'Anonymous' : '匿名')) + '</span>' + detail + '</div><span class="lb-score" style="color:' + scoreColor + '">' + entry.score + '</span>';
+                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + esc(entry.name || I18n.t('common.anonymous')) + '</span>' + detail + '</div><span class="lb-score" style="color:' + scoreColor + '">' + entry.score + '</span>';
             }
         });
     }

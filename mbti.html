@@ -14,14 +14,14 @@
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
     <link rel="dns-prefetch" href="https://challenges.cloudflare.com">
     <meta property="og:title" content="MBTI 性格测试 - MyLuck">
-    <meta property="og:description" content="完整六十道题目，深度了解你的MBTI性格类型，免费在线测试">
+    <meta property="og:description" content="完整93道题目，深度了解你的MBTI性格类型，免费在线测试">
     <meta property="og:url" content="https://myluck.top/mbti.html">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="MyLuck">
     <meta property="og:locale" content="zh_CN">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="MBTI 性格测试 - MyLuck">
-    <meta name="twitter:description" content="完整六十道题目，深度了解你的MBTI性格类型">
+    <meta name="twitter:description" content="完整93道题目，深度了解你的MBTI性格类型">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -29,7 +29,7 @@
         <section class="section">
             <div class="container">
                 <h1 class="section-title" data-i18n="mbti.title">🧠 MBTI 性格测试</h1>
-                <p class="section-desc" data-i18n="mbti.desc">完整60道题目，探索你的性格类型（仅供娱乐参考）</p>
+                <p class="section-desc" data-i18n="mbti.desc">完整93道题目，探索你的性格类型（仅供娱乐参考）</p>
                 <div id="mbti-visitor-count"></div>
 
                 <!-- MBTI 开始界面 -->
@@ -65,8 +65,10 @@
                         <div class="mbti-desc" id="mbti-desc"></div>
                         <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px;">
                             <button class="btn-primary" id="mbti-share" data-i18n="fortune.share">📤 分享结果</button>
+                            <button class="btn-primary" id="mbti-rank-btn" style="background:#6c5ce7;display:none;padding:12px 36px;font-size:1rem;" data-i18n="mbti.rank_btn">🧠 记录结果</button>
                             <button class="btn-outline" id="mbti-retry" data-i18n="mbti.retry">🔄 重新测试</button>
                         </div>
+                        <div id="turnstile-mbti-rank" style="margin:10px 0;display:flex;justify-content:center;"></div>
                         <div class="disclaimer-badge" data-i18n="disclaimer.tag">仅供娱乐 · 算法随机生成</div>
                     </div>
                 </div>
@@ -82,10 +84,6 @@
                 <!-- MBTI 排行榜 -->
                 <div class="rp-leaderboard" id="mbti-board-wrap" style="border-color:#6c5ce7;margin-top:24px;">
                     <h3 data-i18n="mbti.leaderboard" style="color:#6c5ce7;">🧠 最近谁测了 MBTI</h3>
-                    <div id="turnstile-mbti-rank" style="margin:10px 0;display:flex;justify-content:center;"></div>
-                    <div style="text-align:center;margin-bottom:12px;">
-                        <button class="btn-primary" id="mbti-rank-btn" style="padding:12px 36px;font-size:1rem;background:#6c5ce7;display:none;" data-i18n="mbti.rank_btn">🏆 上榜</button>
-                    </div>
                     <div id="mbti-board-list"><p style="text-align:center;color:#bbb;font-size:0.9rem;" data-i18n="rp.board_loading">加载中...</p></div>
                 </div>
             </div>
@@ -101,7 +99,7 @@
     <noscript>
         <div style="text-align:center;padding:40px 20px;">
             <h2>MBTI 性格测试 - MyLuck | myluck.top</h2>
-            <p>MyLuck (myluck.top) 提供免费在线MBTI性格测试，完整60道题目，深度了解你的16型人格类型。更多趣味测试：每日运气测试、幸运色彩测试、人生重开模拟器。</p>
+            <p>MyLuck (myluck.top) 提供免费在线MBTI性格测试，完整93道题目，深度了解你的16型人格类型。更多趣味测试：每日运气测试、幸运色彩测试、人生重开模拟器。</p>
             <nav><a href="/">首页</a> | <a href="/mbti.html">MBTI测试</a> | <a href="/color.html">色彩测试</a> | <a href="/personality.html">性格测试</a> | <a href="/liferestart.html">人生重开</a> | <a href="/guestbook.html">祝福墙</a></nav>
         </div>
     </noscript>

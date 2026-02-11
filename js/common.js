@@ -157,6 +157,13 @@
         'lr.rank_btn': '🏆 上榜',
         'lr.ranked': '✅ 已上榜！',
         'lr.rank_fail': '上榜失败，请稍后重试',
+        // 通用
+        'common.anonymous': '匿名',
+        'common.verify_first': '请先完成人机验证',
+        'common.too_fast': '操作太频繁，请稍后再试',
+        'lb.empty': '还没有人上榜，来当第一个！',
+        'lb.fail': '排行榜加载失败',
+        'disclaimer.full': '仅供娱乐参考 · 算法随机生成 · 请勿当真',
     };
 
     const sharedEn = {
@@ -249,6 +256,13 @@
         'lr.rank_btn': '🏆 Rank Me!',
         'lr.ranked': '✅ Ranked!',
         'lr.rank_fail': 'Failed to rank, try again later',
+        // Common
+        'common.anonymous': 'Anonymous',
+        'common.verify_first': 'Please complete verification first',
+        'common.too_fast': 'Too many requests, please try again later',
+        'lb.empty': 'No entries yet. Be the first!',
+        'lb.fail': 'Failed to load leaderboard',
+        'disclaimer.full': 'For Fun Only · Randomly Generated · Don\'t Take It Seriously',
     };
 
     // ========== 安全模块 ==========
@@ -276,7 +290,7 @@
                             // 移除危险属性
                             Array.from(child.attributes).forEach(attr => {
                                 if (attr.name.startsWith('on') || attr.name === 'style' ||
-                                    (attr.name === 'href' && attr.value.startsWith('javascript:'))) {
+                                    (attr.name === 'href' && /^\s*(javascript|data|vbscript):/i.test(attr.value))) {
                                     child.removeAttribute(attr.name);
                                 }
                             });
@@ -468,11 +482,18 @@
         document.body.prepend(nav);
 
         // 移动端菜单
-        nav.querySelector('.menu-toggle').addEventListener('click', () => {
+        nav.querySelector('.menu-toggle').addEventListener('click', (e) => {
+            e.stopPropagation();
             nav.querySelector('.nav-links').classList.toggle('active');
         });
         nav.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', () => nav.querySelector('.nav-links').classList.remove('active'));
+        });
+        // 点击外部关闭移动端菜单
+        document.addEventListener('click', (e) => {
+            if (!nav.contains(e.target)) {
+                nav.querySelector('.nav-links').classList.remove('active');
+            }
         });
 
         // 语言切换
@@ -568,14 +589,14 @@
 
         document.getElementById('feedback-submit').addEventListener('click', async function () {
             var text = (document.getElementById('feedback-text').value || '').trim();
-            var name = (document.getElementById('feedback-name').value || '').trim() || (isEn ? 'Anonymous' : '匿名');
+            var name = (document.getElementById('feedback-name').value || '').trim() || I18n.t('common.anonymous');
             if (text.length < 2) { alert(isEn ? 'Write a bit more' : '至少写几个字吧'); return; }
             if (Security.containsBadWords(text)) { alert(isEn ? 'Please keep it friendly' : '请文明发言'); return; }
             if (!Security.rateLimit('feedback', 2)) { alert(isEn ? 'Too frequent, try later' : '太频繁了，请稍后再试'); return; }
 
             // Turnstile 验证
             if (Turnstile.isEnabled() && !Turnstile.isVerified('turnstile-feedback')) {
-                alert(isEn ? 'Please complete verification first' : '请先完成人机验证');
+                alert(I18n.t('common.verify_first'));
                 return;
             }
 
@@ -586,8 +607,8 @@
                 var sb = await getSupabase();
                 if (!sb) throw new Error('Supabase unavailable');
                 await sb.from('comments').insert({
-                    nickname: Security.escapeHtml(name),
-                    content: Security.escapeHtml(text),
+                    nickname: name,
+                    content: text,
                     page: 'feedback'
                 });
                 Turnstile.reset('turnstile-feedback');
@@ -909,6 +930,32 @@
             });
             document.head.appendChild(bc);
         }
+
+        // 动态设置页面标题
+        const pageTitlesAll = {
+            'index.html': { zh: 'MyLuck - 每日好运测试', en: 'MyLuck - Daily Luck Test' },
+            'mbti.html': { zh: 'MBTI 性格测试 - MyLuck', en: 'MBTI Personality Test - MyLuck' },
+            'color.html': { zh: '幸运色彩测试 - MyLuck', en: 'Lucky Color Test - MyLuck' },
+            'personality.html': { zh: '趣味性格测试 - MyLuck', en: 'Fun Personality Test - MyLuck' },
+            'guestbook.html': { zh: '祝福墙 - MyLuck', en: 'Blessings Wall - MyLuck' },
+            'liferestart.html': { zh: '人生重开模拟器 - MyLuck', en: 'Life Restart Simulator - MyLuck' },
+            'fortune-draw.html': { zh: '在线求签 - MyLuck', en: 'Fortune Sticks - MyLuck' },
+            'rp-test.html': { zh: '今日人设测试 - MyLuck', en: 'Daily Persona Test - MyLuck' },
+            'privacy.html': { zh: '隐私政策 - MyLuck', en: 'Privacy Policy - MyLuck' },
+            'terms.html': { zh: '使用条款 - MyLuck', en: 'Terms of Use - MyLuck' },
+            'disclaimer.html': { zh: '免责声明 - MyLuck', en: 'Disclaimer - MyLuck' }
+        };
+        if (pageTitlesAll[page]) {
+            document.title = isZh ? pageTitlesAll[page].zh : pageTitlesAll[page].en;
+        }
+
+        // 语言切换时更新标题
+        document.addEventListener('langchange', function() {
+            const curLang = I18n.lang;
+            if (pageTitlesAll[page]) {
+                document.title = curLang === 'zh' ? pageTitlesAll[page].zh : pageTitlesAll[page].en;
+            }
+        });
 
         // 如果 HTML 中已经有 canonical，不重复添加
         if (!document.querySelector('link[rel="canonical"]')) {

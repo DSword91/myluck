@@ -269,7 +269,7 @@
                 } else {
                     var emoji = entry.character_emoji ? escapeHtml(entry.character_emoji) + ' ' : '';
                     var detail = entry.character_title ? '<span class="lb-detail">' + escapeHtml(entry.character_title) + '</span>' : '';
-                    div.innerHTML = '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + escapeHtml(entry.name || '匿名') + '</span>' + detail + '</div><span class="lb-score" style="color:' + getColor(entry.score) + '">' + entry.score + '</span>';
+                    div.innerHTML = '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + escapeHtml(entry.name || t('common.anonymous', '匿名')) + '</span>' + detail + '</div><span class="lb-score" style="color:' + getColor(entry.score) + '">' + entry.score + '</span>';
                 }
                 container.appendChild(div);
             }
@@ -291,13 +291,13 @@
 
         // 频率限制
         if (Security && !Security.rateLimit('leaderboard_' + testType, 5)) {
-            alert(t('gb.toomany', '操作太频繁，请稍后再试'));
+            alert(t('common.too_fast', '操作太频繁，请稍后再试'));
             return false;
         }
 
         // Turnstile验证
         if (Turnstile && Turnstile.isEnabled && Turnstile.isEnabled() && !Turnstile.isVerified()) {
-            alert(isEn() ? 'Please complete verification first' : '请先完成人机验证');
+            alert(t('common.verify_first', '请先完成人机验证'));
             return false;
         }
 
@@ -307,7 +307,7 @@
             var today = new Date().toISOString().slice(0, 10);
 
             var insertData = {
-                name: data.name || '匿名',
+                name: data.name || t('common.anonymous', '匿名'),
                 score: data.score || 0,
                 test_type: testType,
                 test_date: today,

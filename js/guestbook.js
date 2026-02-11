@@ -193,7 +193,7 @@
         wall.innerHTML = all.map(function (b) {
             var sysClass = b.is_system ? ' system-card' : '';
             return '<div class="bless-card' + sysClass + '">' +
-                '<div class="bless-author">🍀 ' + esc(b.nickname || '匿名') + '</div>' +
+                '<div class="bless-author">🍀 ' + esc(b.nickname || (window.MyLuck && window.MyLuck.I18n ? window.MyLuck.I18n.t('common.anonymous') : '匿名')) + '</div>' +
                 '<div class="bless-text">' + esc(b.content) + '</div>' +
                 '<span class="bless-time">' + formatTime(b.created_at) + '</span>' +
                 '</div>';
@@ -269,8 +269,8 @@
             if (!sb) throw new Error('Supabase unavailable');
 
             var resp = await sb.from('comments').insert({
-                nickname: esc(name),
-                content: esc(text),
+                nickname: name,
+                content: text,
                 page: 'blessings'
             });
 

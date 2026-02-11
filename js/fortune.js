@@ -329,7 +329,7 @@
                 const esc = window.MyLuck.Security ? window.MyLuck.Security.escapeHtml : (s) => s;
                 const emoji = entry.character_emoji || '🍀';
                 const scoreColor = entry.score >= 90 ? '#e17055' : entry.score >= 70 ? '#fdcb6e' : '#00b894';
-                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + ' ' + esc(entry.name || '匿名') + '</span></div><span class="lb-score" style="color:' + scoreColor + '">' + entry.score + '%</span>';
+                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + ' ' + esc(entry.name || I18n.t('common.anonymous')) + '</span></div><span class="lb-score" style="color:' + scoreColor + '">' + entry.score + '%</span>';
             }
         });
     }
@@ -347,7 +347,7 @@
         const emoji = moodEmojis[mood] || '🍀';
 
         await LB.submit('fortune', {
-            name: lastResultName || (I18n.lang === 'en' ? 'Anonymous' : '匿名'),
+            name: lastResultName || I18n.t('common.anonymous'),
             score: lastLuckScore,
             character_emoji: emoji,
             character_title: ''

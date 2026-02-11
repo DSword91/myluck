@@ -402,6 +402,7 @@
         }, Math.floor(Math.random() * 3000) + 3000);
 
         // 我的历史记录
+        const lang = I18n.lang;
         const history = JSON.parse(localStorage.getItem(MBTI_HISTORY_KEY) || '[]');
         if (history.length > 1) {
             const historyEl = document.getElementById('mbti-my-history');
@@ -417,7 +418,7 @@
         // 检查人机验证
         if (window.MyLuck && window.MyLuck.Turnstile && !window.MyLuck.Turnstile.isVerified()) {
             const lang = I18n.lang;
-            alert(lang === 'zh' ? '请先完成人机验证' : 'Please complete verification first');
+            alert(I18n.t('common.verify_first'));
             return;
         }
         document.getElementById('mbti-start').style.display = 'none';
@@ -529,7 +530,7 @@
                     var tName = lang === 'en' ? types[mbtiType].en.name : types[mbtiType].zh.name;
                     mbtiType = mbtiType + ' ' + tName;
                 }
-                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + ' ' + esc(entry.name || '匿名') + '</span></div><span class="lb-detail" style="font-size:.85rem;color:#6c5ce7;font-weight:600;">' + esc(mbtiType) + '</span>';
+                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + ' ' + esc(entry.name || I18n.t('common.anonymous')) + '</span></div><span class="lb-detail" style="font-size:.85rem;color:#6c5ce7;font-weight:600;">' + esc(mbtiType) + '</span>';
             }
         });
     }
@@ -559,7 +560,7 @@
             (I18n.lang === 'en' ? types[lastMBTIType].en.name : types[lastMBTIType].zh.name) : lastMBTIType;
 
         await LB.submit('mbti', {
-            name: I18n.lang === 'en' ? 'Anonymous' : '匿名',
+            name: I18n.t('common.anonymous'),
             score: avgScore,
             character_emoji: MBTI_TYPE_EMOJIS[lastMBTIType] || '🧠',
             character_title: lastMBTIType

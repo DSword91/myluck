@@ -260,7 +260,7 @@
             formatEntry: function (entry, i, medal) {
                 var emoji = entry.character_emoji ? escapeHtml(entry.character_emoji) + ' ' : '';
                 var detail = entry.character_title ? '<span class="lb-detail">' + escapeHtml(entry.character_title) + '</span>' : '';
-                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + escapeHtml(entry.name || '匿名') + '</span>' + detail + '</div><span class="lb-score" style="color:' + getColor(entry.score) + '">' + (entry.score || 0) + '</span>';
+                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + escapeHtml(entry.name || (window.MyLuck && window.MyLuck.I18n ? window.MyLuck.I18n.t('common.anonymous') : '匿名')) + '</span>' + detail + '</div><span class="lb-score" style="color:' + getColor(entry.score) + '">' + (entry.score || 0) + '</span>';
             }
         });
     }
@@ -315,7 +315,7 @@
         }, {
             onSuccess: function () {
                 if (rankBtn) rankBtn.textContent = t('draw.ranked', '✅ 已上榜！');
-                LB.load('fortune-board-list', 'fortune');
+                initLeaderboard();
             },
             onFail: function () {
                 alert(t('draw.rank_fail', '上榜失败，请稍后重试'));
@@ -364,7 +364,7 @@
             // 求签前验证 Turnstile
             var Turnstile = window.MyLuck && window.MyLuck.Turnstile;
             if (Turnstile && Turnstile.isEnabled && Turnstile.isEnabled() && !Turnstile.isVerified()) {
-                alert(isEnNow() ? 'Please complete verification first' : '请先完成人机验证');
+                alert(window.MyLuck && window.MyLuck.I18n ? window.MyLuck.I18n.t('common.verify_first') : '请先完成人机验证');
                 return;
             }
             shakeAndDraw(firstDraw);
