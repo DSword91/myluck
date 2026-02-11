@@ -79,8 +79,8 @@
 
             // 直接截图原始元素（保留所有样式）
             window.html2canvas(element, {
-                backgroundColor: '#fffbf5',
-                scale: 2,
+                backgroundColor: null,
+                scale: window.devicePixelRatio || 2,
                 useCORS: true,
                 allowTaint: true,
                 logging: false
@@ -107,8 +107,8 @@
 
     // 合成最终图片：结果截图 + 底部品牌栏（QR + 推广语）
     function compositeAndDownload(resultCanvas, qrImg, en) {
-        var scale = 2;
-        var padding = 30 * scale;
+        var scale = window.devicePixelRatio || 2;
+        var padding = Math.round(24 * scale);
         var footerH = 100 * scale;
         var gap = 16 * scale;
         var dashedY = resultCanvas.height + padding * 2 + 10 * scale;
