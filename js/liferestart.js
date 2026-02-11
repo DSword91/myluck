@@ -404,7 +404,7 @@
         { text: { zh: '你学会了弹吉他。', en: 'You learned to play guitar.' }, cond: { minAge: 15, maxAge: 40, chance: 0.1 }, effects: { chr: 1, spr: 1, tag: 'guitar' } },
         { text: { zh: '你参加了一场演唱会。', en: 'You went to a concert.' }, cond: { minAge: 15, maxAge: 50, chance: 0.15 }, effects: { spr: 1 } },
         { text: { zh: '你在网上交到了一个知心好友。', en: 'You made a close friend online.' }, cond: { minAge: 15, maxAge: 40, chance: 0.15 }, effects: { spr: 1, tag: 'online_friend' } },
-        { text: { zh: '你搬到了大城市。', en: 'You moved to a big city.' }, cond: { minAge: 18, maxAge: 30, chancce: 0.2 }, effects: { mny: 1, spr: -1, tag: 'big_city' } },
+        { text: { zh: '你搬到了大城市。', en: 'You moved to a big city.' }, cond: { minAge: 18, maxAge: 30, chance: 0.2 }, effects: { mny: 1, spr: -1, tag: 'big_city' } },
         { text: { zh: '你考了研究生。', en: 'You pursued a master\'s degree.' }, cond: { minAge: 22, maxAge: 26, minInt: 7, hasTag: 'graduated', chance: 0.3 }, effects: { int: 2, mny: -1, tag: 'masters' } },
         { text: { zh: '你读了博士。', en: 'You pursued a PhD.' }, cond: { minAge: 24, maxAge: 30, hasTag: 'masters', minInt: 8, chance: 0.3 }, effects: { int: 3, mny: -2, str: -1, tag: 'phd' } },
         { text: { zh: '你发表了学术论文。', en: 'You published an academic paper.' }, cond: { minAge: 24, maxAge: 40, hasTag: 'phd', minInt: 8, chance: 0.5 }, effects: { int: 2, chr: 1 } },
@@ -761,8 +761,12 @@
                 }
                 if (t.effects._random2) {
                     const keys = ['chr', 'int', 'str', 'mny', 'spr'];
-                    const shuffled = keys.sort(() => Math.random() - 0.5).slice(0, 2);
-                    for (const k of shuffled) this.stats[k] += t.effects._random2;
+                    // Fisher-Yates 洗牌
+                    for (let i = keys.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [keys[i], keys[j]] = [keys[j], keys[i]];
+                    }
+                    for (const k of keys.slice(0, 2)) this.stats[k] += t.effects._random2;
                 } else {
                     for (const [k, v] of Object.entries(t.effects)) {
                         if (!k.startsWith('_') && this.stats[k] !== undefined) {
@@ -800,6 +804,7 @@
             if (cond.minSpr !== undefined && this.stats.spr < cond.minSpr) return false;
             if (cond.maxSpr !== undefined && this.stats.spr > cond.maxSpr) return false;
             if (cond.hasTag && !this.tags.has(cond.hasTag)) return false;
+            if (cond.hasTag2 && !this.tags.has(cond.hasTag2)) return false;
             if (cond.noTag && this.tags.has(cond.noTag)) return false;
             if (cond.noTag2 && this.tags.has(cond.noTag2)) return false;
             if (cond.chance !== undefined && Math.random() > cond.chance) return false;
@@ -909,8 +914,13 @@
 
             // 选 1-3 个事件
             const count = Math.min(eligible.length, 1 + Math.floor(Math.random() * 2));
-            const shuffled = eligible.sort(() => Math.random() - 0.5);
-            return shuffled.slice(0, count);
+            // Fisher-Yates 洗牌
+            const arr = [...eligible];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr.slice(0, count);
         }
 
         // 检查是否死亡
