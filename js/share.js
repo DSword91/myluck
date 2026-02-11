@@ -64,48 +64,123 @@
         document.head.appendChild(script);
     }
 
-    // 截图并下载/分享
+    // 截图并下载/分享（带二维码和推广语）
     function captureAndSave(element) {
-        if (!element) return;
+        if (!element) {
+            var st2 = window.MyLuck && window.MyLuck.showToast;
+            if (st2) st2(isEn() ? 'No result to capture' : '没有可截图的结果', 'info');
+            return;
+        }
         var st = window.MyLuck && window.MyLuck.showToast;
+        var en = isEn();
         loadHtml2Canvas(function() {
             if (!window.html2canvas) return;
-            if (st) st(isEn() ? 'Generating image...' : '正在生成图片...', 'info', 2000);
-            window.html2canvas(element, {
-                backgroundColor: '#fffbf5',
-                scale: 2,
-                useCORS: true,
-                logging: false
-            }).then(function(canvas) {
-                // 移动端尝试分享(支持 share files API)
-                if (navigator.canShare) {
-                    canvas.toBlob(function(blob) {
-                        var file = new File([blob], 'myluck-result.png', { type: 'image/png' });
-                        if (navigator.canShare({ files: [file] })) {
-                            navigator.share({ files: [file], title: 'MyLuck' }).catch(function() {
-                                // 用户取消或不支持，降级下载
-                                downloadCanvas(canvas);
-                            });
-                        } else {
-                            downloadCanvas(canvas);
-                        }
-                    }, 'image/png');
-                } else {
-                    downloadCanvas(canvas);
-                }
-            }).catch(function(err) {
-                console.error('[share] html2canvas error:', err);
-                if (st) st(isEn() ? 'Image generation failed' : '图片生成失败', 'error');
-            });
+            if (st) st(en ? 'Generating image...' : '正在生成图片...', 'info', 3000);
+
+            // 创建包装容器（离屏渲染）
+            var wrapper = document.createElement('div');
+            wrapper.style.cssText = 'position:fixed;left:-9999px;top:0;width:' + Math.min(element.offsetWidth, 420) + 'px;background:#fffbf5;padding:20px;border-radius:16px;font-family:inherit;';
+
+            // 克隆结果元素
+            var clone = element.cloneNode(true);
+            clone.style.cssText = '';
+            clone.style.display = 'block';
+            wrapper.appendChild(clone);
+
+            // 添加品牌推广底栏
+            var pageUrl = location.href.split('?')[0].split('#')[0];
+            var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(pageUrl);
+            var footer = document.createElement('div');
+            footer.style.cssText = 'display:flex;align-items:center;gap:12px;margin-top:16px;padding-top:14px;border-top:2px dashed #e0d5c3;';
+            var qrImg = document.createElement('img');
+            qrImg.src = qrUrl;
+            qrImg.width = 80;
+            qrImg.height = 80;
+            qrImg.style.cssText = 'border-radius:8px;border:1px solid #eee;flex-shrink:0;';
+            qrImg.crossOrigin = 'anonymous';
+            footer.appendChild(qrImg);
+
+            var promoDiv = document.createElement('div');
+            promoDiv.style.cssText = 'flex:1;';
+            promoDiv.innerHTML = '<div style="font-size:1rem;font-weight:700;color:#e17055;margin-bottom:4px;">MyLuck · myluck.top</div>' +
+                '<div style="font-size:0.8rem;color:#888;line-height:1.4;">' +
+                (en ? 'Discover your luck today!<br>Scan to try it yourself ✨' : '测测你今天的运气吧！<br>扫码来试试 ✨') +
+                '</div>';
+            footer.appendChild(promoDiv);
+            wrapper.appendChild(footer);
+
+            document.body.appendChild(wrapper);
+
+            // 等待 QR 图片加载后再截图
+            var doCapture = function() {
+                window.html2canvas(wrapper, {
+                    backgroundColor: '#fffbf5',
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: false,
+                    logging: false,
+                    width: wrapper.offsetWidth,
+                    height: wrapper.offsetHeight
+                }).then(function(canvas) {
+                    wrapper.remove();
+                    saveCanvasResult(canvas);
+                }).catch(function(err) {
+                    wrapper.remove();
+                    console.error('[share] html2canvas error:', err);
+                    if (st) st(en ? 'Image generation failed' : '图片生成失败，请重试', 'error');
+                });
+            };
+
+            // 确保 QR 码图片加载完
+            if (qrImg.complete) {
+                doCapture();
+            } else {
+                qrImg.onload = doCapture;
+                qrImg.onerror = function() {
+                    // QR 加载失败也继续截图（没有二维码）
+                    doCapture();
+                };
+            }
         });
     }
 
-    function downloadCanvas(canvas) {
+    function saveCanvasResult(canvas) {
+        var st = window.MyLuck && window.MyLuck.showToast;
+        var en = isEn();
+        canvas.toBlob(function(blob) {
+            if (!blob) {
+                if (st) st(en ? 'Image generation failed' : '图片生成失败', 'error');
+                return;
+            }
+            // 移动端尝试 Web Share API
+            if (navigator.canShare) {
+                try {
+                    var file = new File([blob], 'myluck-result.png', { type: 'image/png' });
+                    if (navigator.canShare({ files: [file] })) {
+                        navigator.share({ files: [file], title: 'MyLuck' }).then(function() {
+                            if (st) st(en ? 'Shared!' : '分享成功！', 'success');
+                        }).catch(function() {
+                            // 用户取消，降级下载
+                            downloadBlob(blob);
+                        });
+                        return;
+                    }
+                } catch(e) {}
+            }
+            downloadBlob(blob);
+        }, 'image/png');
+    }
+
+    function downloadBlob(blob) {
+        var st = window.MyLuck && window.MyLuck.showToast;
+        var url = URL.createObjectURL(blob);
         var link = document.createElement('a');
         link.download = 'myluck-result.png';
-        link.href = canvas.toDataURL('image/png');
+        link.href = url;
+        document.body.appendChild(link);
         link.click();
-        var st = window.MyLuck && window.MyLuck.showToast;
+        document.body.removeChild(link);
+        setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
         if (st) st(isEn() ? 'Image saved!' : '图片已保存！', 'success');
     }
 
