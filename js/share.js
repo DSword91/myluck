@@ -78,13 +78,18 @@
             if (st) st(en ? 'Generating image...' : '正在生成图片...', 'info', 3000);
 
             // 直接截图原始元素（保留所有样式）
+            // 先临时移除动画和透明度，确保截图清晰
+            var origStyle = element.style.cssText;
+            element.style.animation = 'none';
+            element.style.opacity = '1';
             window.html2canvas(element, {
-                backgroundColor: null,
+                backgroundColor: '#ffffff',
                 scale: window.devicePixelRatio || 2,
                 useCORS: true,
                 allowTaint: true,
                 logging: false
             }).then(function(resultCanvas) {
+                element.style.cssText = origStyle;
                 // 加载QR码图片
                 var pageUrl = location.href.split('?')[0].split('#')[0];
                 var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&format=png&data=' + encodeURIComponent(pageUrl);
@@ -99,6 +104,7 @@
                 };
                 qrImg.src = qrUrl;
             }).catch(function(err) {
+                element.style.cssText = origStyle;
                 console.error('[share] html2canvas error:', err);
                 if (st) st(en ? 'Image generation failed' : '图片生成失败，请重试', 'error');
             });
@@ -122,7 +128,7 @@
         var ctx = canvas.getContext('2d');
 
         // 背景
-        ctx.fillStyle = '#fffbf5';
+        ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, finalW, finalH);
 
         // 画结果截图
