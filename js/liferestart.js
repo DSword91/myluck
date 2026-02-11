@@ -1169,8 +1169,8 @@
     function showTalentDraw() {
         currentPhase = 'talent';
         game.reset();
-        // 重置属性分配
-        window._lrAlloc = { chr: 0, int: 0, str: 0, mny: 0, spr: 0 };
+        // 重置属性分配（设为 null，让 showAttributeAlloc 根据天赋加成正确初始化）
+        window._lrAlloc = null;
         const poolSize = 10;
         // 按稀有度权重抽取
         const pool = [];
@@ -1249,7 +1249,12 @@
             talentBonus[k] = game.stats[k] || 0;
         }
         // 保留之前的分配状态（语言切换时不丢失）
-        if (!window._lrAlloc) window._lrAlloc = { chr: 0, int: 0, str: 0, mny: 0, spr: 0 };
+        if (!window._lrAlloc) {
+            window._lrAlloc = {};
+            for (const k of ['chr', 'int', 'str', 'mny', 'spr']) {
+                window._lrAlloc[k] = Math.min(talentBonus[k] || 0, 10);
+            }
+        }
         const alloc = window._lrAlloc;
         const keys = ['chr', 'int', 'str', 'mny', 'spr'];
         const labels = { chr: 'lr.attr.chr', int: 'lr.attr.int', str: 'lr.attr.str', mny: 'lr.attr.mny', spr: 'lr.attr.spr' };
@@ -1273,7 +1278,7 @@
         }
 
         function remaining() {
-            return total - keys.reduce((s, k) => s + alloc[k], 0);
+            return total - keys.reduce((s, k) => s + (alloc[k] - (talentBonus[k] || 0)), 0);
         }
 
         function render() {
@@ -1295,7 +1300,7 @@
                         return `
                         <div class="lr-attr-row">
                             <span class="lr-attr-label">${t(labels[k])}${bonusTag}</span>
-                            <button class="lr-attr-btn minus" data-key="${k}" data-dir="-1" ${alloc[k] <= 0 ? 'disabled' : ''}>−</button>
+                            <button class="lr-attr-btn minus" data-key="${k}" data-dir="-1" ${alloc[k] <= (talentBonus[k] || 0) ? 'disabled' : ''}>−</button>
                             <div class="lr-attr-bar-wrap">
                                 <div class="lr-attr-bar" style="width:${alloc[k] * 10}%"></div>
                                 <span class="lr-attr-val">${alloc[k]}</span>
@@ -1315,7 +1320,8 @@
                     const k = btn.dataset.key;
                     const dir = parseInt(btn.dataset.dir);
                     const newVal = alloc[k] + dir;
-                    if (newVal < 0 || newVal > 10) return;
+                    const minVal = talentBonus[k] || 0;
+                    if (newVal < minVal || newVal > 10) return;
                     if (dir > 0 && remaining() <= 0) return;
                     alloc[k] = newVal;
                     render();
@@ -1326,7 +1332,7 @@
             if (randomBtn) {
                 randomBtn.addEventListener('click', () => {
                     let left = total;
-                    for (const k of keys) alloc[k] = 0;
+                    for (const k of keys) alloc[k] = Math.min(talentBonus[k] || 0, 10);
                     while (left > 0) {
                         const k = keys[Math.floor(Math.random() * keys.length)];
                         const add = Math.min(Math.floor(Math.random() * 3) + 1, 10 - alloc[k], left);
@@ -1340,7 +1346,10 @@
             const startBtn = document.getElementById('lr-start');
             if (startBtn && remaining() <= 0) {
                 startBtn.addEventListener('click', () => {
-                    game.setStats(alloc);
+                    // 只传用户手动分配的点数（去掉天赋加成部分，避免重复计算）
+                    const userAlloc = {};
+                    for (const k of keys) userAlloc[k] = alloc[k] - (talentBonus[k] || 0);
+                    game.setStats(userAlloc);
                     showLifeTrajectory();
                 });
             }
@@ -1592,20 +1601,32 @@
             virtualCount: 8,
             virtualConfig: {
                 getEntry: function(rng, idx) {
-                    const score = Math.floor(rng(1) * 50 + 10);
+                    const score = Math.floor(rng(1) * 55 + 8);
                     const endingIdx = Math.min(Math.floor(score / 15), 6);
+                    // 根据得分推算合理年龄: score ≈ age*0.5 + stats*0.2, 估算age
+                    var age = Math.floor(score * 1.2 + rng(1) * 20 + 5);
+                    if (age > 100) age = Math.floor(85 + rng(1) * 15);
+                    if (age < 1) age = Math.floor(rng(1) * 3 + 1);
+                    // 结局名跟 ENDINGS 表一致
+                    var endingNames = ['悲惨世界', '苦涩人生', '平凡一生', '幸福生活', '精彩人生', '辉煌一生', '传奇人生'];
+                    var endingNamesEn = ['Tragic Life', 'Bitter Life', 'Ordinary Life', 'Happy Life', 'Wonderful Life', 'Brilliant Life', 'Legendary Life'];
+                    var isEn = window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en';
+                    var endingName = isEn ? endingNamesEn[endingIdx] : endingNames[endingIdx];
                     return {
                         score: score,
                         character_emoji: ENDING_EMOJIS[endingIdx] || '🔄',
-                        character_title: ''
+                        character_title: endingName + (isEn ? ' (Age ' + age + ')' : '（享年' + age + '岁）')
                     };
                 }
             },
             formatEntry: function(entry, i, medal) {
                 const esc = window.MyLuck.Security ? window.MyLuck.Security.escapeHtml : function(s) { return s; };
                 const emoji = entry.character_emoji || '🔄';
+                const title = entry.character_title || '';
                 const scoreColor = entry.score >= 60 ? '#e17055' : entry.score >= 40 ? '#fdcb6e' : '#00b894';
-                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + ' ' + esc(entry.name || I18n.t('common.anonymous')) + '</span></div><span class="lb-score" style="color:' + scoreColor + '">' + entry.score + '</span>';
+                return '<div class="lb-left">' + medal + '<span class="lb-name">' + emoji + ' ' + esc(entry.name || I18n.t('common.anonymous')) + '</span></div>' +
+                    (title ? '<span class="lb-title" style="font-size:0.82em;color:#888;margin-left:4px;">' + esc(title) + '</span>' : '') +
+                    '<span class="lb-score" style="color:' + scoreColor + '">' + entry.score + '</span>';
             }
         });
     }
@@ -1614,35 +1635,57 @@
         if (!lastLRScore) return;
         const LB = window.MyLuck && window.MyLuck.Leaderboard;
         if (!LB) return;
+        const showToast = window.MyLuck && window.MyLuck.showToast;
+        const isEn = window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en';
 
-        const rankBtn = document.getElementById('lr-rank-btn');
-        if (rankBtn) { rankBtn.disabled = true; rankBtn.textContent = '...'; }
+        // 弹出名字输入 Modal
+        var nameOverlay = document.createElement('div');
+        nameOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;display:flex;align-items:center;justify-content:center;';
+        nameOverlay.innerHTML = '<div style="background:#fff;border-radius:16px;padding:24px;max-width:360px;width:90%;text-align:center;">' +
+            '<h3 style="margin:0 0 12px;color:#e17055;">' + (isEn ? '🏆 Enter Name' : '🏆 输入名字上榜') + '</h3>' +
+            '<input type="text" id="lr-rank-name" maxlength="20" placeholder="' + (isEn ? 'Your name' : '你的名字') + '" style="width:100%;padding:10px 14px;border:2px solid #e0d5c3;border-radius:10px;font-size:1rem;margin-bottom:12px;box-sizing:border-box;">' +
+            '<div style="display:flex;gap:10px;justify-content:center;">' +
+            '<button id="lr-rank-cancel" style="padding:10px 20px;border:1px solid #ddd;border-radius:25px;background:#fff;cursor:pointer;">' + (isEn ? 'Cancel' : '取消') + '</button>' +
+            '<button id="lr-rank-confirm" style="padding:10px 20px;border:none;border-radius:25px;background:#e17055;color:#fff;font-weight:600;cursor:pointer;">' + (isEn ? 'Submit' : '提交') + '</button>' +
+            '</div></div>';
+        document.body.appendChild(nameOverlay);
 
-        const ENDING_EMOJIS_MAP = {
-            0: '💀', 1: '😢', 2: '😐', 3: '😊',
-            4: '🌟', 5: '👑', 6: '🏆'
-        };
-        const endingIdx = Math.min(Math.floor(lastLRScore / 15), 6);
-        const emoji = ENDING_EMOJIS_MAP[endingIdx] || '🔄';
+        document.getElementById('lr-rank-cancel').addEventListener('click', function() { nameOverlay.remove(); });
+        nameOverlay.addEventListener('click', function(e) { if (e.target === nameOverlay) nameOverlay.remove(); });
 
-        await LB.submit('liferestart', {
-            name: I18n.t('common.anonymous'),
-            score: lastLRScore,
-            character_emoji: emoji,
-            character_title: lastLREnding
-        }, {
-            onSuccess: function() {
-                if (rankBtn) rankBtn.textContent = I18n.t('lr.ranked');
-                loadLRLeaderboard();
-            },
-            onFail: function() {
-                var st = window.MyLuck && window.MyLuck.showToast;
-                if (st) st(I18n.t('lr.rank_fail'), 'error');
-                else alert(I18n.t('lr.rank_fail'));
-                if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = I18n.t('lr.rank_btn'); }
-            }
+        document.getElementById('lr-rank-confirm').addEventListener('click', async function() {
+            var nameInput = document.getElementById('lr-rank-name').value.trim();
+            var name = nameInput || I18n.t('common.anonymous');
+            name = name.substring(0, 20);
+            nameOverlay.remove();
+
+            const rankBtn = document.getElementById('lr-rank-btn');
+            if (rankBtn) { rankBtn.disabled = true; rankBtn.textContent = '...'; }
+
+            const ENDING_EMOJIS_MAP = {
+                0: '💀', 1: '😢', 2: '😐', 3: '😊',
+                4: '🌟', 5: '👑', 6: '🏆'
+            };
+            const endingIdx = Math.min(Math.floor(lastLRScore / 15), 6);
+            const emoji = ENDING_EMOJIS_MAP[endingIdx] || '🔄';
+
+            await LB.submit('liferestart', {
+                name: name,
+                score: lastLRScore,
+                character_emoji: emoji,
+                character_title: lastLREnding
+            }, {
+                onSuccess: function() {
+                    if (rankBtn) rankBtn.textContent = I18n.t('lr.ranked');
+                    loadLRLeaderboard();
+                },
+                onFail: function() {
+                    if (showToast) showToast(I18n.t('lr.rank_fail'), 'error');
+                    if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = I18n.t('lr.rank_btn'); }
+                }
+            });
+            if (rankBtn && !rankBtn.disabled) { rankBtn.disabled = false; rankBtn.textContent = I18n.t('lr.rank_btn'); }
         });
-        if (rankBtn && !rankBtn.disabled) { rankBtn.disabled = false; rankBtn.textContent = I18n.t('lr.rank_btn'); }
     }
 
     // 绑定上榜按钮

@@ -453,7 +453,7 @@
             const lang = I18n.lang;
             var showToast2 = window.MyLuck && window.MyLuck.showToast;
             if (showToast2) showToast2(I18n.t('common.verify_first'), 'info');
-            else alert(I18n.t('common.verify_first'));
+
             return;
         }
         clearProgress();
@@ -610,7 +610,7 @@
             onFail: function() {
                 var st3 = window.MyLuck && window.MyLuck.showToast;
                 if (st3) st3(I18n.t('mbti.rank_fail'), 'error');
-                else alert(I18n.t('mbti.rank_fail'));
+    
                 if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = I18n.t('mbti.rank_btn'); }
             }
         });

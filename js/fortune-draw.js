@@ -247,7 +247,6 @@
             navigator.clipboard.writeText(text + '\nhttps://myluck.top/fortune-draw.html').then(function () {
                 var st = window.MyLuck && window.MyLuck.showToast;
                 if (st) st(isEn ? 'Fortune copied!' : '签文已复制！', 'success');
-                else alert(isEn ? 'Fortune copied!' : '签文已复制！');
             });
         }
     }
@@ -269,6 +268,29 @@
         LB.load('fortune-board-list', 'fortune_draw', {
             limit: 10,
             virtualCount: 8,
+            virtualConfig: {
+                getEntry: function(rng, idx) {
+                    var levels = ['上上签', '上签', '中上签', '中签', '中下签', '下签', '下下签'];
+                    var levelsEn = ['Supreme', 'Great', 'Good', 'Average', 'Below Avg', 'Poor', 'Worst'];
+                    var emojis = ['🎊', '✨', '🌟', '📜', '🌧️', '🌫️', '⛈️'];
+                    var scores = [100, 85, 72, 55, 38, 22, 8];
+                    // 偏向好签的分布
+                    var weights = [0.08, 0.18, 0.22, 0.25, 0.15, 0.08, 0.04];
+                    var r = rng(1);
+                    var cum = 0;
+                    var pick = 3;
+                    for (var w = 0; w < weights.length; w++) {
+                        cum += weights[w];
+                        if (r < cum) { pick = w; break; }
+                    }
+                    var isEnLB = window.MyLuck && window.MyLuck.I18n && window.MyLuck.I18n.lang === 'en';
+                    return {
+                        score: scores[pick],
+                        character_emoji: emojis[pick],
+                        character_title: isEnLB ? levelsEn[pick] : levels[pick]
+                    };
+                }
+            },
             formatEntry: function (entry, i, medal) {
                 var emoji = entry.character_emoji ? escapeHtml(entry.character_emoji) + ' ' : '';
                 var detail = entry.character_title ? '<span class="lb-detail">' + escapeHtml(entry.character_title) + '</span>' : '';
@@ -310,29 +332,50 @@
         var I18n = window.MyLuck && window.MyLuck.I18n;
         var t = function(k, fb) { return I18n ? I18n.t(k) : fb; };
         var en = isEnNow();
-        var name = I18n ? I18n.t('common.anonymous') : '匿名';
 
-        var rankBtn = document.getElementById('fortune-rank');
-        if (rankBtn) { rankBtn.disabled = true; rankBtn.textContent = '...'; }
+        // 弹出名字输入 Modal
+        var nameOverlay = document.createElement('div');
+        nameOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;display:flex;align-items:center;justify-content:center;';
+        nameOverlay.innerHTML = '<div style="background:#fff;border-radius:16px;padding:24px;max-width:360px;width:90%;text-align:center;">' +
+            '<h3 style="margin:0 0 12px;color:#e17055;">' + (en ? '🏆 Enter Name' : '🏆 输入名字上榜') + '</h3>' +
+            '<input type="text" id="fortune-rank-name" maxlength="20" placeholder="' + (en ? 'Your name' : '你的名字') + '" style="width:100%;padding:10px 14px;border:2px solid #e0d5c3;border-radius:10px;font-size:1rem;margin-bottom:12px;box-sizing:border-box;">' +
+            '<div style="display:flex;gap:10px;justify-content:center;">' +
+            '<button id="fortune-rank-cancel" style="padding:10px 20px;border:1px solid #ddd;border-radius:25px;background:#fff;cursor:pointer;">' + (en ? 'Cancel' : '取消') + '</button>' +
+            '<button id="fortune-rank-confirm" style="padding:10px 20px;border:none;border-radius:25px;background:#e17055;color:#fff;font-weight:600;cursor:pointer;">' + (en ? 'Submit' : '提交') + '</button>' +
+            '</div></div>';
+        document.body.appendChild(nameOverlay);
 
-        var score = levelScore(stick.level);
-        var success = await LB.submit('fortune_draw', {
-            name: name,
-            score: score,
-            character_id: String(stick.id),
-            character_emoji: stick.level === '上上签' ? '🎊' : stick.level === '上签' ? '✨' : stick.level === '中上签' ? '🌟' : stick.level === '中签' ? '📜' : stick.level === '中下签' ? '🌧️' : stick.level === '下签' ? '🌫️' : '⛈️',
-            character_title: en ? (LEVEL_EN[stick.level] || stick.level) : stick.level
-        }, {
-            onSuccess: function () {
-                if (rankBtn) rankBtn.textContent = t('draw.ranked', '✅ 已上榜！');
-                initLeaderboard();
-            },
-            onFail: function () {
-                showToast(t('draw.rank_fail', '上榜失败，请稍后重试'), 'error');
-                if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = t('draw.rank', '🏆 上榜'); }
-            }
+        document.getElementById('fortune-rank-cancel').addEventListener('click', function() { nameOverlay.remove(); });
+        nameOverlay.addEventListener('click', function(e) { if (e.target === nameOverlay) nameOverlay.remove(); });
+
+        document.getElementById('fortune-rank-confirm').addEventListener('click', async function() {
+            var nameInput = document.getElementById('fortune-rank-name').value.trim();
+            var name = nameInput || (I18n ? I18n.t('common.anonymous') : '匿名');
+            name = name.substring(0, 20);
+            nameOverlay.remove();
+
+            var rankBtn = document.getElementById('fortune-rank');
+            if (rankBtn) { rankBtn.disabled = true; rankBtn.textContent = '...'; }
+
+            var score = levelScore(stick.level);
+            var success = await LB.submit('fortune_draw', {
+                name: name,
+                score: score,
+                character_id: String(stick.id),
+                character_emoji: stick.level === '上上签' ? '🎊' : stick.level === '上签' ? '✨' : stick.level === '中上签' ? '🌟' : stick.level === '中签' ? '📜' : stick.level === '中下签' ? '🌧️' : stick.level === '下签' ? '🌫️' : '⛈️',
+                character_title: en ? (LEVEL_EN[stick.level] || stick.level) : stick.level
+            }, {
+                onSuccess: function () {
+                    if (rankBtn) rankBtn.textContent = t('draw.ranked', '✅ 已上榜！');
+                    initLeaderboard();
+                },
+                onFail: function () {
+                    showToast(t('draw.rank_fail', '上榜失败，请稍后重试'), 'error');
+                    if (rankBtn) { rankBtn.disabled = false; rankBtn.textContent = t('draw.rank', '🏆 上榜'); }
+                }
+            });
+            if (!success && rankBtn) { rankBtn.disabled = false; rankBtn.textContent = t('draw.rank', '🏆 上榜'); }
         });
-        if (!success && rankBtn) { rankBtn.disabled = false; rankBtn.textContent = t('draw.rank', '🏆 上榜'); }
     }
 
     function isEnNow() {
