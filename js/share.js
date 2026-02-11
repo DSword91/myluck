@@ -64,7 +64,7 @@
         document.head.appendChild(script);
     }
 
-    // 截图并下载/分享（带二维码和推广语）
+    // 截图并下载（带二维码和推广语）
     function captureAndSave(element) {
         if (!element) {
             var st2 = window.MyLuck && window.MyLuck.showToast;
@@ -77,96 +77,91 @@
             if (!window.html2canvas) return;
             if (st) st(en ? 'Generating image...' : '正在生成图片...', 'info', 3000);
 
-            // 创建包装容器（离屏渲染）
-            var wrapper = document.createElement('div');
-            wrapper.style.cssText = 'position:fixed;left:-9999px;top:0;width:' + Math.min(element.offsetWidth, 420) + 'px;background:#fffbf5;padding:20px;border-radius:16px;font-family:inherit;';
-
-            // 克隆结果元素
-            var clone = element.cloneNode(true);
-            clone.style.cssText = '';
-            clone.style.display = 'block';
-            wrapper.appendChild(clone);
-
-            // 添加品牌推广底栏
-            var pageUrl = location.href.split('?')[0].split('#')[0];
-            var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(pageUrl);
-            var footer = document.createElement('div');
-            footer.style.cssText = 'display:flex;align-items:center;gap:12px;margin-top:16px;padding-top:14px;border-top:2px dashed #e0d5c3;';
-            var qrImg = document.createElement('img');
-            qrImg.src = qrUrl;
-            qrImg.width = 80;
-            qrImg.height = 80;
-            qrImg.style.cssText = 'border-radius:8px;border:1px solid #eee;flex-shrink:0;';
-            qrImg.crossOrigin = 'anonymous';
-            footer.appendChild(qrImg);
-
-            var promoDiv = document.createElement('div');
-            promoDiv.style.cssText = 'flex:1;';
-            promoDiv.innerHTML = '<div style="font-size:1rem;font-weight:700;color:#e17055;margin-bottom:4px;">MyLuck · myluck.top</div>' +
-                '<div style="font-size:0.8rem;color:#888;line-height:1.4;">' +
-                (en ? 'Discover your luck today!<br>Scan to try it yourself ✨' : '测测你今天的运气吧！<br>扫码来试试 ✨') +
-                '</div>';
-            footer.appendChild(promoDiv);
-            wrapper.appendChild(footer);
-
-            document.body.appendChild(wrapper);
-
-            // 等待 QR 图片加载后再截图
-            var doCapture = function() {
-                window.html2canvas(wrapper, {
-                    backgroundColor: '#fffbf5',
-                    scale: 2,
-                    useCORS: true,
-                    allowTaint: false,
-                    logging: false,
-                    width: wrapper.offsetWidth,
-                    height: wrapper.offsetHeight
-                }).then(function(canvas) {
-                    wrapper.remove();
-                    saveCanvasResult(canvas);
-                }).catch(function(err) {
-                    wrapper.remove();
-                    console.error('[share] html2canvas error:', err);
-                    if (st) st(en ? 'Image generation failed' : '图片生成失败，请重试', 'error');
-                });
-            };
-
-            // 确保 QR 码图片加载完
-            if (qrImg.complete) {
-                doCapture();
-            } else {
-                qrImg.onload = doCapture;
-                qrImg.onerror = function() {
-                    // QR 加载失败也继续截图（没有二维码）
-                    doCapture();
+            // 直接截图原始元素（保留所有样式）
+            window.html2canvas(element, {
+                backgroundColor: '#fffbf5',
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                logging: false
+            }).then(function(resultCanvas) {
+                // 加载QR码图片
+                var pageUrl = location.href.split('?')[0].split('#')[0];
+                var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&format=png&data=' + encodeURIComponent(pageUrl);
+                var qrImg = new Image();
+                qrImg.crossOrigin = 'anonymous';
+                qrImg.onload = function() {
+                    compositeAndDownload(resultCanvas, qrImg, en);
                 };
-            }
+                qrImg.onerror = function() {
+                    // QR加载失败，不加QR码直接合成
+                    compositeAndDownload(resultCanvas, null, en);
+                };
+                qrImg.src = qrUrl;
+            }).catch(function(err) {
+                console.error('[share] html2canvas error:', err);
+                if (st) st(en ? 'Image generation failed' : '图片生成失败，请重试', 'error');
+            });
         });
     }
 
-    function saveCanvasResult(canvas) {
-        var st = window.MyLuck && window.MyLuck.showToast;
-        var en = isEn();
+    // 合成最终图片：结果截图 + 底部品牌栏（QR + 推广语）
+    function compositeAndDownload(resultCanvas, qrImg, en) {
+        var scale = 2;
+        var padding = 30 * scale;
+        var footerH = 100 * scale;
+        var gap = 16 * scale;
+        var dashedY = resultCanvas.height + padding * 2 + 10 * scale;
+
+        var finalW = resultCanvas.width + padding * 2;
+        var finalH = resultCanvas.height + padding * 2 + gap + footerH + padding;
+
+        var canvas = document.createElement('canvas');
+        canvas.width = finalW;
+        canvas.height = finalH;
+        var ctx = canvas.getContext('2d');
+
+        // 背景
+        ctx.fillStyle = '#fffbf5';
+        ctx.fillRect(0, 0, finalW, finalH);
+
+        // 画结果截图
+        ctx.drawImage(resultCanvas, padding, padding);
+
+        // 虚线分隔
+        ctx.setLineDash([8 * scale, 6 * scale]);
+        ctx.strokeStyle = '#e0d5c3';
+        ctx.lineWidth = 2 * scale;
+        ctx.beginPath();
+        ctx.moveTo(padding, dashedY);
+        ctx.lineTo(finalW - padding, dashedY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        var footerStartY = dashedY + 14 * scale;
+
+        // QR码
+        var qrSize = 80 * scale;
+        if (qrImg) {
+            ctx.drawImage(qrImg, padding, footerStartY, qrSize, qrSize);
+        }
+
+        // 推广文字
+        var textX = padding + (qrImg ? qrSize + 16 * scale : 0);
+        ctx.fillStyle = '#e17055';
+        ctx.font = 'bold ' + (16 * scale) + 'px sans-serif';
+        ctx.fillText('MyLuck · myluck.top', textX, footerStartY + 24 * scale);
+
+        ctx.fillStyle = '#888888';
+        ctx.font = (13 * scale) + 'px sans-serif';
+        var line1 = en ? 'Discover your luck today!' : '测测你今天的运气吧！';
+        var line2 = en ? 'Scan to try it yourself ✨' : '扫码来试试 ✨';
+        ctx.fillText(line1, textX, footerStartY + 50 * scale);
+        ctx.fillText(line2, textX, footerStartY + 72 * scale);
+
+        // 强制下载
         canvas.toBlob(function(blob) {
-            if (!blob) {
-                if (st) st(en ? 'Image generation failed' : '图片生成失败', 'error');
-                return;
-            }
-            // 移动端尝试 Web Share API
-            if (navigator.canShare) {
-                try {
-                    var file = new File([blob], 'myluck-result.png', { type: 'image/png' });
-                    if (navigator.canShare({ files: [file] })) {
-                        navigator.share({ files: [file], title: 'MyLuck' }).then(function() {
-                            if (st) st(en ? 'Shared!' : '分享成功！', 'success');
-                        }).catch(function() {
-                            // 用户取消，降级下载
-                            downloadBlob(blob);
-                        });
-                        return;
-                    }
-                } catch(e) {}
-            }
+            if (!blob) return;
             downloadBlob(blob);
         }, 'image/png');
     }
